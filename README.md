@@ -1,11 +1,19 @@
+# ISL Gesture Recognition
 
-  # ISL Connect Website Prototype
+Real-time Indian Sign Language detection using:
 
-  This is a code bundle for ISL Connect Website Prototype. The original project is available at https://www.figma.com/design/UhwUlI8dWj70xs4YDtcjoj/ISL-Connect-Website-Prototype.
+- MediaPipe
+- Machine Learning (MLP Classifier)
+- Flask API
+- React + TypeScript
 
-  ## Running the code
+## Features
+- Real-time gesture recognition
+- Confidence score
+- ISL reference chart
+- Smooth prediction system
 
-  Run `npm i` to install the dependencies.
-
-  Run `npm run dev` to start the development server.
-  
+## How to Run
+1. Start Flask API
+2. Run React frontend
+3. Open localhost
