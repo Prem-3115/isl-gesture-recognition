@@ -1,19 +1,40 @@
-# ISL Gesture Recognition
+# ISL Gesture Recognition 🤖✋
 
-Real-time Indian Sign Language detection using:
+A real-time Indian Sign Language recognition system using AI.
 
-- MediaPipe
-- Machine Learning (MLP Classifier)
-- Flask API
-- React + TypeScript
+## 🚀 Features
 
-## Features
-- Real-time gesture recognition
-- Confidence score
-- ISL reference chart
-- Smooth prediction system
+* Real-time hand gesture detection
+* ISL alphabet & number recognition
+* Confidence scoring
+* Smooth prediction system
+* ISL reference chart
 
-## How to Run
-1. Start Flask API
-2. Run React frontend
-3. Open localhost
+## 🛠 Tech Stack
+
+* Frontend: React + TypeScript
+* Backend: Flask
+* ML Model: MLP Classifier
+* Hand Tracking: MediaPipe
+
+## 📸 Demo
+
+(Add screenshots here)
+
+## ▶️ How to Run
+
+### Backend
+
+cd backend
+python isl_api.py
+
+### Frontend
+
+npm install
+npm run dev
+
+## 🎯 Future Improvements
+
+* Better model accuracy
+* Full sentence recognition
+* Mobile support
