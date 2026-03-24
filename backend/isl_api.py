@@ -22,7 +22,8 @@ MODEL_PATH   = "isl_model.pkl"
 ENCODER_PATH = "label_encoder.pkl"
 
 # Minimum confidence to return a prediction (below this = "Not sure")
-CONFIDENCE_THRESHOLD = 0.50
+# Lowered so the API can surface likely matches more often during live detection.
+CONFIDENCE_THRESHOLD = 0.30
 
 model   = None
 encoder = None
