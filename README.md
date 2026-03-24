@@ -19,7 +19,10 @@ A real-time Indian Sign Language recognition system using AI.
 
 ## 📸 Demo
 
-(Add screenshots here)
+<img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/27765e12-9623-4477-ae10-319565437973" />
+<img width="1919" height="1079" alt="Screenshot 2026-03-24 174218" src="https://github.com/user-attachments/assets/a1c96ea8-e67c-4ace-aecd-dfe419800f94" />
+<img width="1913" height="938" alt="image" src="https://github.com/user-attachments/assets/fdde3d67-4fb8-41ca-b847-795fc8209464" />
+
 
 ## ▶️ How to Run
 
