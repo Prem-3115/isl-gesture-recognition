@@ -89,8 +89,8 @@ export function AuthModal({ isOpen, onClose, onLogin, initialMode = "login" }: A
             </DialogTitle>
             <DialogDescription className="text-center">
               {mode === "login"
-                ? "Sign in to continue your Indian Sign Language journey."
-                : "Start learning with AI-guided lessons, practice, and progress tracking."}
+                ? "Sign in to continue your ISL (Indian Sign Language) learning journey."
+                : "Start learning ISL with AI-guided lessons, practice, and progress tracking."}
             </DialogDescription>
           </DialogHeader>
 

@@ -14,7 +14,7 @@ export function AlphabetChart() {
           <button className="text-sm text-foreground underline mb-4" onClick={() => onNavigate('home')}>
             ← Back
           </button>
-          <h1 className="text-3xl font-bold mb-2">Indian Sign Language Alphabet Chart</h1>
+          <h1 className="text-3xl font-bold mb-2">ISL (Indian Sign Language) Alphabet Chart</h1>
           <p className="text-muted-foreground mb-4">Reference chart for ISL alphabets and numbers.</p>
         </div>
 
@@ -22,7 +22,7 @@ export function AlphabetChart() {
           <div className="w-full flex justify-center">
             <img
               src="/isl-alphabet-chart.png"
-              alt="Indian Sign Language Alphabet Chart"
+              alt="ISL (Indian Sign Language) Alphabet Chart"
               className="max-w-full h-auto object-contain"
             />
           </div>

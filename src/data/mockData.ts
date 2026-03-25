@@ -1,3 +1,4 @@
+import islChart from "@/assets/isl_chart.jpg";
 import {
   Award,
   BookOpen,
@@ -15,11 +16,10 @@ import {
 export const courses = [
   {
     id: "alphabet",
-    title: "ISL Alphabet Fundamentals",
+    title: "Learn ISL Alphabet",
     description:
-      "Build a strong signing foundation with guided lessons for every core alphabet handshape.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+      "Build a strong ISL foundation with guided lessons for the ISL alphabet and beginner-friendly practice.",
+    image: islChart,
     difficulty: "Beginner",
     progress: 46,
     lessonsCompleted: 4,
@@ -30,9 +30,9 @@ export const courses = [
   },
   {
     id: "greetings",
-    title: "Everyday Greetings",
+    title: "ISL Everyday Greetings",
     description:
-      "Practice hello, thank you, introductions, and social phrases used in daily conversation.",
+      "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
     image:
       "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
     difficulty: "Beginner",
@@ -45,11 +45,10 @@ export const courses = [
   },
   {
     id: "numbers",
-    title: "Numbers 1-100",
+    title: "ISL Numbers 1-100",
     description:
-      "Learn number signs with short drills, memory checks, and quick real-world practice prompts.",
-    image:
-      "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
+      "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
+    image: islChart,
     difficulty: "Beginner",
     progress: 20,
     lessonsCompleted: 2,
@@ -71,21 +70,21 @@ export const howItWorks = [
   {
     title: "Watch & Learn",
     description:
-      "Follow short expert-led lessons that break each sign into shape, motion, and orientation.",
+      "Follow short expert-led ISL lessons that break each sign into shape, motion, and orientation.",
     icon: Video,
     accent: "from-primary to-secondary",
   },
   {
     title: "Practice with AI",
     description:
-      "Use your camera or demo mode to get instant recognition feedback and confidence scores.",
+      "Use your camera to get instant gesture recognition for ISL with confidence feedback and visual guidance.",
     icon: Camera,
     accent: "from-secondary to-accent",
   },
   {
     title: "Track & Master",
     description:
-      "See weekly improvements, revisit difficult signs, and celebrate streaks and milestones.",
+      "See weekly ISL progress, revisit difficult signs, and celebrate streaks and milestones.",
     icon: Target,
     accent: "from-accent to-primary",
   },
@@ -95,25 +94,25 @@ export const featureTiles = [
   {
     title: "Authentic Content",
     description:
-      "Lessons are structured around practical Indian Sign Language usage and community-first learning.",
+      "Lessons are structured around practical ISL (Indian Sign Language) usage and community-first learning.",
     icon: Hand,
   },
   {
     title: "AI Recognition",
     description:
-      "Real-time simulated feedback helps learners understand positioning, confidence, and timing.",
+      "Real-time feedback supports gesture recognition for ISL and helps learners improve positioning, confidence, and timing.",
     icon: Brain,
   },
   {
     title: "Expert Instructors",
     description:
-      "Each module is framed like a guided classroom session with focused repetition and cues.",
+      "Each module is framed like a guided ISL classroom session with focused repetition and clear visual cues.",
     icon: Sparkles,
   },
   {
     title: "Flexible Schedule",
     description:
-      "Five-minute drills, full lessons, and progress dashboards let you learn at your own pace.",
+      "Five-minute drills, full lessons, and ISL progress dashboards let you learn at your own pace.",
     icon: BookOpen,
   },
 ] as const;
@@ -161,14 +160,14 @@ export const lessonList = [
   { id: "letter-e", title: "Letter E", duration: "6 min", status: "todo" },
   { id: "letter-f", title: "Letter F", duration: "6 min", status: "todo" },
   { id: "letter-g", title: "Letter G", duration: "7 min", status: "todo" },
-  { id: "review-a-g", title: "Review: Letters A-G", duration: "10 min", status: "todo" },
-  { id: "alphabet-checkpoint", title: "Checkpoint Practice", duration: "15 min", status: "todo" },
+  { id: "review-a-g", title: "Review: ISL Letters A-G", duration: "10 min", status: "todo" },
+  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint", duration: "15 min", status: "todo" },
 ] as const;
 
 export const downloadableResources = [
-  { title: "ISL Alphabet Chart", format: "PDF", size: "2.4 MB" },
-  { title: "Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
-  { title: "Common Mistakes Checklist", format: "PDF", size: "1.8 MB" },
+  { title: "ISL (Indian Sign Language) Alphabet Chart", format: "PDF", size: "2.4 MB" },
+  { title: "ISL Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
+  { title: "ISL Practice Checklist", format: "PDF", size: "1.8 MB" },
 ] as const;
 
 export const accuracyTrend = [
@@ -199,14 +198,14 @@ export const masteryDistribution = [
 export const achievements = [
   {
     name: "Alphabet Apprentice",
-    description: "Completed the full alphabet pathway with 80%+ average accuracy.",
+    description: "Completed the full ISL alphabet pathway with 80%+ average accuracy.",
     icon: Award,
     earned: true,
     date: "Oct 1, 2025",
   },
   {
     name: "Greeting Guru",
-    description: "Mastered 15 essential greeting signs for daily conversation.",
+    description: "Mastered 15 essential ISL greeting signs for daily conversation.",
     icon: Trophy,
     earned: true,
     date: "Oct 7, 2025",
@@ -227,14 +226,14 @@ export const achievements = [
   },
   {
     name: "Perfect Practice",
-    description: "Reach 100% accuracy on 10 different signs.",
+    description: "Reach 100% accuracy on 10 different ISL signs.",
     icon: Target,
     earned: false,
     progress: 60,
   },
   {
     name: "Century Club",
-    description: "Master 100+ signs across alphabet, greetings, and numbers.",
+    description: "Master 100+ ISL signs across alphabet, greetings, and numbers.",
     icon: Star,
     earned: false,
     progress: 82,
@@ -242,8 +241,8 @@ export const achievements = [
 ] as const;
 
 export const recentActivity = [
-  { label: "Completed Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
-  { label: 'Practiced "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
+  { label: "Completed ISL Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
+  { label: 'Practiced ISL "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
   { label: 'Unlocked badge: "Quick Study"', time: "1 day ago", tone: "bg-accent" },
   { label: "Started Numbers 1-100 course", time: "2 days ago", tone: "bg-slate-400" },
 ] as const;
