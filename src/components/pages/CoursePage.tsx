@@ -1,167 +1,130 @@
-import { useOutletContext } from 'react-router';
-import { Button } from '../ui/button';
-import { Progress } from '../ui/progress';
-import { CheckCircle, Circle, PlayCircle, Clock, Users, Star, Download } from 'lucide-react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
-
-interface ContextType {
-  onNavigate: (page: string) => void;
-}
+import { useMemo } from "react";
+import { useOutletContext, useParams } from "react-router";
+import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle, Star, Users } from "lucide-react@0.487.0";
+import { courses, downloadableResources, lessonList } from "@/data/mockData";
+import { LayoutOutletContext } from "@/types/layout";
+import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
 
 export function CoursePage() {
-  const { onNavigate } = useOutletContext<ContextType>();
+  const { courseId = "alphabet" } = useParams();
+  const { onNavigate } = useOutletContext<LayoutOutletContext>();
 
-  const lessons = [
-    { id: 1, title: 'Introduction to ISL', status: 'completed', duration: '8 min' },
-    { id: 2, title: 'The Letter A', status: 'completed', duration: '6 min' },
-    { id: 3, title: 'The Letter B', status: 'completed', duration: '6 min' },
-    { id: 4, title: 'The Letter C', status: 'completed', duration: '6 min' },
-    { id: 5, title: 'The Letter D', status: 'in-progress', duration: '6 min' },
-    { id: 6, title: 'The Letter E', status: 'not-started', duration: '6 min' },
-    { id: 7, title: 'The Letter F', status: 'not-started', duration: '6 min' },
-    { id: 8, title: 'The Letter G', status: 'not-started', duration: '6 min' },
-    { id: 9, title: 'Review: Letters A-G', status: 'not-started', duration: '10 min' },
-    { id: 10, title: 'Practice Test', status: 'not-started', duration: '15 min' },
-  ];
-
-  const courseInfo = [
-    { icon: Clock, label: 'Duration', value: '2.5 hours' },
-    { icon: PlayCircle, label: 'Lessons', value: '10 lessons' },
-    { icon: Users, label: 'Enrolled', value: '12,450+' },
-    { icon: Star, label: 'Rating', value: '4.8/5' },
-  ];
+  const course = useMemo(
+    () => courses.find((item) => item.id === courseId) ?? courses[0],
+    [courseId],
+  );
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Course Banner */}
-      <div className="relative overflow-hidden py-12 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10" />
-        <div className="max-w-5xl mx-auto relative">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-full md:w-72 aspect-video rounded-xl overflow-hidden border shadow-lg">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1725043394860-71304ce2b1b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBoYWJldCUyMGxldHRlcnN8ZW58MXx8fHwxNzYwNTM1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="ISL Alphabet Course"
-                className="w-full h-full object-cover"
-              />
+    <div className="px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <section className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/90 p-6 shadow-sm md:p-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-secondary/6 to-accent/6" />
+          <div className="relative grid gap-8 lg:grid-cols-[320px_1fr]">
+            <div className="overflow-hidden rounded-[1.5rem]">
+              <ImageWithFallback src={course.image} alt={course.title} className="h-full w-full object-cover" />
             </div>
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-                <Star className="w-3 h-3 fill-primary" />
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+                <Star className="h-3.5 w-3.5 fill-primary" />
                 Bestseller
               </div>
-              <h1 className="mb-4">ISL Alphabet Fundamentals</h1>
-              <p className="text-lg text-muted-foreground mb-6">
-                Master the complete ISL alphabet with expert-led video lessons and AI-powered practice.
-                Build a strong foundation for your sign language journey.
-              </p>
-
-              {/* Course Info Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                {courseInfo.map((info) => (
-                  <div key={info.label} className="flex items-center gap-2">
-                    <info.icon className="w-4 h-4 text-primary" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">{info.label}</p>
-                      <p className="text-sm">{info.value}</p>
-                    </div>
+              <h1 className="text-4xl font-semibold text-slate-950">{course.title}</h1>
+              <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">{course.description}</p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {[
+                  { icon: Clock3, label: "Duration", value: course.duration },
+                  { icon: PlayCircle, label: "Lessons", value: `${course.totalLessons} lessons` },
+                  { icon: Users, label: "Enrolled", value: course.enrolled },
+                  { icon: Star, label: "Rating", value: course.rating },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl bg-slate-50 p-4">
+                    <item.icon className="mb-3 h-5 w-5 text-primary" />
+                    <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{item.label}</p>
+                    <p className="mt-1 font-medium text-slate-900">{item.value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mb-6">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Your Progress</span>
-                  <span>4/10 Lessons Completed</span>
+              <div className="mt-6">
+                <div className="mb-2 flex justify-between text-sm">
+                  <span className="text-slate-500">Progress</span>
+                  <span>{course.lessonsCompleted}/{course.totalLessons} lessons completed</span>
                 </div>
-                <Progress value={40} className="h-2" />
+                <Progress value={course.progress} className="h-2.5 bg-slate-100" />
               </div>
-              <div className="flex gap-3">
-                <Button size="lg" onClick={() => onNavigate('lesson')}>
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("lesson:letter-d")}>
                   Resume Course
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => onNavigate('practice')}>
+                <Button className="rounded-xl" size="lg" variant="outline" onClick={() => onNavigate("practice")}>
                   Quick Practice
                 </Button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Course Curriculum */}
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <h2 className="mb-6">Course Curriculum</h2>
-        <div className="bg-card rounded-xl border shadow-sm divide-y">
-          {lessons.map((lesson) => (
-            <button
-              key={lesson.id}
-              onClick={() => onNavigate('lesson')}
-              className="w-full flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors text-left group"
-            >
-              {/* Status Icon */}
-              <div className="flex-shrink-0">
-                {lesson.status === 'completed' ? (
-                  <CheckCircle className="w-6 h-6 text-secondary" />
-                ) : lesson.status === 'in-progress' ? (
-                  <div className="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                  </div>
-                ) : (
-                  <Circle className="w-6 h-6 text-muted-foreground" />
-                )}
-              </div>
-
-              {/* Lesson Info */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <PlayCircle className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Lesson {lesson.id}</span>
-                  {lesson.status === 'in-progress' && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">In Progress</span>
+        <section className="mt-10">
+          <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Curriculum</h2>
+          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
+            {lessonList.map((lesson, index) => (
+              <button
+                key={lesson.id}
+                onClick={() => onNavigate(`lesson:${lesson.id}`)}
+                className="group flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left last:border-b-0 hover:bg-slate-50/80"
+              >
+                <div className="flex-shrink-0">
+                  {lesson.status === "done" ? (
+                    <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                  ) : lesson.status === "in-progress" ? (
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-primary">
+                      <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
+                    </div>
+                  ) : (
+                    <Circle className="h-6 w-6 text-slate-300" />
                   )}
                 </div>
-                <p className={lesson.status === 'not-started' ? 'text-muted-foreground' : ''}>
-                  {lesson.title}
-                </p>
-              </div>
-
-              {/* Duration */}
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{lesson.duration}</span>
-              </div>
-
-              {/* Hover arrow */}
-              <span className="text-primary opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Course Resources */}
-        <div className="mt-12">
-          <h2 className="mb-4">Course Resources</h2>
-          <div className="bg-card rounded-xl border p-6 shadow-sm">
-            <div className="space-y-3">
-              {[
-                { name: 'ISL Alphabet Chart (PDF)', size: '2.4 MB' },
-                { name: 'Practice Exercises Workbook', size: '5.1 MB' },
-                { name: 'Common Mistakes Guide', size: '1.8 MB' },
-              ].map((resource) => (
-                <button
-                  key={resource.name}
-                  className="w-full text-left flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Download className="w-4 h-4 text-primary" />
-                    <span>{resource.name}</span>
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-sm text-slate-500">Lesson {index + 1}</span>
+                    {lesson.status === "in-progress" && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">In Progress</span>
+                    )}
                   </div>
-                  <span className="text-sm text-muted-foreground">{resource.size}</span>
-                </button>
-              ))}
-            </div>
+                  <p className={`text-base ${lesson.status === "todo" ? "text-slate-500" : "text-slate-900"}`}>{lesson.title}</p>
+                </div>
+                <div className="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
+                  <Clock3 className="h-4 w-4" />
+                  {lesson.duration}
+                </div>
+                <ArrowRight className="h-4 w-4 text-primary opacity-0 transition group-hover:opacity-100" />
+              </button>
+            ))}
           </div>
-        </div>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Resources</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {downloadableResources.map((resource) => (
+              <button
+                key={resource.title}
+                className="flex items-center justify-between rounded-[1.25rem] border border-white/70 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div>
+                  <p className="font-medium text-slate-900">{resource.title}</p>
+                  <p className="mt-1 text-sm text-slate-500">{resource.format} · {resource.size}</p>
+                </div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Download className="h-4 w-4" />
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
