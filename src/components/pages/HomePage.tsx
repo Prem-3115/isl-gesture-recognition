@@ -22,11 +22,11 @@ export function HomePage() {
               Intelligent practice for modern ISL learners
             </div>
             <h1 className="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-slate-950 sm:text-6xl">
-              Master Indian Sign Language with{" "}
+              Master ISL (Indian Sign Language) with{" "}
               <span className="text-gradient-brand">Intelligent Practice</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-              Learn through short video lessons, webcam-based feedback, and progress dashboards that make consistent ISL practice feel rewarding.
+              Learn through short ISL video lessons, webcam-based feedback, and progress dashboards that make consistent practice feel rewarding.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button
@@ -73,7 +73,7 @@ export function HomePage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-slate-700">Live Accuracy</p>
-                  <p className="text-xs text-slate-500">Average AI feedback score</p>
+                  <p className="text-xs text-slate-500">Average gesture recognition for ISL score</p>
                 </div>
               </div>
               <p className="text-gradient-brand text-3xl font-semibold">92%</p>
@@ -189,7 +189,7 @@ export function HomePage() {
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Start Today</p>
-              <h2 className="text-3xl font-semibold">Practice with AI, learn with confidence, and track real progress.</h2>
+              <h2 className="text-3xl font-semibold">Practice ISL with AI, learn with confidence, and track real progress.</h2>
             </div>
             <Button
               size="lg"
