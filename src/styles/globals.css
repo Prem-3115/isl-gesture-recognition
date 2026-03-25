@@ -2,43 +2,44 @@
 
 :root {
   --font-size: 16px;
-  --background: #FAFAFA;
-  --foreground: #1E293B;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E293B;
-  --primary: #8B5CF6;
-  --primary-foreground: #FFFFFF;
-  --secondary: #EC4899;
-  --secondary-foreground: #FFFFFF;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #06B6D4;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
+  --font-sans: "Space Grotesk", "Poppins", "Segoe UI", sans-serif;
+  --background: #fafafa;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #ec4899;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #06b6d4;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
   --border: rgba(148, 163, 184, 0.2);
   --input: transparent;
-  --input-background: #F8FAFC;
-  --switch-background: #CBD5E1;
+  --input-background: #f8fafc;
+  --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #8B5CF6;
-  --chart-1: #8B5CF6;
-  --chart-2: #EC4899;
-  --chart-3: #06B6D4;
-  --chart-4: #F59E0B;
-  --chart-5: #10B981;
+  --ring: #8b5cf6;
+  --chart-1: #8b5cf6;
+  --chart-2: #ec4899;
+  --chart-3: #06b6d4;
+  --chart-4: #f59e0b;
+  --chart-5: #10b981;
   --radius: 0.75rem;
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #1E293B;
-  --sidebar-primary: #8B5CF6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #1E293B;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1e293b;
+  --sidebar-primary: #8b5cf6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #1e293b;
   --sidebar-border: rgba(148, 163, 184, 0.2);
-  --sidebar-ring: #8B5CF6;
+  --sidebar-ring: #8b5cf6;
 }
 
 .dark {
@@ -124,14 +125,21 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(circle at top left, rgba(139, 92, 246, 0.16), transparent 28%),
+      radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 26%),
+      linear-gradient(180deg, #ffffff 0%, var(--background) 45%, #f5f7fb 100%);
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-/**
- * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
- */
 @layer base {
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
@@ -184,6 +192,21 @@
   }
 }
 
-html {
-  font-size: var(--font-size);
+@layer utilities {
+  .text-gradient-brand {
+    background-image: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-gradient-brand {
+    background-image: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+  }
+
+  .panel-glow {
+    box-shadow:
+      0 20px 60px rgba(139, 92, 246, 0.16),
+      0 8px 24px rgba(15, 23, 42, 0.08);
+  }
 }
