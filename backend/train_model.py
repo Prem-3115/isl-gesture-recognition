@@ -20,7 +20,7 @@ import joblib
 import os
 
 # ── Load dataset ──────────────────────────────────────────────────────────────
-file_path = r"C:\Users\Prem\Downloads\landmarks.csv"
+file_path = "landmarks.csv"
 print("Loading dataset...")
 df = pd.read_csv(file_path, low_memory=False)
 
@@ -50,10 +50,10 @@ print(f"Test samples: {len(X_test)}\n")
 pipeline = Pipeline([
     ('scaler', StandardScaler()),
     ('classifier', RandomForestClassifier(
-        n_estimators=200,      # 200 trees for better accuracy
-        max_depth=20,          # prevent overfitting
-        min_samples_split=5,   # minimum samples to split a node
-        min_samples_leaf=2,    # minimum samples at leaf
+        n_estimators=500,      # 500 trees for better accuracy
+        max_depth=None,        # Allow trees to grow fully to capture complex sign features
+        min_samples_split=2,   # default
+        min_samples_leaf=1,    # default
         random_state=42,
         n_jobs=-1,             # use all CPU cores
         class_weight='balanced' # handle class imbalance
@@ -94,8 +94,8 @@ for i, (cls, acc) in enumerate(zip(encoder.classes_, per_class_acc)):
         print(f"  ⚠️  {cls}: {acc*100:.1f}% — needs improvement")
 
 # ── Save model + encoder ──────────────────────────────────────────────────────
-model_path   = r"C:\Users\Prem\Downloads\isl_model.pkl"
-encoder_path = r"C:\Users\Prem\Downloads\label_encoder.pkl"
+model_path   = "isl_model.pkl"
+encoder_path = "label_encoder.pkl"
 
 joblib.dump(pipeline, model_path)
 joblib.dump(encoder, encoder_path)
