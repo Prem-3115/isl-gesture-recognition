@@ -10,6 +10,7 @@ import {
   Volume2,
 } from "lucide-react@0.487.0";
 import { toast } from "sonner@2.0.3";
+import islChart from "@/assets/isl_chart.jpg";
 import { LayoutOutletContext } from "@/types/layout";
 import { Button } from "../ui/button";
 import {
@@ -22,11 +23,11 @@ import {
 } from "../ui/breadcrumb";
 
 const lessonMeta: Record<string, { title: string; emoji: string }> = {
-  "letter-a": { title: "Letter A", emoji: "✊" },
-  "letter-b": { title: "Letter B", emoji: "🖐️" },
-  "letter-c": { title: "Letter C", emoji: "🤏" },
-  "letter-d": { title: "Letter D", emoji: "☝️" },
-  "letter-e": { title: "Letter E", emoji: "🤛" },
+  "letter-a": { title: "Letter A", emoji: "📘" },
+  "letter-b": { title: "Letter B", emoji: "📘" },
+  "letter-c": { title: "Letter C", emoji: "📘" },
+  "letter-d": { title: "Letter D", emoji: "📘" },
+  "letter-e": { title: "Letter E", emoji: "📘" },
 };
 
 export function LessonPage() {
@@ -93,7 +94,7 @@ export function LessonPage() {
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
-            <p className="mt-2 text-slate-600">Lesson 2 of 10 · ISL Alphabet Fundamentals</p>
+            <p className="mt-2 text-slate-600">Lesson 2 of 10 · Learn ISL Alphabet</p>
           </div>
           {lessonCompleted ? (
             <div className="flex items-center gap-2 text-emerald-600">
@@ -115,8 +116,8 @@ export function LessonPage() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%)]" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                 <div className="text-8xl">{lesson.emoji}</div>
-                <p className="mt-4 text-sm uppercase tracking-[0.25em] text-white/70">Guided demonstration</p>
-                <p className="mt-1 text-lg text-white/90">{lesson.title}</p>
+                <p className="mt-4 text-sm uppercase tracking-[0.25em] text-white/70">ISL lesson preview</p>
+                <p className="mt-1 text-lg text-white/90">Follow the ISL reference chart in the visual reference panel</p>
               </div>
               {!isPlaying && videoProgress < 100 && (
                 <button onClick={() => setIsPlaying(true)} className="absolute inset-0 flex items-center justify-center">
@@ -156,17 +157,15 @@ export function LessonPage() {
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
-          </div>
 
-          <div className="space-y-6">
-            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Sign 'A'</h2>
+            <div className="mt-8 rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Practice This ISL Sign</h2>
               <div className="space-y-3">
                 {[
-                  ["Handshape", "Make a compact fist and rest the thumb along the side of the curled fingers."],
-                  ["Movement", "Keep the sign steady with no sweeping motion."],
-                  ["Palm Orientation", "Face the palm forward so the handshape is clearly visible."],
-                  ["Common Mistakes", "Avoid tucking the thumb inside the fist or relaxing the hand too loosely."],
+                  ["Handshape", "Follow the ISL reference chart in the visual reference panel and keep the handshape clear and deliberate."],
+                  ["Movement", "Position your hand clearly as per ISL guidelines and keep the gesture steady before transitioning."],
+                  ["Palm Orientation", "Match the palm direction shown in the ISL chart so the sign stays visually readable."],
+                  ["Common Mistakes", "Avoid rushing the gesture or changing finger position before the handshape is fully formed."],
                 ].map(([label, description]) => (
                   <div key={label} className="rounded-2xl bg-slate-50 p-4">
                     <p className="mb-1 text-sm font-medium text-primary">{label}</p>
@@ -175,13 +174,15 @@ export function LessonPage() {
                 ))}
               </div>
             </div>
+          </div>
 
+          <div className="space-y-6">
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <h3 className="mb-4 text-xl font-semibold text-slate-950">Visual Reference</h3>
-              <div className="flex aspect-square items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 text-7xl">
-                {lesson.emoji}
+              <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
+                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" />
               </div>
-              <p className="mt-4 text-center text-sm text-slate-500">Use this simplified hand cue as a quick recall prompt before practice.</p>
+              <p className="mt-4 text-center text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
             </div>
 
             <Button className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("practice")}>
@@ -194,10 +195,10 @@ export function LessonPage() {
           <h2 className="mb-4 text-2xl font-semibold text-slate-950">Key Learning Points</h2>
           <div className="grid gap-3 md:grid-cols-2">
             {[
-              "Letter A is a foundational handshape used in many beginner drills.",
-              "Keep your wrist relaxed so the sign stays readable and controlled.",
-              "Check that the thumb sits outside the fist, not hidden inside it.",
-              "Practice in front of a mirror before switching to AI webcam feedback.",
+              "Follow the ISL reference chart in the visual reference panel before practicing.",
+              "Position your hand clearly as per ISL guidelines and keep the gesture readable.",
+              "Focus on clear handshape, palm direction, and timing rather than speed.",
+              "Refer to the ISL chart for accurate gestures before using AI webcam feedback.",
             ].map((point) => (
               <div key={point} className="flex items-start gap-3 rounded-2xl bg-white/70 p-4">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />

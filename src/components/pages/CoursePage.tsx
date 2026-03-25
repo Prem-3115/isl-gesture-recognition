@@ -32,6 +32,7 @@ export function CoursePage() {
               </div>
               <h1 className="text-4xl font-semibold text-slate-950">{course.title}</h1>
               <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">{course.description}</p>
+              <p className="mt-3 text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {[
                   { icon: Clock3, label: "Duration", value: course.duration },
