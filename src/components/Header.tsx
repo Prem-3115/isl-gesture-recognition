@@ -45,7 +45,7 @@ export function Header({
           </div>
           <div className="text-left">
             <p className="text-gradient-brand text-lg font-semibold leading-none">ISL Connect</p>
-            <p className="mt-1 text-xs text-slate-500">AI-powered sign language learning</p>
+            <p className="mt-1 text-xs text-slate-500">AI-powered ISL learning</p>
           </div>
         </button>
 

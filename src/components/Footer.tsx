@@ -22,7 +22,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
             </div>
             <p className="max-w-xs text-sm text-slate-600">
-              An AI-powered Indian Sign Language learning platform designed to make daily practice feel approachable and joyful.
+              An AI-powered ISL (Indian Sign Language) learning platform designed to make daily practice feel approachable and joyful.
             </p>
             <div className="flex gap-3">
               {[Facebook, Instagram, Twitter, Youtube].map((Icon) => (

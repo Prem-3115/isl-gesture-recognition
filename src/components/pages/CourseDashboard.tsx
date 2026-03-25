@@ -28,8 +28,8 @@ export function CourseDashboard() {
                 <BookOpen className="h-4 w-4" />
                 Continue Learning
               </p>
-              <h2 className="text-3xl font-semibold">ISL Alphabet Fundamentals</h2>
-              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through the course and your accuracy trend is climbing.</p>
+              <h2 className="text-3xl font-semibold">Learn ISL Alphabet</h2>
+              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through your ISL course and your accuracy trend is climbing.</p>
               <div className="mt-5 max-w-xl">
                 <div className="mb-2 flex justify-between text-sm text-white/80">
                   <span>Course Progress</span>
