@@ -1,214 +1,210 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router';
-import { Button } from '../ui/button';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb';
-import { ChevronLeft, ChevronRight, Play, Pause, Volume2, Maximize, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { useEffect, useMemo, useState } from "react";
+import { useOutletContext, useParams } from "react-router";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  Pause,
+  Play,
+  Volume2,
+} from "lucide-react@0.487.0";
+import { toast } from "sonner@2.0.3";
+import { LayoutOutletContext } from "@/types/layout";
+import { Button } from "../ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
 
-interface ContextType {
-  onNavigate: (page: string) => void;
-}
+const lessonMeta: Record<string, { title: string; emoji: string }> = {
+  "letter-a": { title: "Letter A", emoji: "✊" },
+  "letter-b": { title: "Letter B", emoji: "🖐️" },
+  "letter-c": { title: "Letter C", emoji: "🤏" },
+  "letter-d": { title: "Letter D", emoji: "☝️" },
+  "letter-e": { title: "Letter E", emoji: "🤛" },
+};
 
 export function LessonPage() {
-  const { onNavigate } = useOutletContext<ContextType>();
+  const { lessonId = "letter-a" } = useParams();
+  const { onNavigate } = useOutletContext<LayoutOutletContext>();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(33);
+  const [videoProgress, setVideoProgress] = useState(12);
   const [lessonCompleted, setLessonCompleted] = useState(false);
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    if (!isPlaying) {
-      // Simulate video progress
-      const interval = setInterval(() => {
-        setVideoProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsPlaying(false);
-            setLessonCompleted(true);
-            toast.success('Lesson video completed! Try practicing this sign now.');
-            return 100;
-          }
-          return prev + 2;
-        });
-      }, 300);
-    }
-  };
+  const lesson = useMemo(() => lessonMeta[lessonId] ?? lessonMeta["letter-a"], [lessonId]);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const interval = window.setInterval(() => {
+      setVideoProgress((previous) => {
+        const next = previous + 2;
+        if (next >= 100) {
+          window.clearInterval(interval);
+          setIsPlaying(false);
+          setLessonCompleted(true);
+          toast.success("Lesson complete. You're ready for practice.");
+          return 100;
+        }
+        return next;
+      });
+    }, 250);
+
+    return () => window.clearInterval(interval);
+  }, [isPlaying]);
 
   const handleMarkComplete = () => {
     setLessonCompleted(true);
-    toast.success('Lesson marked as complete!');
+    setVideoProgress(100);
+    setIsPlaying(false);
+    toast.success("Lesson marked complete.");
   };
 
+  const elapsed = `${Math.floor((videoProgress / 100) * 6)}:${String(Math.floor(((videoProgress / 100) * 60) % 60)).padStart(2, "0")}`;
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Breadcrumbs */}
+    <div className="px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
         <Breadcrumb className="mb-6">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate('home')} className="cursor-pointer">Home</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => onNavigate("home")} className="cursor-pointer">Home</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate('dashboard')} className="cursor-pointer">Courses</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => onNavigate("dashboard")} className="cursor-pointer">Courses</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate('course')} className="cursor-pointer">ISL Alphabet</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => onNavigate("course:alphabet")} className="cursor-pointer">ISL Alphabet</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>The Letter 'A'</BreadcrumbPage>
+              <BreadcrumbPage>{lesson.title}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
-        {/* Lesson Title */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="mb-1">Lesson: The Letter 'A'</h1>
-            <p className="text-sm text-muted-foreground">Lesson 2 of 10 • ISL Alphabet Fundamentals</p>
+            <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
+            <p className="mt-2 text-slate-600">Lesson 2 of 10 · ISL Alphabet Fundamentals</p>
           </div>
-          {!lessonCompleted ? (
-            <Button variant="outline" onClick={handleMarkComplete}>
-              <CheckCircle className="w-4 h-4 mr-2" />
+          {lessonCompleted ? (
+            <div className="flex items-center gap-2 text-emerald-600">
+              <CheckCircle2 className="h-5 w-5" />
+              Completed
+            </div>
+          ) : (
+            <Button variant="outline" className="rounded-xl" onClick={handleMarkComplete}>
+              <CheckCircle2 className="mr-2 h-4 w-4" />
               Mark Complete
             </Button>
-          ) : (
-            <span className="flex items-center gap-2 text-secondary text-sm">
-              <CheckCircle className="w-5 h-5" />
-              Completed
-            </span>
           )}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Video Player Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-black rounded-xl overflow-hidden aspect-video mb-6 relative group shadow-lg">
-              {/* Video Gradient Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-8xl mb-4">👊</div>
-                  <p className="text-white/80 text-sm">ISL Sign: Letter A</p>
-                </div>
+        <div className="grid gap-8 lg:grid-cols-[1.45fr_0.85fr]">
+          <div>
+            <div className="group relative mb-6 aspect-video overflow-hidden rounded-[1.75rem] bg-black shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-primary/30" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%)]" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                <div className="text-8xl">{lesson.emoji}</div>
+                <p className="mt-4 text-sm uppercase tracking-[0.25em] text-white/70">Guided demonstration</p>
+                <p className="mt-1 text-lg text-white/90">{lesson.title}</p>
               </div>
-
-              {/* Play/Pause Button */}
-              {!isPlaying && (
-                <button
-                  onClick={handlePlayPause}
-                  className="absolute inset-0 flex items-center justify-center z-10"
-                >
-                  <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors hover:scale-110 transform duration-200 shadow-xl">
-                    <Play className="w-8 h-8 text-primary ml-1" />
+              {!isPlaying && videoProgress < 100 && (
+                <button onClick={() => setIsPlaying(true)} className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition hover:scale-105">
+                    <Play className="ml-1 h-8 w-8" />
                   </div>
                 </button>
               )}
-
-              {/* Video Controls Bar */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="mb-3">
-                  <div className="h-1 bg-white/30 rounded-full overflow-hidden cursor-pointer">
-                    <div
-                      className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
-                      style={{ width: `${videoProgress}%` }}
-                    />
-                  </div>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
+                <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/20">
+                  <div className="bg-gradient-brand h-full transition-all duration-300" style={{ width: `${videoProgress}%` }} />
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between text-white">
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={handlePlayPause}
-                      className="text-white hover:text-primary transition-colors"
-                    >
-                      {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                    <button onClick={() => setIsPlaying((current) => !current)}>
+                      {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                     </button>
-                    <button className="text-white hover:text-primary transition-colors">
-                      <Volume2 className="w-5 h-5" />
+                    <button>
+                      <Volume2 className="h-5 w-5" />
                     </button>
-                    <span className="text-white text-sm">
-                      {Math.floor(videoProgress * 6.3 / 100)}:{String(Math.floor((videoProgress * 6.3 / 100 % 1) * 60)).padStart(2, '0')} / 6:30
-                    </span>
+                    <span className="text-sm">{elapsed} / 6:30</span>
                   </div>
-                  <button className="text-white hover:text-primary transition-colors">
-                    <Maximize className="w-5 h-5" />
+                  <button>
+                    <Maximize2 className="h-5 w-5" />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Lesson Navigation */}
             <div className="flex items-center justify-between">
-              <Button variant="outline" onClick={() => onNavigate('course')}>
-                <ChevronLeft className="w-4 h-4 mr-2" />
+              <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("course:alphabet")}>
+                <ChevronLeft className="mr-2 h-4 w-4" />
                 Previous Lesson
               </Button>
-              <Button onClick={() => onNavigate('course')}>
+              <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" onClick={() => onNavigate("lesson:letter-b")}>
                 Next Lesson
-                <ChevronRight className="w-4 h-4 ml-2" />
+                <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {/* Lesson Content Sidebar */}
           <div className="space-y-6">
-            {/* Text Explanation */}
-            <div className="bg-card rounded-xl border p-6 shadow-sm">
-              <h3 className="mb-4">How to Sign 'A'</h3>
-              <div className="space-y-4">
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Sign 'A'</h2>
+              <div className="space-y-3">
                 {[
-                  { label: 'Handshape', desc: 'Closed fist with thumb placed alongside the fingers' },
-                  { label: 'Movement', desc: 'Static (no movement required)' },
-                  { label: 'Palm Orientation', desc: 'Palm faces away from the body' },
-                  { label: 'Common Mistakes', desc: 'Thumb extended outward or tucked inside the fist' },
-                ].map((item) => (
-                  <div key={item.label} className="p-3 rounded-lg bg-muted/50">
-                    <p className="text-sm text-primary mb-1">{item.label}</p>
-                    <p className="text-sm">{item.desc}</p>
+                  ["Handshape", "Make a compact fist and rest the thumb along the side of the curled fingers."],
+                  ["Movement", "Keep the sign steady with no sweeping motion."],
+                  ["Palm Orientation", "Face the palm forward so the handshape is clearly visible."],
+                  ["Common Mistakes", "Avoid tucking the thumb inside the fist or relaxing the hand too loosely."],
+                ].map(([label, description]) => (
+                  <div key={label} className="rounded-2xl bg-slate-50 p-4">
+                    <p className="mb-1 text-sm font-medium text-primary">{label}</p>
+                    <p className="text-sm leading-7 text-slate-600">{description}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Visual Reference */}
-            <div className="bg-card rounded-xl border p-6 shadow-sm">
-              <h4 className="mb-4">Visual Reference</h4>
-              <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center mb-4">
-                <div className="text-6xl">👊</div>
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-xl font-semibold text-slate-950">Visual Reference</h3>
+              <div className="flex aspect-square items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 text-7xl">
+                {lesson.emoji}
               </div>
-              <p className="text-sm text-muted-foreground text-center">
-                Reference image showing the letter 'A' from multiple angles
-              </p>
+              <p className="mt-4 text-center text-sm text-slate-500">Use this simplified hand cue as a quick recall prompt before practice.</p>
             </div>
 
-            {/* Practice CTA */}
-            <Button
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 border-0"
-              size="lg"
-              onClick={() => onNavigate('practice')}
-            >
-              Practice This Sign Now
+            <Button className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("practice")}>
+              Practice This Sign
             </Button>
           </div>
         </div>
 
-        {/* Additional Notes */}
-        <div className="mt-12 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
-          <h3 className="mb-4">Key Learning Points</h3>
-          <ul className="space-y-3">
+        <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
+          <h2 className="mb-4 text-2xl font-semibold text-slate-950">Key Learning Points</h2>
+          <div className="grid gap-3 md:grid-cols-2">
             {[
-              "The letter 'A' is one of the most fundamental signs in ISL alphabet",
-              'Ensure your thumb is pressed firmly against your index finger',
-              'This handshape is also used as a base for several other signs',
-              'Practice in front of a mirror to check your hand position',
-            ].map((point, i) => (
-              <li key={i} className="flex gap-3 items-start">
-                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-                <span className="text-sm">{point}</span>
-              </li>
+              "Letter A is a foundational handshape used in many beginner drills.",
+              "Keep your wrist relaxed so the sign stays readable and controlled.",
+              "Check that the thumb sits outside the fist, not hidden inside it.",
+              "Practice in front of a mirror before switching to AI webcam feedback.",
+            ].map((point) => (
+              <div key={point} className="flex items-start gap-3 rounded-2xl bg-white/70 p-4">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
+                <p className="text-sm leading-7 text-slate-600">{point}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

@@ -1,370 +1,359 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { useOutletContext } from 'react-router';
-import { Button } from '../ui/button';
-import { Camera, Video, VideoOff, Scan, Activity } from 'lucide-react';
-import { Alert, AlertDescription } from '../ui/alert';
-import { useGestureRecognition } from '../../hooks/useGestureRecognition';
-import islChart from '../../assets/isl_chart.jpg';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useOutletContext } from "react-router";
+import {
+  AlertCircle,
+  BrainCircuit,
+  Camera,
+  CircleHelp,
+  Eye,
+  RefreshCcw,
+  ScanSearch,
+  SkipForward,
+  Square,
+  Trophy,
+  X,
+} from "lucide-react@0.487.0";
+import { LayoutOutletContext } from "@/types/layout";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
 
-interface ContextType {
-  onNavigate: (page: string) => void;
-}
+type PracticeMode = "camera" | "demo" | null;
+type DetectionPhase = {
+  label: string;
+  feedback: string;
+  detected: boolean;
+  score: number;
+  signal: "gray" | "yellow" | "purple" | "green";
+};
+
+const phases: DetectionPhase[] = [
+  {
+    label: "Waiting for hand",
+    feedback: "Center your hand inside the guide to begin recognition.",
+    detected: false,
+    score: 12,
+    signal: "gray",
+  },
+  {
+    label: "Scanning shape",
+    feedback: "Good framing. Hold still while the AI checks finger position.",
+    detected: true,
+    score: 48,
+    signal: "yellow",
+  },
+  {
+    label: "Comparing sign",
+    feedback: "Thumb placement looks close. Slightly tighten the fist for a clearer A.",
+    detected: true,
+    score: 73,
+    signal: "purple",
+  },
+  {
+    label: "Strong match",
+    feedback: "Excellent handshape. This looks like a confident Letter A.",
+    detected: true,
+    score: 92,
+    signal: "green",
+  },
+] as const;
+
+const statusTone = {
+  gray: "bg-slate-400",
+  yellow: "bg-amber-400",
+  purple: "bg-primary",
+  green: "bg-emerald-500",
+} as const;
+
+const statusBadgeTone = {
+  gray: "bg-slate-500/85",
+  yellow: "bg-amber-500/90",
+  purple: "bg-primary/90",
+  green: "bg-emerald-500/90",
+} as const;
 
 export function PracticePage() {
-  const { onNavigate } = useOutletContext<ContextType>();
-
+  const { onNavigate } = useOutletContext<LayoutOutletContext>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  const [cameraActive, setCameraActive] = useState(false);
+  const [mode, setMode] = useState<PracticeMode>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [apiOnline, setApiOnline] = useState<boolean | null>(null);
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const [sessionProgress, setSessionProgress] = useState(66);
 
-  // ── Check Flask API status every 5 seconds ─────────────────────────────────
-  useEffect(() => {
-    const checkAPI = async () => {
-      try {
-        await fetch('http://127.0.0.1:5000/predict', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ landmarks: new Array(63).fill(0) }),
-        });
-        setApiOnline(true);
-      } catch {
-        setApiOnline(false);
-      }
-    };
-    checkAPI();
-    const interval = setInterval(checkAPI, 5000);
-    return () => clearInterval(interval);
+  const currentPhase = phases[phaseIndex];
+  const isCameraActive = mode === "camera";
+  const isDemoMode = mode === "demo";
+
+  const stopStream = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
   }, []);
 
-  // ── Gesture recognition hook ───────────────────────────────────────────────
-  const gestureResult = useGestureRecognition({
-    videoRef,
-    enabled: cameraActive,
-  });
+  useEffect(() => {
+    if (!mode) return;
 
-  // ── Camera controls ────────────────────────────────────────────────────────
+    const interval = window.setInterval(() => {
+      setPhaseIndex((index) => (index + 1) % phases.length);
+      setSessionProgress((progress) => (progress >= 100 ? 100 : progress + 2));
+    }, 2400);
+
+    return () => window.clearInterval(interval);
+  }, [mode]);
+
+  useEffect(() => () => stopStream(), [stopStream]);
+
   const startCamera = async () => {
+    setCameraError(null);
+    setPhaseIndex(0);
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError("This browser does not support camera access. Try demo mode instead.");
+      return;
+    }
+
     try {
-      setCameraError(null);
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError('Camera not supported in this browser.');
-        return;
-      }
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      if (!videoRef.current) {
-        stream.getTracks().forEach(track => track.stop());
-        return;
-      }
-      videoRef.current.srcObject = stream;
       streamRef.current = stream;
-      videoRef.current.load();
-      setTimeout(async () => {
-        try {
-          if (videoRef.current) {
-            await videoRef.current.play();
-            setCameraActive(true);
-          }
-        } catch (playErr: any) {
-          setCameraError(`Play failed: ${playErr.name}`);
-          stream.getTracks().forEach(track => track.stop());
-        }
-      }, 200);
-    } catch (err: any) {
-      if (err.name === 'NotAllowedError') setCameraError('❌ Permission denied. Check browser camera permissions.');
-      else if (err.name === 'NotFoundError') setCameraError('❌ No camera found.');
-      else if (err.name === 'NotReadableError') setCameraError('❌ Camera is in use by another app.');
-      else setCameraError('❌ Error: ' + err.message);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      setMode("camera");
+    } catch {
+      setCameraError("Camera access failed. Check permissions or switch to demo mode.");
+      stopStream();
     }
   };
 
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    }
-    if (videoRef.current) videoRef.current.srcObject = null;
-    setCameraActive(false);
-  }, []);
+  const stopCamera = () => {
+    stopStream();
+    setMode(null);
+    setPhaseIndex(0);
+  };
 
-  useEffect(() => () => stopCamera(), [stopCamera]);
+  const startDemoMode = () => {
+    stopStream();
+    setCameraError(null);
+    setPhaseIndex(0);
+    setMode("demo");
+  };
 
-  const detectedSign = gestureResult.detectedSign;
-  const confidence = Math.round((gestureResult.confidence ?? 0) * 100);
+  const performanceSummary = useMemo(() => {
+    const level = currentPhase.score >= 90 ? "Excellent" : currentPhase.score >= 75 ? "Strong" : currentPhase.score >= 50 ? "Developing" : "Warm-up";
+    const tip =
+      currentPhase.score >= 90
+        ? "Keep this handshape steady for one more second before moving on."
+        : currentPhase.score >= 75
+          ? "Your overall sign is strong. Focus on making the thumb line cleaner."
+          : "Slow down and keep your hand centered before adjusting finger shape.";
+
+    return {
+      level,
+      tip,
+      best: 94,
+    };
+  }, [currentPhase.score]);
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold mb-2">ISL Gesture Recognition</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Use your camera to show Indian Sign Language gestures and see real-time recognition results.
-          </p>
+    <div className="px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">AI Practice</p>
+            <h1 className="mt-3 text-4xl font-semibold text-slate-950">Practice Letter A with live guidance</h1>
+          </div>
+          <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("dashboard")}>
+            <X className="mr-2 h-4 w-4" />
+            Exit
+          </Button>
         </div>
 
-        {/* Flask API status */}
-        {apiOnline === false && (
-          <Alert className="mb-4 border-destructive bg-destructive/5">
-            <Activity className="h-4 w-4 text-destructive" />
-            <AlertDescription>
-              <strong>Flask API is offline!</strong> Open a new terminal and run:{' '}
-              <code className="bg-muted px-2 py-0.5 rounded text-xs">
-                py -3.11 C:\Users\Prem\Downloads\isl_api.py
-              </code>
-            </AlertDescription>
-          </Alert>
-        )}
-        {apiOnline === true && (
-          <Alert className="mb-4 border-green-500 bg-green-500/5">
-            <Activity className="h-4 w-4 text-green-500" />
-            <AlertDescription className="text-green-700">
-              <strong>✅ Flask API is online</strong> — Ready for gesture recognition!
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Camera error */}
         {cameraError && (
-          <Alert className="mb-4 border-accent bg-accent/5">
-            <Camera className="h-4 w-4 text-accent" />
-            <AlertDescription className="space-y-2">
-              <p>{cameraError}</p>
-              <Button onClick={startCamera} size="sm" variant="outline">
-                <Camera className="w-4 h-4 mr-2" /> Try Again
+          <Alert className="mb-6 rounded-2xl border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertTitle className="text-amber-900">Camera issue detected</AlertTitle>
+            <AlertDescription className="flex flex-col gap-3 text-amber-800 sm:flex-row sm:items-center sm:justify-between">
+              <span>{cameraError}</span>
+              <Button size="sm" className="rounded-lg" onClick={startDemoMode}>
+                Try Demo Mode
               </Button>
             </AlertDescription>
           </Alert>
         )}
 
-        {/* AI loading */}
-        {cameraActive && gestureResult.status === 'loading' && (
-          <Alert className="mb-4 border-primary bg-primary/5">
-            <Scan className="h-4 w-4 text-primary animate-spin" />
-            <AlertDescription>
-              Loading AI model — this may take 5–10 seconds on first launch...
-            </AlertDescription>
-          </Alert>
-        )}
+        <div className="grid gap-6 lg:grid-cols-[1.7fr_0.9fr]">
+          <div className="space-y-6">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-black shadow-2xl">
+              <video ref={videoRef} playsInline muted className={`absolute inset-0 h-full w-full object-cover ${isCameraActive ? "scale-x-[-1]" : "hidden"}`} />
+              <div className={`absolute inset-0 ${!mode ? "bg-gradient-to-br from-slate-900 to-slate-950" : "bg-gradient-to-br from-slate-950/20 to-primary/20"}`} />
 
-        {/* ── Main 2-column layout ── */}
-        <div className="grid lg:grid-cols-3 gap-6 items-start">
-
-          {/* ── LEFT: Camera + Stop + Tips + ISL Chart ── */}
-          <div className="lg:col-span-2 space-y-4">
-
-            {/* Camera */}
-            <div
-              className="bg-black rounded-xl overflow-hidden relative shadow-xl"
-              style={{ aspectRatio: '16/9' }}
-            >
-              <video
-                ref={videoRef}
-                playsInline
-                muted
-                className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
-              />
-
-              {/* Inactive placeholder */}
-              {!cameraActive && (
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                  <div className="text-center text-white max-w-sm px-4">
-                    <Camera className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg mb-2">Camera Inactive</p>
-                    <p className="text-sm opacity-70 mb-6">
-                      Click below to start real-time ISL gesture recognition
-                    </p>
-                    <Button onClick={startCamera} size="lg" className="w-full bg-primary hover:bg-primary/90">
-                      <Video className="w-5 h-5 mr-2" />
-                      Start Camera
+              {!mode && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+                  <Camera className="mb-4 h-16 w-16 text-white/50" />
+                  <h2 className="text-2xl font-semibold">Camera inactive</h2>
+                  <p className="mt-3 max-w-md text-sm leading-7 text-white/70">
+                    Start your real camera for webcam practice or use demo mode to preview the AI recognition flow.
+                  </p>
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                    <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={startCamera}>
+                      Start Real Camera
+                    </Button>
+                    <Button variant="outline" className="rounded-xl border-white/20 bg-white/10 text-white hover:bg-white/15 hover:text-white" size="lg" onClick={startDemoMode}>
+                      Try Demo Mode
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* Hand guide overlay */}
-              {cameraActive && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className={`relative border-2 border-dashed rounded-xl w-3/4 h-3/4 transition-all duration-300 ${
-                    gestureResult.handDetected
-                      ? 'border-secondary shadow-[0_0_20px_rgba(236,72,153,0.4)]'
-                      : 'border-white/30'
-                  }`}>
-                    {gestureResult.handDetected && (
-                      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
-                        <Scan className="w-3 h-3" />
-                        Hand Detected
-                      </div>
-                    )}
-                  </div>
+              {isDemoMode && (
+                <div className="absolute inset-0 flex items-center justify-center text-[7rem] animate-pulse">
+                  🤟
                 </div>
               )}
 
-              {/* AI status badge */}
-              {cameraActive && (
-                <div className="absolute top-3 right-3 z-10">
-                  <div className="bg-black/80 rounded-lg px-2 py-1.5 flex items-center gap-1.5">
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                      gestureResult.status === 'loading' ? 'bg-yellow-400 animate-pulse' :
-                      gestureResult.status === 'feedback' ? 'bg-green-400 animate-pulse' :
-                      'bg-gray-400'
-                    }`} />
-                    <span className="text-white text-xs whitespace-nowrap">
-                      {gestureResult.status === 'loading' ? 'Loading AI...' :
-                       gestureResult.status === 'feedback' ? 'AI Active' :
-                       gestureResult.status === 'detecting' ? 'Detecting...' : 'Ready'}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Feedback overlay */}
-              {cameraActive && gestureResult.status !== 'loading' && (
-                <div className="absolute top-3 left-3 z-10" style={{ right: '110px' }}>
-                  <div className="px-3 py-1.5 rounded-lg text-white text-xs bg-black/80 truncate">
-                    {gestureResult.feedback}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Stop button — outside video div */}
-            {cameraActive && (
-              <div className="flex justify-center">
-                <Button variant="destructive" size="sm" onClick={stopCamera}>
-                  <VideoOff className="w-4 h-4 mr-2" />
-                  Stop Camera
-                </Button>
-              </div>
-            )}
-
-            {/* Tips */}
-            <div className="bg-card rounded-xl border p-4 shadow-sm">
-              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                <Scan className="w-4 h-4 text-primary" />
-                Tips for Better Recognition
-              </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Good lighting — no shadows on your hand</li>
-                <li>• Keep hand centered in the dashed box</li>
-                <li>• Hold each sign steady for 2–3 seconds</li>
-                <li>• Plain background works best</li>
-                <li>• Make sure Flask API is running before starting</li>
-              </ul>
-            </div>
-
-            {/* ISL Chart — collapsible */}
-            <details className="bg-card rounded-xl border shadow-sm">
-              <summary className="cursor-pointer px-4 py-3 text-sm font-medium flex items-center gap-2 select-none">
-                <span>📖</span>
-                <span>View ISL Alphabet &amp; Number Chart</span>
-              </summary>
-              <div className="px-4 pb-4">
-                <p className="text-xs text-muted-foreground mb-3">
-                  Match your hand gesture with this ISL reference chart.
-                </p>
-                <div className="overflow-hidden rounded-lg border">
-                  <img
-                    src={islChart}
-                    alt="ISL Alphabet and Number Chart"
-                    className="w-full object-contain bg-white"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Source: Indian Sign Language Research &amp; Training Centre (ISLRTC)
-                </p>
-              </div>
-            </details>
-
-          </div>
-
-          {/* ── RIGHT: Detected Sign + System Status + About ISL ── */}
-          <div className="space-y-4">
-
-            {/* Detected Sign */}
-            <div className="bg-card rounded-xl border p-6 shadow-sm text-center">
-              <h3 className="text-sm font-medium text-muted-foreground mb-4">Detected Sign</h3>
-              <div className={`w-28 h-28 rounded-2xl mx-auto mb-4 flex items-center justify-center font-bold transition-all duration-300 ${
-                detectedSign
-                  ? 'bg-gradient-to-br from-primary/20 to-secondary/20 text-5xl scale-110 shadow-lg'
-                  : 'bg-muted text-muted-foreground text-4xl'
-              }`}>
-                {detectedSign ?? '?'}
-              </div>
-              <p className={`text-sm font-medium ${detectedSign ? 'text-primary' : 'text-muted-foreground'}`}>
-                {detectedSign ? `"${detectedSign}" recognized!` : 'Show a hand sign to the camera'}
-              </p>
-              {detectedSign && confidence > 0 && (
-                <div className="mt-3">
-                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                    <span>Confidence</span>
-                    <span>{confidence}%</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+              {mode && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                     <div
-                      className={`h-full rounded-full transition-all duration-300 ${
-                        confidence >= 80 ? 'bg-green-500' :
-                        confidence >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                      className={`h-[68%] w-[72%] rounded-[1.75rem] border-2 border-dashed transition-all ${
+                        currentPhase.detected
+                          ? "border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.35)]"
+                          : "border-white/25"
                       }`}
-                      style={{ width: `${confidence}%` }}
                     />
                   </div>
-                </div>
+
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
+                    <span className={`h-2.5 w-2.5 rounded-full ${statusTone[currentPhase.signal]}`} />
+                    {currentPhase.label}
+                  </div>
+
+                  <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
+                    <BrainCircuit className="h-4 w-4" />
+                    AI recognition active
+                  </div>
+
+                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${statusBadgeTone[currentPhase.signal]}`}>
+                    {currentPhase.feedback}
+                  </div>
+
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5">
+                    <div className="mb-2 flex justify-between text-xs text-white/70">
+                      <span>Recognition accuracy</span>
+                      <span>{currentPhase.score}%</span>
+                    </div>
+                    <Progress value={currentPhase.score} className="h-2.5 bg-white/15" />
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      {isCameraActive && (
+                        <Button variant="destructive" size="sm" className="rounded-xl" onClick={stopCamera}>
+                          <Square className="mr-2 h-4 w-4" />
+                          Stop Camera
+                        </Button>
+                      )}
+                      {isDemoMode && (
+                        <Button variant="outline" size="sm" className="rounded-xl border-white/20 bg-white/10 text-white hover:bg-white/15 hover:text-white" onClick={() => setMode(null)}>
+                          Exit Demo Mode
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 
-            {/* System Status */}
-            <div className="bg-card rounded-xl border p-4 shadow-sm">
-              <h4 className="text-sm font-medium mb-3">System Status</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Camera</span>
-                  <span className={cameraActive ? 'text-green-500 font-medium' : 'text-muted-foreground'}>
-                    {cameraActive ? '● Active' : '○ Inactive'}
-                  </span>
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
+                  <Trophy className="h-5 w-5 text-primary" />
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">AI Model</span>
-                  <span className={
-                    gestureResult.status === 'loading' ? 'text-yellow-500' :
-                    gestureResult.status === 'idle' ? 'text-muted-foreground' :
-                    'text-green-500 font-medium'
-                  }>
-                    {gestureResult.status === 'loading' ? '⟳ Loading' :
-                     gestureResult.status === 'idle' ? '○ Idle' : '● Ready'}
-                  </span>
+                <div>
+                  <h2 className="text-2xl font-semibold text-slate-950">AI Performance Analysis</h2>
+                  <p className="text-sm text-slate-500">A mocked feedback panel that cycles through detection phases</p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Flask API</span>
-                  <span className={
-                    apiOnline === null ? 'text-yellow-500' :
-                    apiOnline ? 'text-green-500 font-medium' : 'text-destructive font-medium'
-                  }>
-                    {apiOnline === null ? '⟳ Checking...' :
-                     apiOnline ? '● Online' : '✗ Offline'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Hand</span>
-                  <span className={gestureResult.handDetected ? 'text-green-500 font-medium' : 'text-muted-foreground'}>
-                    {gestureResult.handDetected ? '● Detected' : '○ Not detected'}
-                  </span>
-                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-4">
+                {[
+                  ["Current Score", `${currentPhase.score}%`],
+                  ["Mastery Level", performanceSummary.level],
+                  ["Best Score", `${performanceSummary.best}%`],
+                  ["Status", currentPhase.detected ? "Hand detected" : "Waiting"],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-2xl bg-slate-50 p-4">
+                    <p className="text-sm text-slate-500">{label}</p>
+                    <p className="mt-2 text-xl font-semibold text-slate-900">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 rounded-2xl bg-gradient-to-r from-primary/8 via-secondary/8 to-accent/8 p-4 text-sm text-slate-600">
+                <span className="font-medium text-slate-900">AI tip:</span> {performanceSummary.tip}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Reference Sign</p>
+              <div className="mt-4 flex items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-8 text-7xl">
+                ✊
+              </div>
+              <h3 className="mt-5 text-xl font-semibold text-slate-950">Letter A</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">Make a firm fist and keep the thumb resting on the outside edge of the fingers.</p>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-xl font-semibold text-slate-950">Session Progress</h3>
+                <span className="text-sm text-slate-500">{sessionProgress}%</span>
+              </div>
+              <Progress value={sessionProgress} className="h-2.5 bg-slate-100" />
+              <p className="mt-3 text-sm text-slate-500">3 of 4 feedback phases completed in this simulated session.</p>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-xl font-semibold text-slate-950">Controls</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" className="justify-start rounded-xl" onClick={() => setPhaseIndex(0)}>
+                  <RefreshCcw className="mr-2 h-4 w-4" />
+                  Repeat
+                </Button>
+                <Button variant="outline" className="justify-start rounded-xl">
+                  <CircleHelp className="mr-2 h-4 w-4" />
+                  Help
+                </Button>
+                <Button variant="outline" className="justify-start rounded-xl">
+                  <SkipForward className="mr-2 h-4 w-4" />
+                  Skip
+                </Button>
+                <Button className="bg-gradient-brand justify-start rounded-xl border-0 text-white hover:opacity-90" onClick={() => setPhaseIndex((phaseIndex + 1) % phases.length)}>
+                  <ScanSearch className="mr-2 h-4 w-4" />
+                  Next
+                </Button>
               </div>
             </div>
 
-            {/* About ISL */}
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-              <h4 className="text-sm font-medium text-primary mb-2">About ISL</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Trained on the Kaggle ISL dataset using MediaPipe hand landmarks
-                + ML classification. Recognizes ISL alphabets and numbers in real time.
-              </p>
+            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-xl font-semibold text-slate-950">AI Recognition Tips</h3>
+              <div className="space-y-3">
+                {[
+                  "Use even lighting so finger outlines stay clear.",
+                  "Keep your hand centered inside the guide box.",
+                  "Hold the sign for one second before changing position.",
+                  "Use demo mode if you want to preview the recognition flow first.",
+                ].map((tip) => (
+                  <div key={tip} className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4">
+                    <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                    <p className="text-sm leading-7 text-slate-600">{tip}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
-import { Button } from './ui/button';
-import { Progress } from './ui/progress';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ArrowRight, BarChart3 } from "lucide-react@0.487.0";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { Button } from "./ui/button";
+import { Progress } from "./ui/progress";
 
 interface CourseCardProps {
   id: string;
@@ -26,36 +27,45 @@ export function CourseCard({
   onViewCourse,
 }: CourseCardProps) {
   return (
-    <div className="bg-card rounded-lg border overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1">
-      <div className="aspect-video w-full overflow-hidden">
+    <div className="group overflow-hidden rounded-[1.25rem] border border-white/70 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+      <div className="relative aspect-video w-full overflow-hidden">
         <ImageWithFallback
           src={image}
           alt={title}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent" />
       </div>
-      <div className="p-4">
-        <h3 className="mb-2">{title}</h3>
-        <p className="text-sm text-muted-foreground mb-4">{description}</p>
-        
+      <div className="p-5">
+        <h3 className="mb-2 text-xl">{title}</h3>
+        <p className="mb-5 text-sm leading-6 text-muted-foreground">{description}</p>
+
         {progress !== undefined ? (
-          <div className="mb-4">
-            <div className="flex justify-between text-sm mb-2">
+          <div className="mb-5">
+            <div className="mb-2 flex justify-between text-sm">
               <span className="text-muted-foreground">Progress</span>
               <span className="text-foreground">{lessonsCompleted}/{totalLessons} Lessons</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="h-2.5 bg-slate-100" />
+            <p className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+              <BarChart3 className="h-3.5 w-3.5" />
+              {progress}% complete
+            </p>
           </div>
         ) : difficulty ? (
-          <div className="mb-4">
-            <span className="inline-block px-3 py-1 bg-muted text-sm rounded-full">
+          <div className="mb-5">
+            <span className="inline-block rounded-full bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 px-3 py-1 text-sm text-slate-700">
               {difficulty}
             </span>
           </div>
         ) : null}
-        
-        <Button onClick={() => onViewCourse(id)} className="w-full">
-          {progress !== undefined ? 'Continue Course' : 'View Course'}
+
+        <Button
+          onClick={() => onViewCourse(id)}
+          className="bg-gradient-brand w-full rounded-xl border-0 text-white hover:opacity-90"
+        >
+          {progress !== undefined ? "Continue Course" : "View Course"}
+          <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

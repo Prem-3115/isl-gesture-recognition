@@ -1,262 +1,179 @@
-import { useOutletContext } from 'react-router';
-import { Button } from '../ui/button';
-import { CourseCard } from '../CourseCard';
-import { Video, Camera, TrendingUp, CheckCircle, Users, Clock, Star, ArrowRight, Zap } from 'lucide-react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
-
-interface ContextType {
-  onNavigate: (page: string) => void;
-  isLoggedIn: boolean;
-  onOpenAuth: (mode: 'login' | 'signup') => void;
-}
+import { useOutletContext } from "react-router";
+import { ArrowRight, CheckCircle2, Sparkles, Star } from "lucide-react@0.487.0";
+import { courses, featureTiles, featuredStats, howItWorks, testimonials } from "@/data/mockData";
+import { LayoutOutletContext } from "@/types/layout";
+import { CourseCard } from "../CourseCard";
+import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { Button } from "../ui/button";
 
 export function HomePage() {
-  const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<ContextType>();
-
-  const featuredCourses = [
-    {
-      id: 'alphabet',
-      title: 'ISL Alphabet Fundamentals',
-      description: 'Master the 26 letters of the ISL alphabet with step-by-step guidance.',
-      image: 'https://images.unsplash.com/photo-1725043394860-71304ce2b1b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBoYWJldCUyMGxldHRlcnN8ZW58MXx8fHwxNzYwNTM1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      difficulty: 'Beginner Friendly',
-    },
-    {
-      id: 'greetings',
-      title: 'Everyday Greetings',
-      description: 'Learn essential greetings and introductions for daily conversations.',
-      image: 'https://images.unsplash.com/photo-1730875648975-e718e5658d76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWxsbyUyMGhhbmRzJTIwd2F2aW5nfGVufDF8fHx8MTc2MDUzNTkyN3ww&ixlib=rb-4.1.0&q=80&w=1080',
-      difficulty: 'Beginner Friendly',
-    },
-    {
-      id: 'numbers',
-      title: 'Numbers 1-100',
-      description: 'Build confidence with numerical signs for everyday use.',
-      image: 'https://images.unsplash.com/photo-1653361860636-36f2fb89eab9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudW1iZXJzJTIwbWF0aGVtYXRpY3N8ZW58MXx8fHwxNzYwNTM1NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      difficulty: 'Beginner Friendly',
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: 'Ananya Mehta',
-      role: 'Student, Delhi University',
-      text: 'ISL Connect helped me communicate better with my deaf classmates. The AI practice is incredibly helpful!',
-      rating: 5,
-    },
-    {
-      name: 'Rahul Kapoor',
-      role: 'Teacher, Mumbai',
-      text: 'An amazing platform for learning ISL. The gesture recognition technology makes practice so much more effective.',
-      rating: 5,
-    },
-    {
-      name: 'Sneha Patel',
-      role: 'Healthcare Worker, Ahmedabad',
-      text: 'Being able to sign basic medical terms has transformed how I serve deaf patients. Thank you, ISL Connect!',
-      rating: 5,
-    },
-  ];
-
-  const stats = [
-    { value: '50K+', label: 'Active Learners' },
-    { value: '500+', label: 'Signs Available' },
-    { value: '95%', label: 'User Satisfaction' },
-    { value: '24/7', label: 'AI Practice' },
-  ];
+  const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<LayoutOutletContext>();
 
   return (
-    <div className="bg-white">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10" />
-        <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
-        <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-                <Zap className="w-4 h-4" />
-                <span className="text-sm">AI-Powered Gesture Recognition</span>
-              </div>
-              <h1 className="text-4xl lg:text-5xl mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight">
-                Master Indian Sign Language with Intelligent Practice
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8 max-w-lg">
-                Harness cutting-edge gesture recognition to learn ISL at your own pace, with real-time feedback powered by AI technology.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  onClick={() => isLoggedIn ? onNavigate('dashboard') : onOpenAuth('signup')}
-                  className="text-lg px-8 bg-gradient-to-r from-primary to-secondary hover:opacity-90 border-0"
-                >
-                  Start Free Lesson
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => onNavigate('dashboard')}
-                  className="text-lg px-8"
-                >
-                  Explore Courses
-                </Button>
-              </div>
-              {/* Stats row */}
-              <div className="grid grid-cols-4 gap-4 mt-12 pt-8 border-t">
-                {stats.map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <p className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
+    <div className="pb-6">
+      <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="absolute inset-x-0 top-0 h-[32rem] bg-gradient-to-b from-primary/10 via-secondary/8 to-transparent" />
+        <div className="absolute left-[-6rem] top-20 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
+        <div className="absolute right-[-4rem] top-10 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-sm text-primary shadow-sm">
+              <Sparkles className="h-4 w-4" />
+              Intelligent practice for modern ISL learners
             </div>
-            <div className="hidden lg:block relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl border">
+            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-slate-950 sm:text-6xl">
+              Master Indian Sign Language with{" "}
+              <span className="text-gradient-brand">Intelligent Practice</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+              Learn through short video lessons, webcam-based feedback, and progress dashboards that make consistent ISL practice feel rewarding.
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Button
+                size="lg"
+                className="bg-gradient-brand h-12 rounded-xl border-0 px-6 text-white hover:opacity-90"
+                onClick={() => (isLoggedIn ? onNavigate("lesson:letter-a") : onOpenAuth("signup"))}
+              >
+                Start Free Lesson
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 rounded-xl border-slate-200 bg-white/80 px-6"
+                onClick={() => onNavigate("dashboard")}
+              >
+                Explore Courses
+              </Button>
+            </div>
+            <div className="mt-12 grid grid-cols-2 gap-4 rounded-[1.5rem] border border-white/60 bg-white/80 p-5 shadow-sm sm:grid-cols-4">
+              {featuredStats.map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-gradient-brand text-2xl font-semibold">{stat.value}</p>
+                  <p className="mt-1 text-sm capitalize text-slate-500">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="panel-glow overflow-hidden rounded-[2rem] border border-white/60 bg-white p-3">
+              <div className="overflow-hidden rounded-[1.5rem]">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1673515335586-f9f662c01482?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaXZlcnNlJTIwc3R1ZGVudHMlMjBvbmxpbmUlMjBlZHVjYXRpb258ZW58MXx8fHwxNzczNzIzOTQ0fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Students learning sign language"
-                  className="w-full h-80 object-cover"
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+                  alt="Learners practicing together"
+                  className="h-[440px] w-full object-cover"
                 />
               </div>
-              {/* Floating card */}
-              <div className="absolute -bottom-6 -left-6 bg-card rounded-xl shadow-lg border p-4 max-w-[200px]">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-secondary" />
-                  </div>
-                  <span className="text-sm">AI Accuracy</span>
+            </div>
+            <div className="panel-glow absolute -bottom-6 left-4 w-56 rounded-3xl border border-white/70 bg-white/95 p-4">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary/15 to-accent/15">
+                  <CheckCircle2 className="h-5 w-5 text-secondary" />
                 </div>
-                <p className="text-2xl text-secondary">92%</p>
-                <p className="text-xs text-muted-foreground">Average recognition rate</p>
+                <div>
+                  <p className="text-sm font-medium text-slate-700">Live Accuracy</p>
+                  <p className="text-xs text-slate-500">Average AI feedback score</p>
+                </div>
               </div>
+              <p className="text-gradient-brand text-3xl font-semibold">92%</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl mb-4">How ISL Connect Works</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our three-step approach makes learning Indian Sign Language intuitive and effective
-            </p>
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">How It Works</p>
+            <h2 className="text-3xl font-semibold text-slate-950 sm:text-4xl">A clear path from first sign to confident practice</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl hover:bg-card transition-all hover:shadow-lg group relative">
-              <div className="absolute top-4 left-4 text-6xl text-primary/10">1</div>
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                <Video className="w-8 h-8 text-primary-foreground" />
+          <div className="grid gap-6 md:grid-cols-3">
+            {howItWorks.map((step, index) => (
+              <div key={step.title} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-8 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${step.accent} text-white`}>
+                    <step.icon className="h-7 w-7" />
+                  </div>
+                  <span className="text-5xl font-semibold text-slate-100">0{index + 1}</span>
+                </div>
+                <h3 className="mb-3 text-xl">{step.title}</h3>
+                <p className="text-sm leading-7 text-slate-600">{step.description}</p>
               </div>
-              <h3 className="mb-3">Watch & Learn</h3>
-              <p className="text-muted-foreground">
-                Engage with expert-led video lessons demonstrating authentic ISL signs with detailed explanations.
-              </p>
-            </div>
-            <div className="text-center p-8 rounded-2xl hover:bg-card transition-all hover:shadow-lg group relative">
-              <div className="absolute top-4 left-4 text-6xl text-secondary/10">2</div>
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                <Camera className="w-8 h-8 text-secondary-foreground" />
-              </div>
-              <h3 className="mb-3">Practice with AI</h3>
-              <p className="text-muted-foreground">
-                Utilize your device's camera for instant, precise gesture recognition feedback powered by AI.
-              </p>
-            </div>
-            <div className="text-center p-8 rounded-2xl hover:bg-card transition-all hover:shadow-lg group relative">
-              <div className="absolute top-4 left-4 text-6xl text-accent/10">3</div>
-              <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/60 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-8 h-8 text-accent-foreground" />
-              </div>
-              <h3 className="mb-3">Track & Master</h3>
-              <p className="text-muted-foreground">
-                Monitor your progress, review challenging signs, and celebrate your achievements along the way.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Courses Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-muted/30 to-muted/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-3xl mb-2">Popular Courses</h2>
-              <p className="text-muted-foreground">Start with our most loved courses</p>
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Popular Courses</p>
+              <h2 className="text-3xl font-semibold text-slate-950">Start with the most loved pathways</h2>
             </div>
-            <Button variant="outline" onClick={() => onNavigate('dashboard')}>
+            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("dashboard")}>
               View All Courses
-              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {featuredCourses.map((course) => (
+          <div className="grid gap-6 md:grid-cols-3">
+            {courses.map((course) => (
               <CourseCard
                 key={course.id}
-                {...course}
-                onViewCourse={() => onNavigate('course')}
+                id={course.id}
+                title={course.title}
+                description={course.description}
+                image={course.image}
+                difficulty={course.difficulty}
+                onViewCourse={(id) => onNavigate(`course:${id}`)}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why ISL Connect Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl mb-4">Why Choose ISL Connect?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Built by experts, powered by AI, designed for everyone
-            </p>
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Why ISL Connect</p>
+            <h2 className="text-3xl font-semibold text-slate-950">Built to make deliberate practice feel accessible</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { icon: CheckCircle, title: 'Authentic Content', desc: 'Indian Sign Language content curated by certified ISL experts and deaf community members.' },
-              { icon: Camera, title: 'AI Recognition', desc: 'Real-time gesture recognition powered by advanced computer vision and AI technology.' },
-              { icon: Users, title: 'Expert Instructors', desc: 'Learn from experienced ISL teachers and members of the deaf community.' },
-              { icon: Clock, title: 'Flexible Schedule', desc: 'Learn at your own pace, anytime and anywhere. Your progress syncs across devices.' },
-            ].map((item) => (
-              <div key={item.title} className="flex flex-col items-center text-center p-6 rounded-xl hover:bg-card hover:shadow-md transition-all">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-4">
-                  <item.icon className="w-7 h-7 text-primary" />
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {featureTiles.map((feature) => (
+              <div key={feature.title} className="rounded-[1.5rem] border border-white/70 bg-white/85 p-6 shadow-sm">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
+                  <feature.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h4 className="mb-2">{item.title}</h4>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
+                <h3 className="mb-3 text-lg">{feature.title}</h3>
+                <p className="text-sm leading-7 text-slate-600">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-muted/30 to-muted/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl mb-4">What Our Learners Say</h2>
-            <p className="text-muted-foreground">Join thousands of happy ISL learners</p>
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Testimonials</p>
+            <h2 className="text-3xl font-semibold text-slate-950">Learners using ISL Connect in real life</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+          <div className="grid gap-6 md:grid-cols-3">
+            {testimonials.map((item) => (
+              <div key={item.name} className="rounded-[1.5rem] border border-white/70 bg-white/90 p-6 shadow-sm">
+                <div className="mb-5 flex gap-1">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-muted-foreground mb-6 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-sm">
-                    {t.name.split(' ').map(n => n[0]).join('')}
+                <p className="min-h-28 text-sm leading-7 text-slate-600">"{item.quote}"</p>
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="bg-gradient-brand flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-semibold text-white">
+                    {item.name.split(" ").map((part) => part[0]).join("")}
                   </div>
                   <div>
-                    <p className="text-sm">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                    <p className="font-medium text-slate-900">{item.name}</p>
+                    <p className="text-sm text-slate-500">{item.role}</p>
                   </div>
                 </div>
               </div>
@@ -265,22 +182,24 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary via-secondary to-accent text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="max-w-3xl mx-auto text-center relative">
-          <h2 className="text-3xl mb-4 text-white">Ready to Start Your Journey?</h2>
-          <p className="text-lg mb-8 text-white/90">
-            Join thousands of learners connecting with the deaf community through Indian Sign Language.
-          </p>
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => isLoggedIn ? onNavigate('dashboard') : onOpenAuth('signup')}
-            className="text-lg px-8"
-          >
-            {isLoggedIn ? 'Go to Dashboard' : 'Sign Up Free'}
-          </Button>
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="bg-gradient-brand relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-8 py-12 text-white shadow-2xl">
+          <div className="absolute -right-12 top-0 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+          <div className="absolute -left-8 bottom-0 h-40 w-40 rounded-full bg-black/10 blur-2xl" />
+          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Start Today</p>
+              <h2 className="text-3xl font-semibold">Practice with AI, learn with confidence, and track real progress.</h2>
+            </div>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+              onClick={() => (isLoggedIn ? onNavigate("dashboard") : onOpenAuth("signup"))}
+            >
+              {isLoggedIn ? "Go to Dashboard" : "Sign Up Free"}
+            </Button>
+          </div>
         </div>
       </section>
     </div>
