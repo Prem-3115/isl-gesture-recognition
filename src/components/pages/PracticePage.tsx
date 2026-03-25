@@ -1,92 +1,95 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import {
+  Activity,
   AlertCircle,
   BrainCircuit,
   Camera,
-  CircleHelp,
   Eye,
   RefreshCcw,
-  ScanSearch,
-  SkipForward,
   Square,
   Trophy,
   X,
 } from "lucide-react@0.487.0";
+import islChart from "@/assets/isl_chart.jpg";
+import { useGestureRecognition } from "@/hooks/useGestureRecognition";
 import { LayoutOutletContext } from "@/types/layout";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
-
-type PracticeMode = "camera" | "demo" | null;
-type DetectionPhase = {
-  label: string;
-  feedback: string;
-  detected: boolean;
-  score: number;
-  signal: "gray" | "yellow" | "purple" | "green";
-};
-
-const phases: DetectionPhase[] = [
-  {
-    label: "Waiting for hand",
-    feedback: "Center your hand inside the guide to begin recognition.",
-    detected: false,
-    score: 12,
-    signal: "gray",
-  },
-  {
-    label: "Scanning shape",
-    feedback: "Good framing. Hold still while the AI checks finger position.",
-    detected: true,
-    score: 48,
-    signal: "yellow",
-  },
-  {
-    label: "Comparing sign",
-    feedback: "Thumb placement looks close. Slightly tighten the fist for a clearer A.",
-    detected: true,
-    score: 73,
-    signal: "purple",
-  },
-  {
-    label: "Strong match",
-    feedback: "Excellent handshape. This looks like a confident Letter A.",
-    detected: true,
-    score: 92,
-    signal: "green",
-  },
-] as const;
-
-const statusTone = {
-  gray: "bg-slate-400",
-  yellow: "bg-amber-400",
-  purple: "bg-primary",
-  green: "bg-emerald-500",
-} as const;
-
-const statusBadgeTone = {
-  gray: "bg-slate-500/85",
-  yellow: "bg-amber-500/90",
-  purple: "bg-primary/90",
-  green: "bg-emerald-500/90",
-} as const;
 
 export function PracticePage() {
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  const [mode, setMode] = useState<PracticeMode>(null);
+  const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [phaseIndex, setPhaseIndex] = useState(0);
-  const [sessionProgress, setSessionProgress] = useState(66);
+  const [apiOnline, setApiOnline] = useState<boolean | null>(null);
+  const [bestScore, setBestScore] = useState(0);
 
-  const currentPhase = phases[phaseIndex];
-  const isCameraActive = mode === "camera";
-  const isDemoMode = mode === "demo";
+  useEffect(() => {
+    const checkAPI = async () => {
+      try {
+        await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ landmarks: new Array(63).fill(0) }),
+        });
+        setApiOnline(true);
+      } catch {
+        setApiOnline(false);
+      }
+    };
 
-  const stopStream = useCallback(() => {
+    checkAPI();
+    const interval = window.setInterval(checkAPI, 5000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const gestureResult = useGestureRecognition({
+    videoRef,
+    enabled: cameraActive,
+  });
+
+  useEffect(() => {
+    const score = Math.round((gestureResult.confidence ?? 0) * 100);
+    setBestScore((current) => Math.max(current, score));
+  }, [gestureResult.confidence]);
+
+  const startCamera = async () => {
+    try {
+      setCameraError(null);
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError("Camera not supported in this browser.");
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      if (!videoRef.current) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+
+      videoRef.current.srcObject = stream;
+      streamRef.current = stream;
+      await videoRef.current.play();
+      setCameraActive(true);
+    } catch (error: unknown) {
+      const err = error as { name?: string; message?: string };
+      if (err.name === "NotAllowedError") {
+        setCameraError("Permission denied. Check your browser camera permissions.");
+      } else if (err.name === "NotFoundError") {
+        setCameraError("No camera was found on this device.");
+      } else if (err.name === "NotReadableError") {
+        setCameraError("Your camera is already in use by another application.");
+      } else {
+        setCameraError(err.message ?? "Unable to start the camera.");
+      }
+    }
+  };
+
+  const stopCamera = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -94,72 +97,34 @@ export function PracticePage() {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
+    setCameraActive(false);
   }, []);
 
-  useEffect(() => {
-    if (!mode) return;
+  useEffect(() => () => stopCamera(), [stopCamera]);
 
-    const interval = window.setInterval(() => {
-      setPhaseIndex((index) => (index + 1) % phases.length);
-      setSessionProgress((progress) => (progress >= 100 ? 100 : progress + 2));
-    }, 2400);
+  const liveScore = Math.round((gestureResult.confidence ?? 0) * 100);
+  const masteryLevel = useMemo(() => {
+    if (liveScore >= 90) return "Excellent";
+    if (liveScore >= 75) return "Strong";
+    if (liveScore >= 55) return "Developing";
+    return "Warming up";
+  }, [liveScore]);
 
-    return () => window.clearInterval(interval);
-  }, [mode]);
+  const statusTone =
+    gestureResult.status === "loading"
+      ? "bg-amber-400"
+      : gestureResult.status === "feedback"
+        ? "bg-emerald-500"
+        : gestureResult.handDetected
+          ? "bg-primary"
+          : "bg-slate-400";
 
-  useEffect(() => () => stopStream(), [stopStream]);
-
-  const startCamera = async () => {
-    setCameraError(null);
-    setPhaseIndex(0);
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setCameraError("This browser does not support camera access. Try demo mode instead.");
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setMode("camera");
-    } catch {
-      setCameraError("Camera access failed. Check permissions or switch to demo mode.");
-      stopStream();
-    }
-  };
-
-  const stopCamera = () => {
-    stopStream();
-    setMode(null);
-    setPhaseIndex(0);
-  };
-
-  const startDemoMode = () => {
-    stopStream();
-    setCameraError(null);
-    setPhaseIndex(0);
-    setMode("demo");
-  };
-
-  const performanceSummary = useMemo(() => {
-    const level = currentPhase.score >= 90 ? "Excellent" : currentPhase.score >= 75 ? "Strong" : currentPhase.score >= 50 ? "Developing" : "Warm-up";
-    const tip =
-      currentPhase.score >= 90
-        ? "Keep this handshape steady for one more second before moving on."
-        : currentPhase.score >= 75
-          ? "Your overall sign is strong. Focus on making the thumb line cleaner."
-          : "Slow down and keep your hand centered before adjusting finger shape.";
-
-    return {
-      level,
-      tip,
-      best: 94,
-    };
-  }, [currentPhase.score]);
+  const feedbackTone =
+    liveScore >= 85
+      ? "bg-emerald-500/90"
+      : liveScore >= 60
+        ? "bg-primary/90"
+        : "bg-slate-500/90";
 
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -167,7 +132,7 @@ export function PracticePage() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">AI Practice</p>
-            <h1 className="mt-3 text-4xl font-semibold text-slate-950">Practice Letter A with live guidance</h1>
+            <h1 className="mt-3 text-4xl font-semibold text-slate-950">Practice with the original gesture recognizer</h1>
           </div>
           <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("dashboard")}>
             <X className="mr-2 h-4 w-4" />
@@ -175,14 +140,25 @@ export function PracticePage() {
           </Button>
         </div>
 
+        {apiOnline === false && (
+          <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50">
+            <Activity className="h-4 w-4 text-destructive" />
+            <AlertTitle className="text-red-900">Flask API is offline</AlertTitle>
+            <AlertDescription className="text-red-800">
+              The original recognizer needs the local backend running on `http://127.0.0.1:5000`.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {cameraError && (
           <Alert className="mb-6 rounded-2xl border-amber-200 bg-amber-50">
             <AlertCircle className="h-4 w-4 text-amber-600" />
             <AlertTitle className="text-amber-900">Camera issue detected</AlertTitle>
             <AlertDescription className="flex flex-col gap-3 text-amber-800 sm:flex-row sm:items-center sm:justify-between">
               <span>{cameraError}</span>
-              <Button size="sm" className="rounded-lg" onClick={startDemoMode}>
-                Try Demo Mode
+              <Button size="sm" className="rounded-lg" onClick={startCamera}>
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                Try Again
               </Button>
             </AlertDescription>
           </Alert>
@@ -191,39 +167,35 @@ export function PracticePage() {
         <div className="grid gap-6 lg:grid-cols-[1.7fr_0.9fr]">
           <div className="space-y-6">
             <div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-black shadow-2xl">
-              <video ref={videoRef} playsInline muted className={`absolute inset-0 h-full w-full object-cover ${isCameraActive ? "scale-x-[-1]" : "hidden"}`} />
-              <div className={`absolute inset-0 ${!mode ? "bg-gradient-to-br from-slate-900 to-slate-950" : "bg-gradient-to-br from-slate-950/20 to-primary/20"}`} />
+              <video
+                ref={videoRef}
+                playsInline
+                muted
+                className={`absolute inset-0 h-full w-full object-cover ${cameraActive ? "scale-x-[-1]" : "hidden"}`}
+              />
+              <div className={`absolute inset-0 ${cameraActive ? "bg-gradient-to-br from-slate-950/20 to-primary/20" : "bg-gradient-to-br from-slate-900 to-slate-950"}`} />
 
-              {!mode && (
+              {!cameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
                   <Camera className="mb-4 h-16 w-16 text-white/50" />
                   <h2 className="text-2xl font-semibold">Camera inactive</h2>
                   <p className="mt-3 max-w-md text-sm leading-7 text-white/70">
-                    Start your real camera for webcam practice or use demo mode to preview the AI recognition flow.
+                    Start the real webcam flow to use the project&apos;s original MediaPipe and Flask-backed recognition pipeline.
                   </p>
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-6">
                     <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={startCamera}>
                       Start Real Camera
-                    </Button>
-                    <Button variant="outline" className="rounded-xl border-white/20 bg-white/10 text-white hover:bg-white/15 hover:text-white" size="lg" onClick={startDemoMode}>
-                      Try Demo Mode
                     </Button>
                   </div>
                 </div>
               )}
 
-              {isDemoMode && (
-                <div className="absolute inset-0 flex items-center justify-center text-[7rem] animate-pulse">
-                  🤟
-                </div>
-              )}
-
-              {mode && (
+              {cameraActive && (
                 <>
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                     <div
                       className={`h-[68%] w-[72%] rounded-[1.75rem] border-2 border-dashed transition-all ${
-                        currentPhase.detected
+                        gestureResult.handDetected
                           ? "border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.35)]"
                           : "border-white/25"
                       }`}
@@ -231,37 +203,30 @@ export function PracticePage() {
                   </div>
 
                   <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
-                    <span className={`h-2.5 w-2.5 rounded-full ${statusTone[currentPhase.signal]}`} />
-                    {currentPhase.label}
+                    <span className={`h-2.5 w-2.5 rounded-full ${statusTone}`} />
+                    {gestureResult.status}
                   </div>
 
                   <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
                     <BrainCircuit className="h-4 w-4" />
-                    AI recognition active
+                    Original recognizer active
                   </div>
 
-                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${statusBadgeTone[currentPhase.signal]}`}>
-                    {currentPhase.feedback}
+                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${feedbackTone}`}>
+                    {gestureResult.feedback}
                   </div>
 
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5">
                     <div className="mb-2 flex justify-between text-xs text-white/70">
                       <span>Recognition accuracy</span>
-                      <span>{currentPhase.score}%</span>
+                      <span>{liveScore}%</span>
                     </div>
-                    <Progress value={currentPhase.score} className="h-2.5 bg-white/15" />
+                    <Progress value={liveScore} className="h-2.5 bg-white/15" />
                     <div className="mt-4 flex flex-wrap gap-3">
-                      {isCameraActive && (
-                        <Button variant="destructive" size="sm" className="rounded-xl" onClick={stopCamera}>
-                          <Square className="mr-2 h-4 w-4" />
-                          Stop Camera
-                        </Button>
-                      )}
-                      {isDemoMode && (
-                        <Button variant="outline" size="sm" className="rounded-xl border-white/20 bg-white/10 text-white hover:bg-white/15 hover:text-white" onClick={() => setMode(null)}>
-                          Exit Demo Mode
-                        </Button>
-                      )}
+                      <Button variant="destructive" size="sm" className="rounded-xl" onClick={stopCamera}>
+                        <Square className="mr-2 h-4 w-4" />
+                        Stop Camera
+                      </Button>
                     </div>
                   </div>
                 </>
@@ -274,16 +239,16 @@ export function PracticePage() {
                   <Trophy className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-semibold text-slate-950">AI Performance Analysis</h2>
-                  <p className="text-sm text-slate-500">A mocked feedback panel that cycles through detection phases</p>
+                  <h2 className="text-2xl font-semibold text-slate-950">Live Performance Analysis</h2>
+                  <p className="text-sm text-slate-500">Driven by the real hook state instead of a simulated cycle</p>
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-4">
                 {[
-                  ["Current Score", `${currentPhase.score}%`],
-                  ["Mastery Level", performanceSummary.level],
-                  ["Best Score", `${performanceSummary.best}%`],
-                  ["Status", currentPhase.detected ? "Hand detected" : "Waiting"],
+                  ["Current Score", `${liveScore}%`],
+                  ["Mastery Level", masteryLevel],
+                  ["Best Score", `${bestScore}%`],
+                  ["Detected Sign", gestureResult.detectedSign ?? "None"],
                 ].map(([label, value]) => (
                   <div key={label} className="rounded-2xl bg-slate-50 p-4">
                     <p className="text-sm text-slate-500">{label}</p>
@@ -292,60 +257,62 @@ export function PracticePage() {
                 ))}
               </div>
               <div className="mt-4 rounded-2xl bg-gradient-to-r from-primary/8 via-secondary/8 to-accent/8 p-4 text-sm text-slate-600">
-                <span className="font-medium text-slate-900">AI tip:</span> {performanceSummary.tip}
+                <span className="font-medium text-slate-900">Recognizer feedback:</span> {gestureResult.feedback}
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Reference Sign</p>
-              <div className="mt-4 flex items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-8 text-7xl">
-                ✊
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Reference</p>
+              <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
+                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" />
               </div>
-              <h3 className="mt-5 text-xl font-semibold text-slate-950">Letter A</h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">Make a firm fist and keep the thumb resting on the outside edge of the fingers.</p>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                Use the original chart bundled in the project as your visual reference while testing the recognizer.
+              </p>
             </div>
 
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-slate-950">Session Progress</h3>
-                <span className="text-sm text-slate-500">{sessionProgress}%</span>
+                <h3 className="text-xl font-semibold text-slate-950">System Status</h3>
               </div>
-              <Progress value={sessionProgress} className="h-2.5 bg-slate-100" />
-              <p className="mt-3 text-sm text-slate-500">3 of 4 feedback phases completed in this simulated session.</p>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Camera</span>
+                  <span className={cameraActive ? "text-emerald-600" : "text-slate-500"}>
+                    {cameraActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">MediaPipe Model</span>
+                  <span className={gestureResult.status === "loading" ? "text-amber-600" : "text-slate-700"}>
+                    {gestureResult.status === "loading" ? "Loading" : "Ready"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Flask API</span>
+                  <span className={apiOnline ? "text-emerald-600" : "text-red-600"}>
+                    {apiOnline ? "Online" : "Offline"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Hand Detection</span>
+                  <span className={gestureResult.handDetected ? "text-emerald-600" : "text-slate-500"}>
+                    {gestureResult.handDetected ? "Detected" : "Waiting"}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-xl font-semibold text-slate-950">Controls</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" className="justify-start rounded-xl" onClick={() => setPhaseIndex(0)}>
-                  <RefreshCcw className="mr-2 h-4 w-4" />
-                  Repeat
-                </Button>
-                <Button variant="outline" className="justify-start rounded-xl">
-                  <CircleHelp className="mr-2 h-4 w-4" />
-                  Help
-                </Button>
-                <Button variant="outline" className="justify-start rounded-xl">
-                  <SkipForward className="mr-2 h-4 w-4" />
-                  Skip
-                </Button>
-                <Button className="bg-gradient-brand justify-start rounded-xl border-0 text-white hover:opacity-90" onClick={() => setPhaseIndex((phaseIndex + 1) % phases.length)}>
-                  <ScanSearch className="mr-2 h-4 w-4" />
-                  Next
-                </Button>
-              </div>
-            </div>
-
-            <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-xl font-semibold text-slate-950">AI Recognition Tips</h3>
+              <h3 className="mb-4 text-xl font-semibold text-slate-950">Recognition Tips</h3>
               <div className="space-y-3">
                 {[
-                  "Use even lighting so finger outlines stay clear.",
-                  "Keep your hand centered inside the guide box.",
-                  "Hold the sign for one second before changing position.",
-                  "Use demo mode if you want to preview the recognition flow first.",
+                  "Use even lighting so landmarks stay visible.",
+                  "Keep one hand centered inside the dashed guide.",
+                  "Hold the gesture steady for several frames so the prediction can stabilize.",
+                  "Make sure the local Flask API is running before starting the camera.",
                 ].map((tip) => (
                   <div key={tip} className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4">
                     <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
