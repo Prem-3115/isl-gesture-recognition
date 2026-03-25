@@ -1,85 +1,75 @@
-import { Hand, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { Facebook, Hand, Instagram, Twitter, Youtube } from "lucide-react@0.487.0";
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
+interface FooterProps {
+  onNavigate: (page: string) => void;
+}
+
+export function Footer({ onNavigate }: FooterProps) {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-card mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <Hand className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                ISL Connect
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">
-              Making Indian Sign Language accessible to everyone through AI-powered learning.
-            </p>
+    <footer className="mt-16 border-t border-white/60 bg-white/90">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-              {[Facebook, Instagram, Twitter, Youtube].map((Icon, i) => (
+              <div className="bg-gradient-brand flex h-10 w-10 items-center justify-center rounded-2xl text-white">
+                <Hand className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-gradient-brand text-lg font-semibold">ISL Connect</p>
+                <p className="text-xs text-slate-500">Learn, practice, belong</p>
+              </div>
+            </div>
+            <p className="max-w-xs text-sm text-slate-600">
+              An AI-powered Indian Sign Language learning platform designed to make daily practice feel approachable and joyful.
+            </p>
+            <div className="flex gap-3">
+              {[Facebook, Instagram, Twitter, Youtube].map((Icon) => (
                 <button
-                  key={i}
-                  className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                  key={Icon.displayName ?? Icon.name}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-primary/30 hover:text-primary"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="h-4 w-4" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Links */}
           <div>
-            <h4 className="mb-4 text-sm">Learning</h4>
-            <ul className="space-y-2">
-              {['All Courses', 'Practice Mode', 'Community', 'Blog'].map((link) => (
-                <li key={link}>
-                  <button className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {link}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Learning</h3>
+            <div className="grid gap-3 text-sm text-slate-600">
+              <button onClick={() => onNavigate("dashboard")} className="text-left transition hover:text-primary">All Courses</button>
+              <button onClick={() => onNavigate("practice")} className="text-left transition hover:text-primary">Practice Mode</button>
+              <button onClick={() => onNavigate("achievements")} className="text-left transition hover:text-primary">Achievements</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Free Lesson</button>
+            </div>
           </div>
 
           <div>
-            <h4 className="mb-4 text-sm">Support</h4>
-            <ul className="space-y-2">
-              {['Help Center', 'Accessibility', 'Contact Us', 'FAQ'].map((link) => (
-                <li key={link}>
-                  <button className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {link}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Support</h3>
+            <div className="grid gap-3 text-sm text-slate-600">
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Help Center</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Accessibility</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Contact Us</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">FAQs</button>
+            </div>
           </div>
 
           <div>
-            <h4 className="mb-4 text-sm">Legal</h4>
-            <ul className="space-y-2">
-              {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Licenses'].map((link) => (
-                <li key={link}>
-                  <button className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {link}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Company</h3>
+            <div className="grid gap-3 text-sm text-slate-600">
+              <button onClick={() => onNavigate("about")} className="text-left transition hover:text-primary">About ISL Connect</button>
+              <button onClick={() => onNavigate("community")} className="text-left transition hover:text-primary">Community</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Privacy</button>
+              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Terms</button>
+            </div>
           </div>
         </div>
 
-        <div className="border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} ISL Connect. All rights reserved.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Built with React & TypeScript &bull; AI-Powered Gesture Recognition
-          </p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+          <p>&copy; {year} ISL Connect. All rights reserved.</p>
+          <p>Built with React, TypeScript, TailwindCSS v4, shadcn/ui, and mocked AI practice flows.</p>
         </div>
       </div>
     </footer>

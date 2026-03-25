@@ -1,178 +1,120 @@
-import { useOutletContext } from 'react-router';
-import { Button } from '../ui/button';
-import { Progress } from '../ui/progress';
-import { CourseCard } from '../CourseCard';
-import { ChartNoAxesColumn, Flame, Target, BookOpen, Clock, Award } from 'lucide-react';
-
-interface ContextType {
-  onNavigate: (page: string) => void;
-  userName: string;
-}
+import { useOutletContext } from "react-router";
+import { Award, BookOpen, Flame, Target, TrendingUp } from "lucide-react@0.487.0";
+import { courses, recentSigns, weeklyGoals } from "@/data/mockData";
+import { LayoutOutletContext } from "@/types/layout";
+import { CourseCard } from "../CourseCard";
+import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 export function CourseDashboard() {
-  const { onNavigate, userName } = useOutletContext<ContextType>();
-
-  const activeCourses = [
-    {
-      id: 'alphabet',
-      title: 'ISL Alphabet Fundamentals',
-      description: 'Master the 26 letters of the ISL alphabet.',
-      image: 'https://images.unsplash.com/photo-1725043394860-71304ce2b1b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBoYWJldCUyMGxldHRlcnN8ZW58MXx8fHwxNzYwNTM1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 40,
-      lessonsCompleted: 4,
-      totalLessons: 10,
-    },
-    {
-      id: 'greetings',
-      title: 'Everyday Greetings',
-      description: 'Learn essential greetings and introductions.',
-      image: 'https://images.unsplash.com/photo-1730875648975-e718e5658d76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWxsbyUyMGhhbmRzJTIwd2F2aW5nfGVufDF8fHx8MTc2MDUzNTkyN3ww&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 75,
-      lessonsCompleted: 6,
-      totalLessons: 8,
-    },
-    {
-      id: 'numbers',
-      title: 'Numbers 1-100',
-      description: 'Build confidence with numerical signs.',
-      image: 'https://images.unsplash.com/photo-1653361860636-36f2fb89eab9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudW1iZXJzJTIwbWF0aGVtYXRpY3N8ZW58MXx8fHwxNzYwNTM1NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      progress: 20,
-      lessonsCompleted: 2,
-      totalLessons: 10,
-    },
-  ];
-
-  const recentSigns = [
-    { sign: 'Letter A', accuracy: 92, time: '2 min ago' },
-    { sign: 'Hello', accuracy: 88, time: '15 min ago' },
-    { sign: 'Thank You', accuracy: 95, time: '1 hour ago' },
-    { sign: 'Number 5', accuracy: 85, time: '2 hours ago' },
-  ];
-
-  const weeklyGoals = [
-    { label: 'Practice Sessions', current: 4, target: 5 },
-    { label: 'New Signs', current: 8, target: 10 },
-    { label: 'Accuracy Goal', current: 89, target: 90 },
-  ];
+  const { onNavigate, userName } = useOutletContext<LayoutOutletContext>();
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Welcome Message */}
+    <div className="px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="mb-2">Welcome back, {userName || 'Priya'}!</h1>
-          <p className="text-muted-foreground">Your next lesson awaits — keep up the great progress!</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
+          <h1 className="mt-3 text-4xl font-semibold text-slate-950">Welcome back, {userName}</h1>
+          <p className="mt-3 text-slate-600">Your next lesson is ready. Keep the streak going and let the AI practice coach do the spotting.</p>
         </div>
 
-        {/* Continue Learning Card */}
-        <div className="bg-gradient-to-br from-primary via-secondary to-accent text-white rounded-2xl p-8 mb-8 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative">
-            <div className="flex-1">
-              <p className="text-sm text-white/80 mb-1 flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
-                Continue Your Journey
+        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+          <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
+          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
+                <BookOpen className="h-4 w-4" />
+                Continue Learning
               </p>
-              <h2 className="text-white text-2xl mb-2">ISL Alphabet: Vowels</h2>
-              <p className="text-white/90 mb-4">Lesson 5: The Letter 'E' — You're making great progress!</p>
-              <div className="max-w-md">
-                <div className="flex justify-between text-sm mb-2 text-white/80">
+              <h2 className="text-3xl font-semibold">ISL Alphabet Fundamentals</h2>
+              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through the course and your accuracy trend is climbing.</p>
+              <div className="mt-5 max-w-xl">
+                <div className="mb-2 flex justify-between text-sm text-white/80">
                   <span>Course Progress</span>
-                  <span>40%</span>
+                  <span>46%</span>
                 </div>
-                <Progress value={40} className="h-2 bg-white/20" />
+                <Progress value={46} className="h-2.5 bg-white/20" />
               </div>
             </div>
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => onNavigate('lesson')}
-              className="whitespace-nowrap"
+              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+              onClick={() => onNavigate("lesson:letter-e")}
             >
               Continue Lesson
             </Button>
           </div>
-        </div>
+        </section>
 
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          {/* Progress Overview */}
-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/60 rounded-xl flex items-center justify-center shadow-md">
-                <ChartNoAxesColumn className="w-5 h-5 text-secondary-foreground" />
+        <section className="mb-8 grid gap-6 lg:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary/10">
+                <TrendingUp className="h-5 w-5 text-secondary" />
               </div>
-              <h3>Progress Overview</h3>
+              <h3 className="text-xl">Progress Overview</h3>
             </div>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Overall Completion</span>
-                  <span>45%</span>
-                </div>
-                <Progress value={45} className="h-2" />
+            <div className="mb-4">
+              <div className="mb-2 flex justify-between text-sm">
+                <span className="text-slate-500">Overall Completion</span>
+                <span>45%</span>
               </div>
-              <div className="pt-3 border-t">
-                <p className="text-sm text-muted-foreground mb-2">Weekly Goals</p>
-                {weeklyGoals.map((goal) => (
-                  <div key={goal.label} className="flex items-center justify-between text-sm py-1">
-                    <span className="text-muted-foreground">{goal.label}</span>
-                    <span className={goal.current >= goal.target ? 'text-secondary' : 'text-foreground'}>
-                      {goal.current}/{goal.target}
-                    </span>
+              <Progress value={45} className="h-2.5 bg-slate-100" />
+            </div>
+            <div className="space-y-3 border-t border-slate-200 pt-4">
+              {weeklyGoals.map((goal) => (
+                <div key={goal.label}>
+                  <div className="mb-1 flex justify-between text-sm">
+                    <span className="text-slate-500">{goal.label}</span>
+                    <span>{goal.current}/{goal.target}</span>
                   </div>
-                ))}
-              </div>
+                  <Progress value={(goal.current / goal.target) * 100} className="h-2 bg-slate-100" />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/60 rounded-xl flex items-center justify-center shadow-md">
-                <Target className="w-5 h-5 text-accent-foreground" />
+          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/10">
+                <Target className="h-5 w-5 text-accent" />
               </div>
-              <h3>Your Stats</h3>
+              <h3 className="text-xl">Your Stats</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl mb-1">124</p>
-                <p className="text-sm text-muted-foreground">Signs Mastered</p>
-              </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl mb-1">89%</p>
-                <p className="text-sm text-muted-foreground">Avg Accuracy</p>
-              </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl mb-1">18.5h</p>
-                <p className="text-sm text-muted-foreground">Practice Time</p>
-              </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-2xl mb-1">3</p>
-                <p className="text-sm text-muted-foreground">Active Courses</p>
-              </div>
+              {[
+                ["124", "Signs"],
+                ["89%", "Accuracy"],
+                ["18.5h", "Time"],
+                ["3", "Courses"],
+              ].map(([value, label]) => (
+                <div key={label} className="rounded-2xl bg-slate-50 p-4">
+                  <p className="text-2xl font-semibold text-slate-900">{value}</p>
+                  <p className="mt-1 text-sm text-slate-500">{label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Learning Streak */}
-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center shadow-md">
-                <Flame className="w-5 h-5 text-primary-foreground" />
+          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
+                <Flame className="h-5 w-5 text-primary" />
               </div>
-              <h3>Learning Streak</h3>
+              <h3 className="text-xl">Learning Streak</h3>
             </div>
-            <div className="text-center py-4">
-              <p className="text-4xl mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">12</p>
-              <p className="text-muted-foreground mb-4">Day Streak</p>
-              <div className="flex justify-center gap-1">
-                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
+            <div className="rounded-[1.25rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-5 text-center">
+              <p className="text-5xl font-semibold text-slate-900">12</p>
+              <p className="mt-1 text-sm text-slate-500">Current day streak</p>
+              <div className="mt-5 flex justify-center gap-2">
+                {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
                   <div
-                    key={i}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
-                      i < 5
-                        ? 'bg-gradient-to-br from-primary to-secondary text-white'
-                        : 'bg-muted text-muted-foreground'
+                    key={day + index}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs ${
+                      index < 5 ? "bg-gradient-brand text-white" : "bg-white text-slate-400"
                     }`}
                   >
                     {day}
@@ -180,73 +122,84 @@ export function CourseDashboard() {
                 ))}
               </div>
             </div>
-            <div className="pt-3 border-t mt-4 flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Best streak</span>
-              <span className="text-sm flex items-center gap-1">
-                <Award className="w-4 h-4 text-amber-500" />
+            <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 text-sm">
+              <span className="text-slate-500">Best streak</span>
+              <span className="flex items-center gap-2 text-slate-800">
+                <Award className="h-4 w-4 text-amber-500" />
                 15 days
               </span>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Active Courses */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2>My Active Courses</h2>
-            <Button variant="outline" size="sm" onClick={() => onNavigate('home')}>
+        <section className="mb-8">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-slate-950">Active Courses</h2>
+            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("home")}>
               Browse More
             </Button>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activeCourses.map((course) => (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {courses.map((course) => (
               <CourseCard
                 key={course.id}
-                {...course}
-                onViewCourse={() => onNavigate('course')}
+                id={course.id}
+                title={course.title}
+                description={course.description}
+                image={course.image}
+                progress={course.progress}
+                lessonsCompleted={course.lessonsCompleted}
+                totalLessons={course.totalLessons}
+                onViewCourse={(id) => onNavigate(`course:${id}`)}
               />
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Recently Practiced Signs */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2>Recently Practiced Signs</h2>
-            <Button variant="outline" size="sm" onClick={() => onNavigate('achievements')}>
+        <section>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
+            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("achievements")}>
               View All Progress
             </Button>
           </div>
-          <div className="bg-card rounded-xl border shadow-sm">
-            <div className="divide-y">
-              {recentSigns.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => onNavigate('practice')}
-                  className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-lg">
-                      {item.sign.includes('Letter') ? item.sign.split(' ')[1] : '#'}
-                    </div>
-                    <div className="text-left">
-                      <span className="block">{item.sign}</span>
-                      <span className="text-xs text-muted-foreground">{item.time}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <span className={`text-sm ${item.accuracy >= 90 ? 'text-secondary' : 'text-accent'}`}>
-                        {item.accuracy}% Accuracy
+          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Sign</TableHead>
+                  <TableHead>Last Practiced</TableHead>
+                  <TableHead>Accuracy</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentSigns.map((item) => (
+                  <TableRow key={item.sign}>
+                    <TableCell className="font-medium text-slate-900">{item.sign}</TableCell>
+                    <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          item.accuracy >= 90
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {item.accuracy}%
                       </span>
-                    </div>
-                    <span className="text-sm text-primary">Practice →</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
+                        Practice
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
