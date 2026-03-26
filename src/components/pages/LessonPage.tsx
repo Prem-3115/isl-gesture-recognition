@@ -180,7 +180,7 @@ export function LessonPage() {
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <h3 className="mb-4 text-xl font-semibold text-slate-950">Visual Reference</h3>
               <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
-                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" />
+                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" loading="lazy" decoding="async" />
               </div>
               <p className="mt-4 text-center text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
             </div>

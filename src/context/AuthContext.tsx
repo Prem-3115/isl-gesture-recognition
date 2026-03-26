@@ -9,7 +9,7 @@ import {
   type User,
 } from "firebase/auth";
 import { auth, googleProvider } from "../lib/firebase";
-import { createUserProfile, type UserProfile } from "../lib/db";
+import { createUserProfile, clearProfileCache, type UserProfile } from "../lib/db";
 
 interface AuthContextType {
   user: User | null;
@@ -68,7 +68,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp: (email, password) => createUserWithEmailAndPassword(auth, email, password),
     signInWithGoogle,
     resetPassword: (email) => sendPasswordResetEmail(auth, email),
-    logout: () => signOut(auth),
+    logout: () => {
+      clearProfileCache();
+      return signOut(auth);
+    },
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
