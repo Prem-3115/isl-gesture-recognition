@@ -28,7 +28,7 @@ export interface GestureResult {
 }
 
 interface UseGestureRecognitionOptions {
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   enabled: boolean;
 }
 
