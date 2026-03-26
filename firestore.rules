@@ -1,0 +1,92 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════
+//  ISL Connect — Firestore Security Rules
+//  Last updated: 2026-03-26
+//  Auth methods: Email/Password + Google OAuth
+//  Collections: users
+// ═══════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ─────────────────────────────────
+    // Is the request coming from a logged-in user?
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Is this user accessing their OWN document?
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Does the incoming data have only allowed fields? (prevents injecting extra keys)
+    function hasOnlyAllowedFields(allowed) {
+      return request.resource.data.keys().hasOnly(allowed);
+    }
+
+    // Is the uid field in the document's data correct? (can't fake uid inside a doc)
+    function validUid(userId) {
+      return request.resource.data.uid == userId;
+    }
+
+    // ── /users/{userId} ──────────────────────────────────
+    match /users/{userId} {
+
+      // READ: A user can only read their OWN profile.
+      // Other users CANNOT read someone else's profile.
+      allow read: if isOwner(userId);
+
+      // CREATE: Only the authenticated user can create their OWN document.
+      // Rules:
+      //   • uid in the document must match the auth uid (can't fake uid)
+      //   • Only allowed fields can be written (no extra junk fields)
+      //   • email must be a non-empty string
+      //   • displayName must be a non-empty string
+      allow create: if isOwner(userId)
+        && validUid(userId)
+        && hasOnlyAllowedFields([
+            'uid', 'displayName', 'email', 'photoURL',
+            'createdAt', 'lastLogin', 'stats'
+           ])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0;
+
+      // UPDATE: A user can only update their OWN document.
+      // Rules:
+      //   • Cannot change uid or email (identity fields are immutable)
+      //   • Cannot change createdAt (set once at creation)
+      //   • Can only update these specific fields
+      allow update: if isOwner(userId)
+        && hasOnlyAllowedFields([
+            'uid', 'displayName', 'photoURL',
+            'lastLogin', 'stats'
+           ])
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.get('email', null) == resource.data.get('email', null)
+        && request.resource.data.get('createdAt', null) == resource.data.get('createdAt', null);
+
+      // DELETE: Disabled for safety.
+      // Users cannot delete their own accounts via Firestore directly.
+      // Account deletion should be triggered through a Cloud Function.
+      allow delete: if false;
+
+      // ── /users/{userId}/sessions (future-proof subcollection) ──
+      // If you add a sessions subcollection later, this blocks it by default.
+      // Remove this and add explicit rules when needed.
+      match /{subcollection=**} {
+        allow read, write: if false;
+      }
+    }
+
+    // ── Catch-all: deny everything else ─────────────────
+    // Any collection not explicitly listed above is DENIED.
+    // This is safe-by-default: add new collections explicitly.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
