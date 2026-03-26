@@ -52,8 +52,24 @@ export async function createOrFetchUserProfile(
     };
     await setDoc(userRef, profile);
   } else {
-    await updateDoc(userRef, { lastLogin: Date.now() });
-    profile = snap.data() as UserProfile;
+    const existingData = snap.data() as UserProfile;
+    // Auto-migration: ensure uid and totalAttempts exist to satisfy security rules
+    if (!existingData.uid || existingData.stats?.totalAttempts === undefined) {
+      profile = {
+        ...existingData,
+        uid: existingData.uid || uid,
+        lastLogin: Date.now(),
+        stats: {
+          totalAttempts: existingData.stats?.totalAttempts ?? 0,
+          successfulAttempts: existingData.stats?.successfulAttempts ?? 0,
+          bestAccuracy: existingData.stats?.bestAccuracy ?? 0,
+        },
+      };
+      await setDoc(userRef, profile);
+    } else {
+      await updateDoc(userRef, { lastLogin: Date.now() });
+      profile = { ...existingData, lastLogin: Date.now() };
+    }
   }
 
   profileCache = profile;

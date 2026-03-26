@@ -84,14 +84,21 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
     setErrors({});
   };
 
-  const handleSocialLogin = async () => {
+  const handleSocialLogin = async (provider: "google" | "github") => {
     try {
       setIsLoading(true);
-      await signInWithGoogle();
-      toast.success("Signed in with Google!");
+      if (provider === "google") {
+        await signInWithGoogle();
+        toast.success("Signed in with Google!");
+      } else {
+        // GitHub sign-in not implemented in service yet, but let's prepare the UI
+        toast.error("GitHub sign-in coming soon!");
+        return;
+      }
       onClose();
-    } catch (error) {
-      toast.error("Failed to sign in with Google.");
+    } catch (error: any) {
+      console.error(`${provider} sign-in error:`, error);
+      toast.error(error.message || `Failed to sign in with ${provider}.`);
     } finally {
       setIsLoading(false);
     }
@@ -226,7 +233,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={handleSocialLogin}>
+              <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={() => handleSocialLogin("google")}>
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -235,7 +242,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
                 </svg>
                 Google
               </Button>
-              <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={handleSocialLogin}>
+              <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={() => handleSocialLogin("github")}>
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </Button>
