@@ -293,7 +293,7 @@ export function PracticePage() {
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Reference</p>
               <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
-                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" />
+                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" loading="lazy" decoding="async" />
               </div>
               <p className="mt-4 text-sm leading-7 text-slate-600">
                 Use the original chart bundled in the project as your visual ISL reference while testing recognition.

@@ -34,7 +34,7 @@ export const courses = [
     description:
       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
     image:
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=75&fm=webp",
     difficulty: "Beginner",
     progress: 74,
     lessonsCompleted: 6,
