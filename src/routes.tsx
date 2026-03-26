@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
 import { LoaderCircle } from "lucide-react@0.487.0";
+import { SkeletonDashboard } from "./components/SkeletonCard";
 
 // Eagerly load the homepage — it's the entry point
 import { HomePage } from "./components/pages/HomePage";
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       { index: true, Component: HomePage },
       {
         path: "dashboard",
-        element: <Suspense fallback={<PageLoader />}><CourseDashboard /></Suspense>,
+        element: <Suspense fallback={<SkeletonDashboard />}><CourseDashboard /></Suspense>,
       },
       {
         path: "course/:courseId",
