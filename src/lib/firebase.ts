@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import {
-  initializeAuth,
+  getAuth,
   indexedDBLocalPersistence,
+  setPersistence,
   GoogleAuthProvider,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -17,9 +18,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Use IndexedDB for auth persistence — survives page refresh without loading flash
-export const auth = initializeAuth(app, {
-  persistence: indexedDBLocalPersistence,
+// Initialize Auth
+export const auth = getAuth(app);
+
+// Use IndexedDB for auth persistence
+setPersistence(auth, indexedDBLocalPersistence).catch((error) => {
+  console.error("Auth persistence error:", error);
 });
 
 export const db = getFirestore(app);

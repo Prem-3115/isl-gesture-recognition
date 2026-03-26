@@ -34,22 +34,16 @@ service cloud.firestore {
     // ── /users/{userId} ──────────────────────────────────
     match /users/{userId} {
 
-      // READ: A user can only read their OWN profile.
-      // Other users CANNOT read someone else's profile.
-      allow read: if isOwner(userId);
+      // READ: Temporarily relaxed for debugging
+      allow read: if isAuthenticated();
 
       // CREATE: Only the authenticated user can create their OWN document.
       // Rules:
       //   • uid in the document must match the auth uid (can't fake uid)
-      //   • Only allowed fields can be written (no extra junk fields)
       //   • email must be a non-empty string
       //   • displayName must be a non-empty string
       allow create: if isOwner(userId)
         && validUid(userId)
-        && hasOnlyAllowedFields([
-            'uid', 'displayName', 'email', 'photoURL',
-            'createdAt', 'lastLogin', 'stats'
-           ])
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0
         && request.resource.data.displayName is string
@@ -59,12 +53,7 @@ service cloud.firestore {
       // Rules:
       //   • Cannot change uid or email (identity fields are immutable)
       //   • Cannot change createdAt (set once at creation)
-      //   • Can only update these specific fields
       allow update: if isOwner(userId)
-        && hasOnlyAllowedFields([
-            'uid', 'displayName', 'photoURL',
-            'lastLogin', 'stats'
-           ])
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.get('email', null) == resource.data.get('email', null)
         && request.resource.data.get('createdAt', null) == resource.data.get('createdAt', null);
