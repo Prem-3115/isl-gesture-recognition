@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner@2.0.3";
+import { LoaderCircle } from "lucide-react@0.487.0";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { useAuth } from "../context/AuthContext";
 
 const protectedPrefixes = ["/dashboard", "/course/", "/lesson/", "/practice", "/achievements"];
 
@@ -54,18 +56,19 @@ function getCurrentSection(pathname: string) {
 export function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("Priya");
+  const { user, profile, isLoggedIn, logout, isLoading: isAuthLoading } = useAuth();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
+  const userName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || "User";
+
   useEffect(() => {
-    if (!isLoggedIn && isProtectedPath(location.pathname)) {
+    if (!isAuthLoading && !isLoggedIn && isProtectedPath(location.pathname)) {
       setAuthMode("login");
       setIsAuthOpen(true);
       navigate("/", { replace: true });
     }
-  }, [isLoggedIn, location.pathname, navigate]);
+  }, [isLoggedIn, isAuthLoading, location.pathname, navigate]);
 
   const handleOpenAuth = (mode: "login" | "signup" = "login") => {
     setAuthMode(mode);
@@ -82,19 +85,14 @@ export function Layout() {
     navigate(targetRoute);
   };
 
-  const handleLogin = (name: string) => {
-    setUserName(name);
-    setIsLoggedIn(true);
-    setIsAuthOpen(false);
-    navigate("/dashboard");
-    toast.success(`Welcome back, ${name}!`);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserName("Priya");
-    navigate("/");
-    toast.success("Logged out successfully.");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+      toast.success("Logged out successfully.");
+    } catch (error) {
+      toast.error("Failed to log out.");
+    }
   };
 
   const outletContext = useMemo<LayoutOutletContext>(
@@ -106,6 +104,15 @@ export function Layout() {
     }),
     [isLoggedIn, userName],
   );
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -124,7 +131,6 @@ export function Layout() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onLogin={handleLogin}
         initialMode={authMode}
       />
     </div>
