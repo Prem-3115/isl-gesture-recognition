@@ -4,15 +4,17 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner@2.0.3";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (name: string) => void;
   initialMode?: "login" | "signup";
 }
 
-export function AuthModal({ isOpen, onClose, onLogin, initialMode = "login" }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalProps) {
+  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,14 +55,28 @@ export function AuthModal({ isOpen, onClose, onLogin, initialMode = "login" }: A
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1100));
-    setIsLoading(false);
-
-    const displayName = mode === "signup" ? formData.name.trim().split(" ")[0] : "Priya";
-    onLogin(displayName);
-    onClose();
-    setFormData({ name: "", email: "", password: "" });
-    setErrors({});
+    try {
+      if (mode === "login") {
+        await signIn(formData.email, formData.password);
+        toast.success("Welcome back!");
+      } else {
+        await signUp(formData.email, formData.password);
+        toast.success("Account created successfully!");
+      }
+      onClose();
+      setFormData({ name: "", email: "", password: "" });
+      setErrors({});
+    } catch (error: any) {
+      console.error("Auth error:", error);
+      const message = error.code === "auth/user-not-found" || error.code === "auth/wrong-password" 
+        ? "Invalid email or password"
+        : error.code === "auth/email-already-in-use"
+        ? "Email already in use"
+        : "An error occurred. Please try again.";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const switchMode = () => {
@@ -68,9 +84,30 @@ export function AuthModal({ isOpen, onClose, onLogin, initialMode = "login" }: A
     setErrors({});
   };
 
-  const handleSocialLogin = () => {
-    onLogin("Priya");
-    onClose();
+  const handleSocialLogin = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithGoogle();
+      toast.success("Signed in with Google!");
+      onClose();
+    } catch (error) {
+      toast.error("Failed to sign in with Google.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!formData.email) {
+      setErrors({ email: "Enter your email first" });
+      return;
+    }
+    try {
+      await resetPassword(formData.email);
+      toast.success("Password reset email sent!");
+    } catch (error) {
+      toast.error("Failed to send reset email.");
+    }
   };
 
   return (
@@ -153,7 +190,11 @@ export function AuthModal({ isOpen, onClose, onLogin, initialMode = "login" }: A
 
             {mode === "login" && (
               <div className="flex justify-end">
-                <button type="button" className="text-sm text-primary hover:underline">
+                <button 
+                  type="button" 
+                  onClick={handleForgotPassword}
+                  className="text-sm text-primary hover:underline"
+                >
                   Forgot password?
                 </button>
               </div>
