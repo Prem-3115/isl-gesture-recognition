@@ -15,12 +15,24 @@ export interface UserProfile {
   };
 }
 
+// In-memory cache — prevents redundant Firestore reads on every auth state change
+let profileCache: UserProfile | null = null;
+
+export function clearProfileCache() {
+  profileCache = null;
+}
+
 export async function createUserProfile(uid: string, data: Partial<UserProfile>) {
+  // Return cache if it belongs to the same user
+  if (profileCache?.uid === uid) return profileCache;
+
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
 
+  let profile: UserProfile;
+
   if (!snap.exists()) {
-    const profile: UserProfile = {
+    profile = {
       uid,
       displayName: data.displayName || "User",
       email: data.email || "",
@@ -34,18 +46,22 @@ export async function createUserProfile(uid: string, data: Partial<UserProfile>)
       },
     };
     await setDoc(userRef, profile);
-    return profile;
   } else {
-    // Update last login
     await updateDoc(userRef, { lastLogin: Date.now() });
-    return snap.data() as UserProfile;
+    profile = snap.data() as UserProfile;
   }
+
+  profileCache = profile;
+  return profile;
 }
 
 export async function getUserProfile(uid: string) {
+  if (profileCache?.uid === uid) return profileCache;
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
-  return snap.exists() ? (snap.data() as UserProfile) : null;
+  const profile = snap.exists() ? (snap.data() as UserProfile) : null;
+  if (profile) profileCache = profile;
+  return profile;
 }
 
 export async function updateUserStats(
@@ -58,4 +74,8 @@ export async function updateUserStats(
     "stats.successfulAttempts": stats.successfulAttempts,
     "stats.bestAccuracy": stats.bestAccuracy,
   });
+  // Update cache too
+  if (profileCache?.uid === uid) {
+    profileCache = { ...profileCache, stats };
+  }
 }

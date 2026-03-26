@@ -53,6 +53,15 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router'],
+            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+            'vendor-ui': ['lucide-react', 'sonner', 'clsx', 'tailwind-merge'],
+          },
+        },
+      },
     },
     server: {
       port: 3000,
