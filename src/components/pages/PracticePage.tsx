@@ -13,7 +13,7 @@ import {
 } from "lucide-react@0.487.0";
 import islChart from "@/assets/isl_chart.jpg";
 import { useGestureRecognition } from "@/hooks/useGestureRecognition";
-import { LayoutOutletContext } from "@/types/layout";
+import type { LayoutOutletContext } from "@/types/layout";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
