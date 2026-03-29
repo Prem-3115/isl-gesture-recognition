@@ -253,3 +253,144 @@ export const challengingSigns = [
   { sign: "Number 7", accuracy: 75, attempts: 8 },
   { sign: "Thank You", accuracy: 76, attempts: 7 },
 ] as const;
+
+// ─── Community Page Data ────────────────────────────────────────────────────
+
+export const leaderboard = [
+  { rank: 1, name: "Priya Sharma", city: "Delhi", signsLearned: 214, streak: 32, accuracy: 97 },
+  { rank: 2, name: "Arjun Mehta", city: "Mumbai", signsLearned: 198, streak: 28, accuracy: 95 },
+  { rank: 3, name: "Sneha Reddy", city: "Bengaluru", signsLearned: 179, streak: 21, accuracy: 93 },
+  { rank: 4, name: "Kabir Verma", city: "Pune", signsLearned: 163, streak: 18, accuracy: 91 },
+  { rank: 5, name: "Ananya Singh", city: "Chennai", signsLearned: 151, streak: 15, accuracy: 90 },
+  { rank: 6, name: "Rohan Desai", city: "Kolkata", signsLearned: 138, streak: 12, accuracy: 88 },
+  { rank: 7, name: "Meera Nair", city: "Hyderabad", signsLearned: 124, streak: 12, accuracy: 89 },
+  { rank: 8, name: "Vikram Joshi", city: "Jaipur", signsLearned: 116, streak: 9, accuracy: 86 },
+] as const;
+
+export const discussions = [
+  {
+    id: "d1",
+    author: "Priya Sharma",
+    initials: "PS",
+    time: "2 hours ago",
+    topic: "Tips for practising ISL letters J and Z?",
+    body: "I keep confusing the wrist rotation for J and Z. Any tips on how to remember the difference quickly?",
+    replies: 14,
+    likes: 28,
+    tag: "Alphabet",
+  },
+  {
+    id: "d2",
+    author: "Kabir Verma",
+    initials: "KV",
+    time: "5 hours ago",
+    topic: "Flask API sometimes freezes mid-session",
+    body: "When my hand goes out of frame for a second the prediction stops and I have to restart the camera. Anyone else?",
+    replies: 8,
+    likes: 12,
+    tag: "Practice",
+  },
+  {
+    id: "d3",
+    author: "Sneha Reddy",
+    initials: "SR",
+    time: "1 day ago",
+    topic: "Completed the ISL greetings course — my experience",
+    body: "Just finished the everyday greetings module with 93% average. The AI feedback was incredibly helpful. Highly recommend going through it twice.",
+    replies: 22,
+    likes: 47,
+    tag: "Milestone",
+  },
+  {
+    id: "d4",
+    author: "Meera Nair",
+    initials: "MN",
+    time: "2 days ago",
+    topic: "Resources for ISL Number signs beyond 20?",
+    body: "The course only goes up to 10. Has anyone found good reference material for ISL numbers in the 20-100 range?",
+    replies: 6,
+    likes: 9,
+    tag: "Resources",
+  },
+] as const;
+
+export const studyGroups = [
+  {
+    id: "sg1",
+    name: "Alphabet & Basics",
+    description: "For newcomers mastering the 26 ISL alphabets and foundational hand shapes.",
+    members: 184,
+    icon: Hand,
+    accent: "from-primary to-secondary",
+    tag: "Beginner",
+  },
+  {
+    id: "sg2",
+    name: "Daily Practice Group",
+    description: "Commit to at least one practice session per day. Share your scores and keep each other accountable.",
+    members: 92,
+    icon: Flame,
+    accent: "from-secondary to-accent",
+    tag: "Active",
+  },
+  {
+    id: "sg3",
+    name: "ISL Educators",
+    description: "Teachers, therapists, and healthcare professionals learning ISL for work.",
+    members: 57,
+    icon: Sparkles,
+    accent: "from-accent to-primary",
+    tag: "Professional",
+  },
+  {
+    id: "sg4",
+    name: "High Score Hunters",
+    description: "Compete for the weekly accuracy leaderboard. Share your gestures and get peer feedback.",
+    members: 43,
+    icon: Trophy,
+    accent: "from-primary via-secondary to-accent",
+    tag: "Competitive",
+  },
+] as const;
+
+export const signOfTheDay = {
+  sign: "NAMASTE",
+  description: "The classic Indian greeting — place both palms together in front of your chest, fingers pointing upward, and give a small bow of the head.",
+  category: "Greetings",
+  practiceCount: 1248,
+  topAccuracy: 97,
+} as const;
+
+export const communityEvents = [
+  {
+    id: "e1",
+    title: "ISL Alphabet Speed Round",
+    date: "Apr 5, 2026",
+    time: "6:00 PM IST",
+    type: "Live Challenge",
+    interested: 38,
+  },
+  {
+    id: "e2",
+    title: "Beginner Q&A with the ISL team",
+    date: "Apr 10, 2026",
+    time: "5:00 PM IST",
+    type: "Webinar",
+    interested: 120,
+  },
+  {
+    id: "e3",
+    title: "Weekly Leaderboard Resets Every Sunday",
+    date: "Every Sunday",
+    time: "12:00 AM IST",
+    type: "Recurring",
+    interested: 0,
+  },
+] as const;
+
+export const communityStats = [
+  { value: "50K+", label: "Members" },
+  { value: "2.4M", label: "Signs Practised" },
+  { value: "18K+", label: "Discussion Posts" },
+  { value: "340+", label: "Study Sessions" },
+] as const;

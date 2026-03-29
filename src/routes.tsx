@@ -23,6 +23,9 @@ const PracticePage = lazy(() =>
 const AchievementsPage = lazy(() =>
   import("./components/pages/AchievementsPage").then((m) => ({ default: m.AchievementsPage }))
 );
+const CommunityPage = lazy(() =>
+  import("./components/pages/CommunityPage").then((m) => ({ default: m.CommunityPage }))
+);
 
 function PageLoader() {
   return (
@@ -57,6 +60,10 @@ export const router = createBrowserRouter([
       {
         path: "achievements",
         element: <Suspense fallback={<PageLoader />}><AchievementsPage /></Suspense>,
+      },
+      {
+        path: "community",
+        element: <Suspense fallback={<PageLoader />}><CommunityPage /></Suspense>,
       },
       { path: "*", Component: HomePage },
     ],

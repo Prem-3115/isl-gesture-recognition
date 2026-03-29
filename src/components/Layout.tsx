@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { useAuth } from "../context/AuthContext";
 
-const protectedPrefixes = ["/dashboard", "/course/", "/lesson/", "/practice", "/achievements"];
+const protectedPrefixes = ["/dashboard", "/course/", "/lesson/", "/practice", "/achievements", "/community"];
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
@@ -33,7 +33,7 @@ function resolveRoute(page: string) {
     practice: "/practice",
     achievements: "/achievements",
     courses: "/dashboard",
-    community: "/",
+    community: "/community",
     about: "/",
   };
 
@@ -48,6 +48,9 @@ function getCurrentSection(pathname: string) {
     return "practice";
   }
   if (pathname.startsWith("/achievements")) {
+    return "achievements";
+  }
+  if (pathname.startsWith("/community")) {
     return "community";
   }
   return "home";
