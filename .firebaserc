@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "sign-language-learner-de"
+  },
+  "targets": {
+    "sign-language-learner-de": {
+      "hosting": {
+        "sign-language-learner-de": [
+          "sign-language-learner-de"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
