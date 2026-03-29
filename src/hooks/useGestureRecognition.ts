@@ -33,7 +33,7 @@ interface UseGestureRecognitionOptions {
 }
 
 const MEDIAPIPE_WASM_URL =
-  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm';
+  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm';
 
 export function useGestureRecognition({
   videoRef,
@@ -244,6 +244,11 @@ export function useGestureRecognition({
       animFrameRef.current = requestAnimationFrame(processFrame);
     })();
   }, [videoRef]);
+
+  // Pre-load the model eagerly so it's ready before the camera starts.
+  useEffect(() => {
+    loadMediaPipe();
+  }, [loadMediaPipe]);
 
   useEffect(() => {
     if (!enabled) {
