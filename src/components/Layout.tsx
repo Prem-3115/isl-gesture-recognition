@@ -34,6 +34,7 @@ function resolveRoute(page: string) {
     achievements: "/achievements",
     courses: "/dashboard",
     community: "/community",
+    faqs: "/faqs",
     about: "/",
   };
 
