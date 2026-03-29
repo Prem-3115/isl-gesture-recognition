@@ -70,7 +70,6 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <p>&copy; {year} ISL Connect. All rights reserved.</p>
-          <p>Built with React, TypeScript, TailwindCSS v4, shadcn/ui, and mocked AI practice flows.</p>
         </div>
       </div>
     </footer>
