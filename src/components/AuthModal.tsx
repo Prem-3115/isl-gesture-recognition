@@ -60,7 +60,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
         await signIn(formData.email, formData.password);
         toast.success("Welcome back!");
       } else {
-        await signUp(formData.email, formData.password);
+        await signUp(formData.email, formData.password, formData.name);
         toast.success("Account created successfully!");
       }
       onClose();
@@ -242,7 +242,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
                 </svg>
                 Google
               </Button>
-              <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={() => handleSocialLogin("github")}>
+              <Button type="button" variant="outline" className="h-11 rounded-xl opacity-50" disabled title="GitHub sign-in coming soon">
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </Button>
