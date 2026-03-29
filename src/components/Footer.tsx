@@ -2,9 +2,10 @@ import { Facebook, Hand, Instagram, Twitter, Youtube } from "lucide-react@0.487.
 
 interface FooterProps {
   onNavigate: (page: string) => void;
+  onOpenFaq: () => void;
 }
 
-export function Footer({ onNavigate }: FooterProps) {
+export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -52,7 +53,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Help Center</button>
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Accessibility</button>
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Contact Us</button>
-              <button onClick={() => onNavigate("faqs")} className="text-left transition hover:text-primary">FAQs</button>
+              <button onClick={onOpenFaq} className="text-left transition hover:text-primary">FAQs</button>
             </div>
           </div>
 

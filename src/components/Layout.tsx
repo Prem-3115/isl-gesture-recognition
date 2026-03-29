@@ -4,6 +4,7 @@ import { toast } from "sonner@2.0.3";
 import { LoaderCircle } from "lucide-react@0.487.0";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
+import { FAQModal } from "./FAQModal";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { useAuth } from "../context/AuthContext";
@@ -63,6 +64,7 @@ export function Layout() {
   const { user, profile, isLoggedIn, logout, isLoading: isAuthLoading } = useAuth();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [isFaqOpen, setIsFaqOpen] = useState(false);
 
   const userName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || "User";
 
@@ -131,11 +133,15 @@ export function Layout() {
       <main className="flex-1">
         <Outlet context={outletContext} />
       </main>
-      <Footer onNavigate={handleNavigate} />
+      <Footer onNavigate={handleNavigate} onOpenFaq={() => setIsFaqOpen(true)} />
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         initialMode={authMode}
+      />
+      <FAQModal 
+        isOpen={isFaqOpen} 
+        onClose={() => setIsFaqOpen(false)} 
       />
     </div>
   );
