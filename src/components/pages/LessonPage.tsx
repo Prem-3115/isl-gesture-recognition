@@ -38,6 +38,9 @@ export function LessonPage() {
   const [lessonCompleted, setLessonCompleted] = useState(false);
 
   const lesson = useMemo(() => lessonMeta[lessonId] ?? lessonMeta["letter-a"], [lessonId]);
+  const lessonKeys = Object.keys(lessonMeta);
+  const lessonNumber = lessonKeys.indexOf(lessonId) + 1 || 1;
+  const totalLessons = lessonKeys.length;
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -94,7 +97,7 @@ export function LessonPage() {
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
-            <p className="mt-2 text-slate-600">Lesson 2 of 10 · Learn ISL Alphabet</p>
+            <p className="mt-2 text-slate-600">Lesson {lessonNumber} of {totalLessons} · Learn ISL Alphabet</p>
           </div>
           {lessonCompleted ? (
             <div className="flex items-center gap-2 text-emerald-600">
