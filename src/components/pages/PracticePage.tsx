@@ -31,12 +31,9 @@ export function PracticePage() {
   useEffect(() => {
     const checkAPI = async () => {
       try {
-        await fetch("http://127.0.0.1:5000/predict", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ landmarks: new Array(63).fill(0) }),
-        });
-        setApiOnline(true);
+        const res = await fetch("http://127.0.0.1:5000/health");
+        const data = await res.json();
+        setApiOnline(res.ok && data.model_loaded === true);
       } catch {
         setApiOnline(false);
       }
