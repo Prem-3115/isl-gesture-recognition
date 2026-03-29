@@ -1,4 +1,4 @@
-# ISL Gesture Recognition 🤖✋
+# ISL Connect 🤖✋
 
 A real-time Indian Sign Language recognition system using AI.
 
