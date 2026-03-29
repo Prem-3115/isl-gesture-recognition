@@ -52,18 +52,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Help Center</button>
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Accessibility</button>
               <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Contact Us</button>
-              <button
-                onClick={() => {
-                  onNavigate("home");
-                  // Give the page a tick to render then scroll to the FAQ section
-                  setTimeout(() => {
-                    document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" });
-                  }, 100);
-                }}
-                className="text-left transition hover:text-primary"
-              >
-                FAQs
-              </button>
+              <button onClick={() => onNavigate("faqs")} className="text-left transition hover:text-primary">FAQs</button>
             </div>
           </div>
 
