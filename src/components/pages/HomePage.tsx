@@ -1,10 +1,16 @@
 import { useOutletContext } from "react-router";
-import { ArrowRight, CheckCircle2, Sparkles, Star } from "lucide-react@0.487.0";
-import { courses, featureTiles, featuredStats, howItWorks, testimonials } from "@/data/mockData";
+import { ArrowRight, CheckCircle2, HelpCircle, Sparkles, Star } from "lucide-react@0.487.0";
+import { courses, faqs, featureTiles, featuredStats, howItWorks, testimonials } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Button } from "../ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 export function HomePage() {
   const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<LayoutOutletContext>();
@@ -178,6 +184,38 @@ export function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────── */}
+      <section id="faq" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-10 text-center">
+            <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-sm text-primary shadow-sm">
+              <HelpCircle className="h-4 w-4" />
+              Frequently Asked Questions
+            </div>
+            <h2 className="text-3xl font-semibold text-slate-950">
+              Got questions? We have answers.
+            </h2>
+            <p className="mt-3 text-slate-600">
+              Everything you need to know about ISL Connect, gesture recognition, and getting started.
+            </p>
+          </div>
+          <div className="rounded-[1.75rem] border border-white/70 bg-white px-6 py-2 shadow-sm">
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((item, idx) => (
+                <AccordionItem key={idx} value={`faq-${idx}`} className="border-slate-100 last:border-0">
+                  <AccordionTrigger className="py-5 text-left text-sm font-semibold text-slate-900 hover:text-primary hover:no-underline [&[data-state=open]]:text-primary">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 text-sm leading-7 text-slate-600">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </section>
