@@ -1,111 +1,137 @@
-"""
-Improved train_model.py
-=======================
-Fixes for poor real-world accuracy:
-1. Uses Random Forest instead of MLP — more robust to lighting/angle variation
-2. Adds StandardScaler — normalizes feature ranges properly
-3. Uses cross-validation — gives true accuracy estimate
-4. Adds confidence threshold in saved model info
-5. Prints per-class accuracy so you can see which signs are weak
-"""
+from pathlib import Path
 
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, confusion_matrix
 import joblib
-import os
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier, VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.base import clone
 
-# ── Load dataset ──────────────────────────────────────────────────────────────
-file_path = "landmarks.csv"
+from model_utils import build_feature_matrix
+
+
+DATASET_PATH = Path(__file__).with_name("landmarks.csv")
+MODEL_PATH = Path(__file__).with_name("isl_model.pkl")
+ENCODER_PATH = Path(__file__).with_name("label_encoder.pkl")
+
+
 print("Loading dataset...")
-df = pd.read_csv(file_path, low_memory=False)
-
+df = pd.read_csv(DATASET_PATH, low_memory=False)
 print(f"Total samples: {len(df)}")
 print(f"Classes found: {sorted(df['label'].unique())}")
 print(f"Samples per class:\n{df['label'].value_counts().sort_index()}\n")
 
-# ── Split features and labels ─────────────────────────────────────────────────
-X = df.drop("label", axis=1).values.astype(float)
-y = df["label"].astype(str)
+raw_landmarks = df.drop("label", axis=1).values.astype(float)
+labels = df["label"].astype(str)
 
-# ── Encode labels ─────────────────────────────────────────────────────────────
+print("Building rotation- and scale-stable features...")
+X = build_feature_matrix(raw_landmarks)
+
 encoder = LabelEncoder()
-y_encoded = encoder.fit_transform(y)
-print(f"Label classes: {list(encoder.classes_)}\n")
+y = encoder.fit_transform(labels)
+print(f"Label classes: {list(encoder.classes_)}")
+print(f"Feature vector size: {X.shape[1]}\n")
 
-# ── Train/test split ──────────────────────────────────────────────────────────
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
+    X, y, test_size=0.2, random_state=42, stratify=y
 )
 print(f"Training samples: {len(X_train)}")
 print(f"Test samples: {len(X_test)}\n")
 
-# ── Build pipeline: Scaler + Random Forest ────────────────────────────────────
-# Random Forest is much more robust than MLP for hand gesture recognition
-# because it handles feature importance automatically and doesn't overfit as easily
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),
-    ('classifier', RandomForestClassifier(
-        n_estimators=500,      # 500 trees for better accuracy
-        max_depth=None,        # Allow trees to grow fully to capture complex sign features
-        min_samples_split=2,   # default
-        min_samples_leaf=1,    # default
-        random_state=42,
-        n_jobs=-1,             # use all CPU cores
-        class_weight='balanced' # handle class imbalance
-    ))
-])
+model = VotingClassifier(
+    estimators=[
+        (
+            "rf",
+            RandomForestClassifier(
+                n_estimators=350,
+                max_features="sqrt",
+                min_samples_leaf=2,
+                class_weight="balanced_subsample",
+                random_state=42,
+                n_jobs=1,
+            ),
+        ),
+        (
+            "et",
+            ExtraTreesClassifier(
+                n_estimators=500,
+                max_features="sqrt",
+                min_samples_leaf=2,
+                class_weight="balanced",
+                random_state=42,
+                n_jobs=1,
+            ),
+        ),
+        (
+            "lr",
+            make_pipeline(
+                StandardScaler(),
+                LogisticRegression(max_iter=2500),
+            ),
+        ),
+    ],
+    voting="soft",
+    weights=[3, 4, 1],
+    n_jobs=1,
+)
 
-# ── Train model ───────────────────────────────────────────────────────────────
-print("Training Random Forest model...")
-pipeline.fit(X_train, y_train)
+print("Training ensemble model...")
+model.fit(X_train, y_train)
 
-# ── Test accuracy ─────────────────────────────────────────────────────────────
-test_accuracy = pipeline.score(X_test, y_test)
+test_accuracy = model.score(X_test, y_test)
 print(f"\nTest Accuracy: {test_accuracy * 100:.2f}%")
 
-# ── Cross validation (true accuracy estimate) ─────────────────────────────────
-print("\nRunning 5-fold cross validation (this gives the TRUE accuracy)...")
-cv_scores = cross_val_score(pipeline, X, y_encoded, cv=5, n_jobs=-1)
-print(f"Cross-validation scores: {[f'{s*100:.1f}%' for s in cv_scores]}")
-print(f"Mean CV Accuracy: {cv_scores.mean() * 100:.2f}% (+/- {cv_scores.std() * 100:.2f}%)")
+print("\nRunning 5-fold cross validation...")
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+try:
+    cv_scores_list = []
+    for fold_index, (train_idx, val_idx) in enumerate(cv.split(X, y), start=1):
+        fold_model = clone(model)
+        fold_model.fit(X[train_idx], y[train_idx])
+        fold_score = fold_model.score(X[val_idx], y[val_idx])
+        cv_scores_list.append(fold_score)
+        print(f"Fold {fold_index}: {fold_score * 100:.2f}%")
 
-# ── Per-class accuracy ────────────────────────────────────────────────────────
-print("\n── Per-class accuracy (shows which signs are weak) ──")
-y_pred = pipeline.predict(X_test)
-report = classification_report(
-    y_test, y_pred,
-    target_names=encoder.classes_,
-    zero_division=0
+    cv_scores = np.asarray(cv_scores_list, dtype=float)
+    print(f"Cross-validation scores: {[f'{score * 100:.1f}%' for score in cv_scores]}")
+    print(f"Mean CV Accuracy: {cv_scores.mean() * 100:.2f}% (+/- {cv_scores.std() * 100:.2f}%)")
+except Exception as exc:
+    cv_scores = np.array([])
+    print(f"Cross-validation failed: {exc}")
+    print("Tip: if training works but CV fails, reduce parallelism or skip CV during iteration.")
+
+print("\nPer-class accuracy")
+y_pred = model.predict(X_test)
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=encoder.classes_,
+        zero_division=0,
+    )
 )
-print(report)
 
-# ── Confusion matrix for weak signs ──────────────────────────────────────────
-print("── Signs with accuracy below 80% (need more training data) ──")
-from sklearn.metrics import confusion_matrix
+print("Signs with accuracy below 80%")
 cm = confusion_matrix(y_test, y_pred)
-per_class_acc = cm.diagonal() / cm.sum(axis=1)
-for i, (cls, acc) in enumerate(zip(encoder.classes_, per_class_acc)):
+per_class_acc = cm.diagonal() / np.maximum(cm.sum(axis=1), 1)
+for sign, acc in zip(encoder.classes_, per_class_acc):
     if acc < 0.80:
-        print(f"  ⚠️  {cls}: {acc*100:.1f}% — needs improvement")
+        print(f"  {sign}: {acc * 100:.1f}%")
 
-# ── Save model + encoder ──────────────────────────────────────────────────────
-model_path   = "isl_model.pkl"
-encoder_path = "label_encoder.pkl"
+joblib.dump(model, MODEL_PATH)
+joblib.dump(encoder, ENCODER_PATH)
 
-joblib.dump(pipeline, model_path)
-joblib.dump(encoder, encoder_path)
-
-print(f"\n{'='*50}")
-print(f"✅ Model saved at:   {model_path}")
-print(f"✅ Encoder saved at: {encoder_path}")
-print(f"{'='*50}")
-print(f"\nTest Accuracy:  {test_accuracy * 100:.2f}%")
-print(f"CV Accuracy:    {cv_scores.mean() * 100:.2f}%")
-print(f"\nIf CV accuracy is much lower than test accuracy → model was overfitting before")
-print(f"If CV accuracy is similar to test accuracy → model generalizes well ✅")
-print(f"\nNext step: restart isl_api.py and test in the browser!")
+print(f"\n{'=' * 50}")
+print(f"Model saved at:   {MODEL_PATH}")
+print(f"Encoder saved at: {ENCODER_PATH}")
+print(f"{'=' * 50}")
+print(f"\nTest Accuracy: {test_accuracy * 100:.2f}%")
+if cv_scores.size:
+    print(f"CV Accuracy:   {cv_scores.mean() * 100:.2f}%")
+else:
+    print("CV Accuracy:   unavailable")
+print("\nNext step: restart isl_api.py and test in the browser.")

@@ -1,13 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FilesetResolver,
   HandLandmarker,
   type HandLandmarkerResult,
 } from '@mediapipe/tasks-vision';
-import {
-  type Landmark,
-  evaluateFingerStates,
-} from '../data/islSigns';
+import { type Landmark } from '../data/islSigns';
 
 export type RecognitionStatus =
   | 'idle'
@@ -41,11 +38,12 @@ export function useGestureRecognition({
 }: UseGestureRecognitionOptions) {
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const animFrameRef = useRef<number | null>(null);
+  const requestInFlightRef = useRef(false);
   const lastVideoTimeRef = useRef<number>(-1);
   const stablePredictionRef = useRef<string | null>(null);
   const stableCountRef = useRef<number>(0);
   const lastFeedbackRef = useRef<string>('Initializing...');
-  const predictionHistory = useRef<string[]>([]);
+  const predictionHistory = useRef<Array<{ label: string; confidence: number }>>([]);
 
   const [result, setResult] = useState<GestureResult>({
     feedback: 'Initializing...',
@@ -64,7 +62,9 @@ export function useGestureRecognition({
         body: JSON.stringify({ landmarks }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) return null;
+      if (!res.ok || data.error) {
+        return null;
+      }
       return data;
     } catch {
       return null;
@@ -125,13 +125,15 @@ export function useGestureRecognition({
       return;
     }
 
-    const handDetected = mpResult.landmarks && mpResult.landmarks.length > 0;
+    const handDetected = Boolean(mpResult.landmarks && mpResult.landmarks.length > 0);
 
     if (!handDetected) {
       predictionHistory.current = [];
       stablePredictionRef.current = null;
       stableCountRef.current = 0;
-      const newFeedback = 'No hand detected — show your hand to the camera';
+      requestInFlightRef.current = false;
+      const newFeedback = 'No hand detected - show your hand to the camera';
+
       if (lastFeedbackRef.current !== newFeedback) {
         lastFeedbackRef.current = newFeedback;
         setResult(prev => ({
@@ -144,28 +146,29 @@ export function useGestureRecognition({
           confidence: 0,
         }));
       }
+
       animFrameRef.current = requestAnimationFrame(processFrame);
       return;
     }
 
     const landmarks = mpResult.landmarks![0] as Landmark[];
+    const flattened = landmarks.flatMap(point => [point.x, point.y, point.z]);
 
-    // Normalize landmarks relative to wrist
-    const base = landmarks[0];
-    const flattened = landmarks.flatMap(p => [
-      p.x - base.x,
-      p.y - base.y,
-      p.z - base.z,
-    ]);
+    if (requestInFlightRef.current) {
+      animFrameRef.current = requestAnimationFrame(processFrame);
+      return;
+    }
+    requestInFlightRef.current = true;
 
     (async () => {
       const apiResult = await predictFromAPI(flattened);
+      requestInFlightRef.current = false;
 
       if (apiResult) {
-        // Low confidence — model not sure
         if (apiResult.prediction === null || apiResult.prediction === undefined) {
           const conf = Math.round((apiResult.confidence ?? 0) * 100);
-          const newFeedback = `Hand detected — not confident enough (${conf}%)`;
+          const newFeedback = `Hand detected - hold steadier (${conf}%)`;
+
           if (lastFeedbackRef.current !== newFeedback) {
             lastFeedbackRef.current = newFeedback;
             setResult({
@@ -177,6 +180,7 @@ export function useGestureRecognition({
               confidence: apiResult.confidence ?? 0,
             });
           }
+
           animFrameRef.current = requestAnimationFrame(processFrame);
           return;
         }
@@ -184,19 +188,19 @@ export function useGestureRecognition({
         const predicted = apiResult.prediction.trim().toUpperCase();
         const confidence = apiResult.confidence ?? 0;
 
-        // Smooth predictions over last 5 frames
-        predictionHistory.current.push(predicted);
+        predictionHistory.current.push({ label: predicted, confidence });
         if (predictionHistory.current.length > 5) {
           predictionHistory.current.shift();
         }
 
-        const counts: Record<string, number> = {};
-        predictionHistory.current.forEach(p => {
-          counts[p] = (counts[p] || 0) + 1;
+        const weightedScores: Record<string, number> = {};
+        predictionHistory.current.forEach(entry => {
+          weightedScores[entry.label] =
+            (weightedScores[entry.label] || 0) + entry.confidence;
         });
 
-        const bestPrediction = Object.keys(counts).reduce((a, b) =>
-          counts[a] > counts[b] ? a : b
+        const bestPrediction = Object.keys(weightedScores).reduce((a, b) =>
+          weightedScores[a] > weightedScores[b] ? a : b
         );
 
         if (stablePredictionRef.current === bestPrediction) {
@@ -206,10 +210,10 @@ export function useGestureRecognition({
           stableCountRef.current = 1;
         }
 
-        // Only update when stable for 5 frames
-        if (stableCountRef.current >= 5) {
+        if (stableCountRef.current >= 4) {
           const conf = Math.round(confidence * 100);
           const newFeedback = `Detected: ${bestPrediction} (${conf}% confidence)`;
+
           if (lastFeedbackRef.current !== newFeedback) {
             lastFeedbackRef.current = newFeedback;
             setResult({
@@ -227,8 +231,7 @@ export function useGestureRecognition({
         return;
       }
 
-      // API call failed
-      const newFeedback = 'Flask API not responding — is it running?';
+      const newFeedback = 'Flask API not responding - is it running?';
       if (lastFeedbackRef.current !== newFeedback) {
         lastFeedbackRef.current = newFeedback;
         setResult({
@@ -245,7 +248,6 @@ export function useGestureRecognition({
     })();
   }, [videoRef]);
 
-  // Pre-load the model eagerly so it's ready before the camera starts.
   useEffect(() => {
     loadMediaPipe();
   }, [loadMediaPipe]);
@@ -253,6 +255,7 @@ export function useGestureRecognition({
   useEffect(() => {
     if (!enabled) {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      requestInFlightRef.current = false;
       setResult({
         feedback: 'Camera inactive',
         handDetected: false,
@@ -270,6 +273,7 @@ export function useGestureRecognition({
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      requestInFlightRef.current = false;
     };
   }, [enabled, loadMediaPipe, processFrame]);
 
