@@ -394,3 +394,38 @@ export const communityStats = [
   { value: "18K+", label: "Discussion Posts" },
   { value: "340+", label: "Study Sessions" },
 ] as const;
+
+export const faqs = [
+  {
+    q: "What is ISL Connect?",
+    a: "ISL Connect is an AI-powered platform for learning Indian Sign Language (ISL). It combines structured video lessons, real-time gesture recognition via your webcam, and progress tracking to make daily ISL practice feel approachable.",
+  },
+  {
+    q: "Do I need any special hardware to use the gesture recognition?",
+    a: "No special hardware is needed — just a standard webcam. The AI recognition uses MediaPipe and runs directly in your browser. You also need the local Flask backend running on your machine for the ML model to work.",
+  },
+  {
+    q: "How does the AI gesture recognition work?",
+    a: "When you start a practice session, your webcam feed is processed by MediaPipe to extract 21 hand landmarks. These landmarks are sent to a local Flask API that runs a trained ML classifier to identify which ISL sign you are performing, along with a confidence score.",
+  },
+  {
+    q: "Is my camera footage stored or sent to any server?",
+    a: "No. All camera processing happens locally in your browser and on your machine. No video is recorded or transmitted to any external server.",
+  },
+  {
+    q: "Why does gesture recognition show 'Flask API is offline'?",
+    a: "The gesture recognition needs the local Python backend running. Open a terminal, go to the 'backend' folder, and run: python isl_api.py. Once it starts on port 5000, the system status will update automatically.",
+  },
+  {
+    q: "How do I track my progress?",
+    a: "Your progress is tracked on the Achievements page, which shows accuracy trends, signs learned per category, mastery distribution, recent activity, and challenging signs worth revisiting.",
+  },
+  {
+    q: "Can I use ISL Connect without creating an account?",
+    a: "You can browse the homepage and course listings without an account. To access lessons, practice mode, achievements, and the community, you will need to sign in or create a free account.",
+  },
+  {
+    q: "What ISL content is currently available?",
+    a: "ISL Connect currently covers the ISL Alphabet (26 letters), Everyday Greetings, and Numbers 1-100 across three beginner-level courses. More modules covering common words, family, and daily phrases are planned.",
+  },
+] as const;
