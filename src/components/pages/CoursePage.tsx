@@ -1,11 +1,10 @@
 import { useMemo } from "react";
 import { useOutletContext, useParams } from "react-router";
-import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle, Star, Users } from "lucide-react@0.487.0";
+import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle } from "lucide-react@0.487.0";
 import { courses, downloadableResources, lessonList } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Button } from "../ui/button";
-import { Progress } from "../ui/progress";
 
 export function CoursePage() {
   const { courseId = "alphabet" } = useParams();
@@ -27,18 +26,18 @@ export function CoursePage() {
             </div>
             <div>
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-                <Star className="h-3.5 w-3.5 fill-primary" />
-                Bestseller
+                <PlayCircle className="h-3.5 w-3.5" />
+                Guided learning path
               </div>
               <h1 className="text-4xl font-semibold text-slate-950">{course.title}</h1>
               <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">{course.description}</p>
               <p className="mt-3 text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {[
-                  { icon: Clock3, label: "Duration", value: course.duration },
-                  { icon: PlayCircle, label: "Lessons", value: `${course.totalLessons} lessons` },
-                  { icon: Users, label: "Enrolled", value: course.enrolled },
-                  { icon: Star, label: "Rating", value: course.rating },
+                  { icon: Clock3, label: "Lesson Format", value: "Short guided sessions" },
+                  { icon: PlayCircle, label: "Practice Style", value: "Step-by-step repetition" },
+                  { icon: Circle, label: "Difficulty", value: course.difficulty },
+                  { icon: ArrowRight, label: "Focus", value: "Build confidence gradually" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-2xl bg-slate-50 p-4">
                     <item.icon className="mb-3 h-5 w-5 text-primary" />
@@ -48,17 +47,9 @@ export function CoursePage() {
                 ))}
               </div>
 
-              <div className="mt-6">
-                <div className="mb-2 flex justify-between text-sm">
-                  <span className="text-slate-500">Progress</span>
-                  <span>{course.lessonsCompleted}/{course.totalLessons} lessons completed</span>
-                </div>
-                <Progress value={course.progress} className="h-2.5 bg-slate-100" />
-              </div>
-
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("lesson:letter-d")}>
-                  Resume Course
+                  Open Course
                 </Button>
                 <Button className="rounded-xl" size="lg" variant="outline" onClick={() => onNavigate("practice")}>
                   Quick Practice

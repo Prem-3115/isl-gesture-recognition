@@ -77,6 +77,8 @@ If `npm` is blocked by PowerShell script policy, use:
 npm.cmd run dev
 ```
 
+Before starting the frontend, create a `.env` file from `.env.example` and paste your Firebase Web App config into it. The app validates these values at startup so missing or placeholder keys are caught before Firebase Auth initializes.
+
 ## Future Improvements
 
 - Better model accuracy
