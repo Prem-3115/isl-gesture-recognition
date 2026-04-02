@@ -24,9 +24,6 @@ export const courses = [
     progress: 46,
     lessonsCompleted: 4,
     totalLessons: 10,
-    duration: "2.5 hours",
-    enrolled: "12,450+",
-    rating: "4.8/5",
   },
   {
     id: "greetings",
@@ -39,9 +36,6 @@ export const courses = [
     progress: 74,
     lessonsCompleted: 6,
     totalLessons: 8,
-    duration: "1.8 hours",
-    enrolled: "9,860+",
-    rating: "4.9/5",
   },
   {
     id: "numbers",
@@ -53,17 +47,12 @@ export const courses = [
     progress: 20,
     lessonsCompleted: 2,
     totalLessons: 10,
-    duration: "2.1 hours",
-    enrolled: "8,420+",
-    rating: "4.7/5",
   },
 ] as const;
 
 export const featuredStats = [
-  { value: "50K+", label: "learners" },
-  { value: "500+", label: "signs" },
-  { value: "95%", label: "satisfaction" },
-  { value: "24/7", label: "AI support" },
+  { value: "Structured", label: "guided lessons" },
+  { value: "Interactive", label: "practice flow" },
 ] as const;
 
 export const howItWorks = [
@@ -141,14 +130,13 @@ export const testimonials = [
 export const weeklyGoals = [
   { label: "Practice Sessions", current: 4, target: 5 },
   { label: "New Signs", current: 8, target: 10 },
-  { label: "Accuracy Goal", current: 89, target: 90 },
 ] as const;
 
 export const recentSigns = [
-  { sign: "Letter A", accuracy: 92, lastPracticed: "2 min ago" },
-  { sign: "Letter B", accuracy: 87, lastPracticed: "18 min ago" },
-  { sign: "Thank You", accuracy: 95, lastPracticed: "1 hour ago" },
-  { sign: "Number 5", accuracy: 84, lastPracticed: "3 hours ago" },
+  { sign: "Letter A", lastPracticed: "2 min ago" },
+  { sign: "Letter B", lastPracticed: "18 min ago" },
+  { sign: "Thank You", lastPracticed: "1 hour ago" },
+  { sign: "Number 5", lastPracticed: "3 hours ago" },
 ] as const;
 
 export const lessonList = [
@@ -198,7 +186,7 @@ export const masteryDistribution = [
 export const achievements = [
   {
     name: "Alphabet Apprentice",
-    description: "Completed the full ISL alphabet pathway with 80%+ average accuracy.",
+    description: "Completed the full ISL alphabet pathway.",
     icon: Award,
     earned: true,
     date: "Oct 1, 2025",
@@ -226,14 +214,14 @@ export const achievements = [
   },
   {
     name: "Perfect Practice",
-    description: "Reach 100% accuracy on 10 different ISL signs.",
+    description: "Keep refining hand shapes and movement with repeated practice.",
     icon: Target,
     earned: false,
     progress: 60,
   },
   {
     name: "Century Club",
-    description: "Master 100+ ISL signs across alphabet, greetings, and numbers.",
+    description: "Continue exploring more ISL vocabulary across each course.",
     icon: Star,
     earned: false,
     progress: 82,
@@ -242,29 +230,29 @@ export const achievements = [
 
 export const recentActivity = [
   { label: "Completed ISL Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
-  { label: 'Practiced ISL "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
+  { label: 'Practiced ISL "Hello"', time: "5 hours ago", tone: "bg-secondary" },
   { label: 'Unlocked badge: "Quick Study"', time: "1 day ago", tone: "bg-accent" },
   { label: "Started Numbers 1-100 course", time: "2 days ago", tone: "bg-slate-400" },
 ] as const;
 
 export const challengingSigns = [
-  { sign: "Letter Q", accuracy: 68, attempts: 12 },
-  { sign: "Letter Z", accuracy: 72, attempts: 10 },
-  { sign: "Number 7", accuracy: 75, attempts: 8 },
-  { sign: "Thank You", accuracy: 76, attempts: 7 },
+  { sign: "Letter Q", note: "Review the hand orientation slowly and compare it with the chart." },
+  { sign: "Letter Z", note: "Focus on the motion path and keep the hand steady between repeats." },
+  { sign: "Number 7", note: "Check finger positioning before speeding up your practice." },
+  { sign: "Thank You", note: "Practice the starting hand position and ending motion together." },
 ] as const;
 
 // ─── Community Page Data ────────────────────────────────────────────────────
 
 export const leaderboard = [
-  { rank: 1, name: "Priya Sharma", city: "Delhi", signsLearned: 214, streak: 32, accuracy: 97 },
-  { rank: 2, name: "Arjun Mehta", city: "Mumbai", signsLearned: 198, streak: 28, accuracy: 95 },
-  { rank: 3, name: "Sneha Reddy", city: "Bengaluru", signsLearned: 179, streak: 21, accuracy: 93 },
-  { rank: 4, name: "Kabir Verma", city: "Pune", signsLearned: 163, streak: 18, accuracy: 91 },
-  { rank: 5, name: "Ananya Singh", city: "Chennai", signsLearned: 151, streak: 15, accuracy: 90 },
-  { rank: 6, name: "Rohan Desai", city: "Kolkata", signsLearned: 138, streak: 12, accuracy: 88 },
-  { rank: 7, name: "Meera Nair", city: "Hyderabad", signsLearned: 124, streak: 12, accuracy: 89 },
-  { rank: 8, name: "Vikram Joshi", city: "Jaipur", signsLearned: 116, streak: 9, accuracy: 86 },
+  { rank: 1, name: "Priya Sharma", city: "Delhi" },
+  { rank: 2, name: "Arjun Mehta", city: "Mumbai" },
+  { rank: 3, name: "Sneha Reddy", city: "Bengaluru" },
+  { rank: 4, name: "Kabir Verma", city: "Pune" },
+  { rank: 5, name: "Ananya Singh", city: "Chennai" },
+  { rank: 6, name: "Rohan Desai", city: "Kolkata" },
+  { rank: 7, name: "Meera Nair", city: "Hyderabad" },
+  { rank: 8, name: "Vikram Joshi", city: "Jaipur" },
 ] as const;
 
 export const discussions = [
@@ -296,7 +284,7 @@ export const discussions = [
     initials: "SR",
     time: "1 day ago",
     topic: "Completed the ISL greetings course — my experience",
-    body: "Just finished the everyday greetings module with 93% average. The AI feedback was incredibly helpful. Highly recommend going through it twice.",
+    body: "Just finished the everyday greetings module. The AI feedback was incredibly helpful, especially when repeating signs slowly before speeding up.",
     replies: 22,
     likes: 47,
     tag: "Milestone",
@@ -319,7 +307,6 @@ export const studyGroups = [
     id: "sg1",
     name: "Alphabet & Basics",
     description: "For newcomers mastering the 26 ISL alphabets and foundational hand shapes.",
-    members: 184,
     icon: Hand,
     accent: "from-primary to-secondary",
     tag: "Beginner",
@@ -327,8 +314,7 @@ export const studyGroups = [
   {
     id: "sg2",
     name: "Daily Practice Group",
-    description: "Commit to at least one practice session per day. Share your scores and keep each other accountable.",
-    members: 92,
+    description: "Commit to regular practice sessions and keep each other accountable.",
     icon: Flame,
     accent: "from-secondary to-accent",
     tag: "Active",
@@ -337,16 +323,14 @@ export const studyGroups = [
     id: "sg3",
     name: "ISL Educators",
     description: "Teachers, therapists, and healthcare professionals learning ISL for work.",
-    members: 57,
     icon: Sparkles,
     accent: "from-accent to-primary",
     tag: "Professional",
   },
   {
     id: "sg4",
-    name: "High Score Hunters",
-    description: "Compete for the weekly accuracy leaderboard. Share your gestures and get peer feedback.",
-    members: 43,
+    name: "Peer Feedback Circle",
+    description: "Share practice clips, compare techniques, and get peer feedback.",
     icon: Trophy,
     accent: "from-primary via-secondary to-accent",
     tag: "Competitive",
@@ -357,8 +341,6 @@ export const signOfTheDay = {
   sign: "NAMASTE",
   description: "The classic Indian greeting — place both palms together in front of your chest, fingers pointing upward, and give a small bow of the head.",
   category: "Greetings",
-  practiceCount: 1248,
-  topAccuracy: 97,
 } as const;
 
 export const communityEvents = [
@@ -380,7 +362,7 @@ export const communityEvents = [
   },
   {
     id: "e3",
-    title: "Weekly Leaderboard Resets Every Sunday",
+    title: "Weekly Community Check-In",
     date: "Every Sunday",
     time: "12:00 AM IST",
     type: "Recurring",
@@ -388,12 +370,7 @@ export const communityEvents = [
   },
 ] as const;
 
-export const communityStats = [
-  { value: "50K+", label: "Members" },
-  { value: "2.4M", label: "Signs Practised" },
-  { value: "18K+", label: "Discussion Posts" },
-  { value: "340+", label: "Study Sessions" },
-] as const;
+export const communityStats: { label: string; value: string }[] = [] as const;
 
 export const faqs = [
   {
@@ -418,7 +395,7 @@ export const faqs = [
   },
   {
     q: "How do I track my progress?",
-    a: "Your progress is tracked on the Achievements page, which shows accuracy trends, signs learned per category, mastery distribution, recent activity, and challenging signs worth revisiting.",
+    a: "Use the Achievements page as a reflection space for recent activity, learning highlights, and signs worth revisiting in your next practice session.",
   },
   {
     q: "Can I use ISL Connect without creating an account?",
