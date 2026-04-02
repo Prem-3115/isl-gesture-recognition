@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router";
-import { ArrowRight, CheckCircle2, Sparkles, Star } from "lucide-react@0.487.0";
+import { ArrowRight, Sparkles, Star } from "lucide-react@0.487.0";
 import { courses, featureTiles, featuredStats, howItWorks, testimonials } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
@@ -26,7 +26,7 @@ export function HomePage() {
               <span className="text-gradient-brand">Intelligent Practice</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-              Learn through short ISL video lessons, webcam-based feedback, and progress dashboards that make consistent practice feel rewarding.
+              Learn through short ISL video lessons, webcam-based feedback, and guided practice flows that make consistent study feel approachable.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button
@@ -66,17 +66,11 @@ export function HomePage() {
                 />
               </div>
             </div>
-            <div className="panel-glow absolute -bottom-6 left-4 w-56 rounded-3xl border border-white/70 bg-white/95 p-4">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary/15 to-accent/15">
-                  <CheckCircle2 className="h-5 w-5 text-secondary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700">Live Accuracy</p>
-                  <p className="text-xs text-slate-500">Average gesture recognition for ISL score</p>
-                </div>
-              </div>
-              <p className="text-gradient-brand text-3xl font-semibold">92%</p>
+            <div className="panel-glow absolute -bottom-6 left-4 w-64 rounded-3xl border border-white/70 bg-white/95 p-4">
+              <p className="text-sm font-medium text-slate-700">Practice with live feedback</p>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Use the webcam flow, compare your hand shape with the ISL chart, and refine each sign step by step.
+              </p>
             </div>
           </div>
         </div>
@@ -189,7 +183,7 @@ export function HomePage() {
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Start Today</p>
-              <h2 className="text-3xl font-semibold">Practice ISL with AI, learn with confidence, and track real progress.</h2>
+              <h2 className="text-3xl font-semibold">Practice ISL with AI, learn with confidence, and build a steady routine.</h2>
             </div>
             <Button
               size="lg"
