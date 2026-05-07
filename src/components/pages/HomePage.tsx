@@ -65,8 +65,8 @@ export function HomePage() {
             <div className="panel-glow overflow-hidden rounded-[2rem] border border-white/60 bg-white p-3">
               <div className="overflow-hidden rounded-[1.5rem]">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
-                  alt="Learners practicing together"
+                  src="https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/202507141877307940-1024x683.jpg"
+                  alt="A presenter signing in Indian Sign Language at an ISLRTC demonstration event"
                   className="h-[440px] w-full object-cover"
                 />
               </div>
