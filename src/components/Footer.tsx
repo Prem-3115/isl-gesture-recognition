@@ -1,4 +1,4 @@
-import { Facebook, Hand, Instagram, Twitter, Youtube } from "lucide-react@0.487.0";
+import { Facebook, Hand, Instagram, Twitter, Youtube } from "lucide-react";
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -25,13 +25,19 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
             <p className="max-w-xs text-sm text-slate-600">
               An AI-powered ISL (Indian Sign Language) learning platform designed to make daily practice feel approachable and joyful.
             </p>
-            <div className="flex gap-3">
-              {[Facebook, Instagram, Twitter, Youtube].map((Icon) => (
+            <div className="flex gap-3" aria-label="Social media links">
+              {([
+                { Icon: Facebook, label: "Facebook" },
+                { Icon: Instagram, label: "Instagram" },
+                { Icon: Twitter, label: "Twitter / X" },
+                { Icon: Youtube, label: "YouTube" },
+              ] as const).map(({ Icon, label }) => (
                 <button
-                  key={Icon.displayName ?? Icon.name}
+                  key={label}
+                  aria-label={`Follow us on ${label}`}
                   className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-primary/30 hover:text-primary"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                 </button>
               ))}
             </div>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import {
   CheckCircle2,
@@ -8,8 +8,8 @@ import {
   Pause,
   Play,
   Volume2,
-} from "lucide-react@0.487.0";
-import { toast } from "sonner@2.0.3";
+} from "lucide-react";
+import { toast } from "sonner";
 import islChart from "@/assets/isl_chart.jpg";
 import { LayoutOutletContext } from "@/types/layout";
 import { Button } from "../ui/button";
@@ -30,6 +30,8 @@ const lessonMeta: Record<string, { title: string; emoji: string }> = {
   "letter-e": { title: "Letter E", emoji: "📘" },
 };
 
+const lessonKeys = Object.keys(lessonMeta);
+
 export function LessonPage() {
   const { lessonId = "letter-a" } = useParams();
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
@@ -37,13 +39,26 @@ export function LessonPage() {
   const [videoProgress, setVideoProgress] = useState(12);
   const [lessonCompleted, setLessonCompleted] = useState(false);
 
-  const lesson = useMemo(() => lessonMeta[lessonId] ?? lessonMeta["letter-a"], [lessonId]);
-  const lessonKeys = Object.keys(lessonMeta);
-  const lessonNumber = lessonKeys.indexOf(lessonId) + 1 || 1;
+  // Detect reduced-motion preference to avoid auto-advancing progress animation
+  const prefersReducedMotion = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+
+  // BUG-003 FIX: if lessonId is unknown, show a not-found state rather than silently falling back
+  const lesson = lessonMeta[lessonId] ?? null;
+  const lessonNumber = lesson ? lessonKeys.indexOf(lessonId) + 1 : 0;
   const totalLessons = lessonKeys.length;
 
+  // Update document title per page
   useEffect(() => {
-    if (!isPlaying) return;
+    document.title = lesson
+      ? `${lesson.title} — ISL Connect`
+      : "Lesson Not Found — ISL Connect";
+  }, [lesson]);
+
+  useEffect(() => {
+    if (!isPlaying || prefersReducedMotion.current) return;
 
     const interval = window.setInterval(() => {
       setVideoProgress((previous) => {
@@ -69,7 +84,31 @@ export function LessonPage() {
     toast.success("Lesson marked complete.");
   };
 
-  const elapsed = `${Math.floor((videoProgress / 100) * 6)}:${String(Math.floor(((videoProgress / 100) * 60) % 60)).padStart(2, "0")}`;
+  // Fixed elapsed time calculation
+  const totalSeconds = 390; // 6 minutes 30 seconds
+  const elapsedSeconds = Math.floor((videoProgress / 100) * totalSeconds);
+  const elapsedMin = Math.floor(elapsedSeconds / 60);
+  const elapsedSec = String(elapsedSeconds % 60).padStart(2, "0");
+  const elapsed = `${elapsedMin}:${elapsedSec}`;
+
+  // BUG-003: Show a clear "not found" state for unknown lesson IDs
+  if (!lesson) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
+        <p className="text-6xl mb-6">🔍</p>
+        <h1 className="text-3xl font-semibold text-slate-950">Lesson not found</h1>
+        <p className="mt-3 text-slate-600 max-w-md">
+          The lesson <code className="rounded bg-slate-100 px-2 py-0.5 text-sm">{lessonId}</code> doesn't exist yet. Choose a lesson from the course page.
+        </p>
+        <Button
+          className="mt-6 bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+          onClick={() => onNavigate("course:alphabet")}
+        >
+          Back to Course
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -100,13 +139,13 @@ export function LessonPage() {
             <p className="mt-2 text-slate-600">Lesson {lessonNumber} of {totalLessons} · Learn ISL Alphabet</p>
           </div>
           {lessonCompleted ? (
-            <div className="flex items-center gap-2 text-emerald-600">
-              <CheckCircle2 className="h-5 w-5" />
+            <div className="flex items-center gap-2 text-emerald-600" role="status">
+              <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
               Completed
             </div>
           ) : (
             <Button variant="outline" className="rounded-xl" onClick={handleMarkComplete}>
-              <CheckCircle2 className="mr-2 h-4 w-4" />
+              <CheckCircle2 className="mr-2 h-4 w-4" aria-hidden="true" />
               Mark Complete
             </Button>
           )}
@@ -114,37 +153,53 @@ export function LessonPage() {
 
         <div className="grid gap-8 lg:grid-cols-[1.45fr_0.85fr]">
           <div>
-            <div className="group relative mb-6 aspect-video overflow-hidden rounded-[1.75rem] bg-black shadow-2xl">
+            {/* Video player */}
+            <div
+              className="group relative mb-6 aspect-video overflow-hidden rounded-[1.75rem] bg-black shadow-2xl"
+              role="region"
+              aria-label={`Lesson video: ${lesson.title}`}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-primary/30" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%)]" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                <div className="text-8xl">{lesson.emoji}</div>
+                <div className="text-8xl" role="img" aria-label={`${lesson.title} preview`}>{lesson.emoji}</div>
                 <p className="mt-4 text-sm uppercase tracking-[0.25em] text-white/70">ISL lesson preview</p>
                 <p className="mt-1 text-lg text-white/90">Follow the ISL reference chart in the visual reference panel</p>
               </div>
               {!isPlaying && videoProgress < 100 && (
-                <button onClick={() => setIsPlaying(true)} className="absolute inset-0 flex items-center justify-center">
+                <button
+                  onClick={() => setIsPlaying(true)}
+                  className="absolute inset-0 flex items-center justify-center"
+                  aria-label="Play lesson"
+                >
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition hover:scale-105">
-                    <Play className="ml-1 h-8 w-8" />
+                    <Play className="ml-1 h-8 w-8" aria-hidden="true" />
                   </div>
                 </button>
               )}
+              {/* Controls — always visible on touch, hover on desktop. Fixed: all buttons now have aria-labels */}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
-                <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/20">
+                <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuenow={videoProgress} aria-valuemin={0} aria-valuemax={100} aria-label="Lesson progress">
                   <div className="bg-gradient-brand h-full transition-all duration-300" style={{ width: `${videoProgress}%` }} />
                 </div>
                 <div className="flex items-center justify-between text-white">
                   <div className="flex items-center gap-4">
-                    <button onClick={() => setIsPlaying((current) => !current)}>
-                      {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                    <button
+                      onClick={() => setIsPlaying((current) => !current)}
+                      aria-label={isPlaying ? "Pause lesson" : "Play lesson"}
+                    >
+                      {isPlaying
+                        ? <Pause className="h-5 w-5" aria-hidden="true" />
+                        : <Play className="h-5 w-5" aria-hidden="true" />
+                      }
                     </button>
-                    <button>
-                      <Volume2 className="h-5 w-5" />
+                    <button aria-label="Toggle volume">
+                      <Volume2 className="h-5 w-5" aria-hidden="true" />
                     </button>
-                    <span className="text-sm">{elapsed} / 6:30</span>
+                    <span className="text-sm" aria-live="off">{elapsed} / 6:30</span>
                   </div>
-                  <button>
-                    <Maximize2 className="h-5 w-5" />
+                  <button aria-label="Fullscreen">
+                    <Maximize2 className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -152,12 +207,12 @@ export function LessonPage() {
 
             <div className="flex items-center justify-between">
               <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("course:alphabet")}>
-                <ChevronLeft className="mr-2 h-4 w-4" />
+                <ChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
                 Previous Lesson
               </Button>
               <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" onClick={() => onNavigate("lesson:letter-b")}>
                 Next Lesson
-                <ChevronRight className="ml-2 h-4 w-4" />
+                <ChevronRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
 
@@ -183,12 +238,22 @@ export function LessonPage() {
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <h3 className="mb-4 text-xl font-semibold text-slate-950">Visual Reference</h3>
               <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
-                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" loading="lazy" decoding="async" />
+                <img
+                  src={islChart}
+                  alt="ISL alphabet chart showing hand gestures for all 26 letters A through Z"
+                  className="w-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <p className="mt-4 text-center text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
             </div>
 
-            <Button className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("practice")}>
+            <Button
+              className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90"
+              size="lg"
+              onClick={() => onNavigate("practice")}
+            >
               Practice This Sign
             </Button>
           </div>
@@ -204,7 +269,7 @@ export function LessonPage() {
               "Refer to the ISL chart for accurate gestures before using AI webcam feedback.",
             ].map((point) => (
               <div key={point} className="flex items-start gap-3 rounded-2xl bg-white/70 p-4">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" aria-hidden="true" />
                 <p className="text-sm leading-7 text-slate-600">{point}</p>
               </div>
             ))}

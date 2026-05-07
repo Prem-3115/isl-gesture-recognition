@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useOutletContext } from "react-router";
-import { ArrowRight, Sparkles, Star } from "lucide-react@0.487.0";
+import { ArrowRight, Sparkles, Star } from "lucide-react";
 import { courses, featureTiles, featuredStats, howItWorks, testimonials } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
@@ -8,6 +9,10 @@ import { Button } from "../ui/button";
 
 export function HomePage() {
   const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<LayoutOutletContext>();
+
+  useEffect(() => {
+    document.title = "ISL Connect — Learn Indian Sign Language with AI";
+  }, []);
 
   return (
     <div className="pb-6">
@@ -199,3 +204,4 @@ export function HomePage() {
     </div>
   );
 }
+

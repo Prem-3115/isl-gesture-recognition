@@ -5,6 +5,7 @@ import {
   type HandLandmarkerResult,
 } from '@mediapipe/tasks-vision';
 import { type Landmark } from '../data/islSigns';
+import { API_PREDICT } from '../lib/api';
 
 export type RecognitionStatus =
   | 'idle'
@@ -56,22 +57,25 @@ export function useGestureRecognition({
 
   const predictFromAPI = async (landmarks: number[]) => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/predict', {
+      const res = await fetch(API_PREDICT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ landmarks }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
+        console.error('API Error:', data);
         return null;
       }
       return data;
-    } catch {
+    } catch (err) {
+      console.error('Fetch Error:', err);
       return null;
     }
   };
 
   const loadMediaPipe = useCallback(async () => {
+    // Guard: do not load if already loaded or currently loading
     if (handLandmarkerRef.current) return;
 
     setResult(prev => ({ ...prev, status: 'loading', feedback: 'Loading AI model...' }));
@@ -82,7 +86,7 @@ export function useGestureRecognition({
         baseOptions: {
           modelAssetPath:
             'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          delegate: 'GPU',
+          delegate: 'CPU',
         },
         runningMode: 'VIDEO',
         numHands: 1,
@@ -249,10 +253,7 @@ export function useGestureRecognition({
   }, [videoRef]);
 
   // Pre-load the model eagerly so it's ready before the camera starts.
-  useEffect(() => {
-    loadMediaPipe();
-  }, [loadMediaPipe]);
-
+  // FIX: Single useEffect — the original had a duplicate useEffect block.
   useEffect(() => {
     loadMediaPipe();
   }, [loadMediaPipe]);

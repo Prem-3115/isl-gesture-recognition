@@ -34,8 +34,8 @@ service cloud.firestore {
     // ── /users/{userId} ──────────────────────────────────
     match /users/{userId} {
 
-      // READ: Temporarily relaxed for debugging
-      allow read: if isAuthenticated();
+      // READ: Only the user can read their own document.
+      allow read: if isOwner(userId);
 
       // CREATE: Only the authenticated user can create their OWN document.
       // Rules:

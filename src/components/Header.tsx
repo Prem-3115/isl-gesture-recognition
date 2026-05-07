@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Hand, LogOut, Menu, Sparkles, X } from "lucide-react@0.487.0";
+import { Hand, LogOut, Menu, Sparkles, X } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface HeaderProps {
@@ -57,12 +57,14 @@ export function Header({
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
+                aria-current={active ? "page" : undefined}
                 className={`group relative pb-2 text-sm transition-colors ${
                   active ? "text-slate-900" : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {label}
                 <span
+                  aria-hidden="true"
                   className={`absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-primary via-secondary to-accent transition-opacity ${
                     active ? "opacity-100" : "opacity-0 group-hover:opacity-70"
                   }`}
@@ -117,6 +119,7 @@ export function Header({
                 <button
                   key={item.id}
                   onClick={() => handleNav(item.id)}
+                  aria-current={active ? "page" : undefined}
                   className={`rounded-xl px-4 py-3 text-left text-sm ${
                     active
                       ? "bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 text-slate-900"
