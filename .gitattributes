@@ -1,0 +1,36 @@
+# .gitattributes
+# Normalize all text files to LF in the repository.
+# On checkout on Windows, files stay as LF (no CRLF conversion).
+# This permanently ends the "yellow file" CRLF flicker in VS Code.
+
+* text=auto eol=lf
+
+# Explicitly mark common text file types
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.py    text eol=lf
+*.txt   text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.rules text eol=lf
+*.xml   text eol=lf
+*.sh    text eol=lf
+
+# Binary files — never touch line endings
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pkl   binary
+*.wasm  binary
+*.webp  binary
+*.ttf   binary
+*.woff  binary
+*.woff2 binary
