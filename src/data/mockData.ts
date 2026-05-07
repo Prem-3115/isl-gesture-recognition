@@ -143,17 +143,37 @@ export const recentSigns = [
 ] as const;
 
 export const lessonList = [
-  { id: "intro-isl", title: "Introduction to ISL", duration: "8 min", status: "done" },
-  { id: "letter-a", title: "Letter A", duration: "6 min", status: "done" },
-  { id: "letter-b", title: "Letter B", duration: "6 min", status: "done" },
-  { id: "letter-c", title: "Letter C", duration: "6 min", status: "done" },
-  { id: "letter-d", title: "Letter D", duration: "7 min", status: "in-progress" },
-  { id: "letter-e", title: "Letter E", duration: "6 min", status: "todo" },
-  { id: "letter-f", title: "Letter F", duration: "6 min", status: "todo" },
-  { id: "letter-g", title: "Letter G", duration: "7 min", status: "todo" },
-  { id: "review-a-g", title: "Review: ISL Letters A-G", duration: "10 min", status: "todo" },
-  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint", duration: "15 min", status: "todo" },
+  { id: "intro-isl",           title: "Introduction to ISL",       duration: "8 min",  status: "done" },
+  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "done" },
+  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "done" },
+  { id: "letter-c",            title: "Letter C",                  duration: "6 min",  status: "done" },
+  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "in-progress" },
+  { id: "letter-e",            title: "Letter E",                  duration: "6 min",  status: "todo" },
+  { id: "letter-f",            title: "Letter F",                  duration: "6 min",  status: "todo" },
+  { id: "letter-g",            title: "Letter G",                  duration: "7 min",  status: "todo" },
+  { id: "letter-h",            title: "Letter H",                  duration: "6 min",  status: "todo" },
+  { id: "letter-i",            title: "Letter I",                  duration: "6 min",  status: "todo" },
+  { id: "letter-j",            title: "Letter J",                  duration: "6 min",  status: "todo" },
+  { id: "letter-k",            title: "Letter K",                  duration: "6 min",  status: "todo" },
+  { id: "letter-l",            title: "Letter L",                  duration: "6 min",  status: "todo" },
+  { id: "letter-m",            title: "Letter M",                  duration: "6 min",  status: "todo" },
+  { id: "letter-n",            title: "Letter N",                  duration: "6 min",  status: "todo" },
+  { id: "letter-o",            title: "Letter O",                  duration: "6 min",  status: "todo" },
+  { id: "letter-p",            title: "Letter P",                  duration: "6 min",  status: "todo" },
+  { id: "letter-q",            title: "Letter Q",                  duration: "6 min",  status: "todo" },
+  { id: "letter-r",            title: "Letter R",                  duration: "6 min",  status: "todo" },
+  { id: "letter-s",            title: "Letter S",                  duration: "6 min",  status: "todo" },
+  { id: "letter-t",            title: "Letter T",                  duration: "6 min",  status: "todo" },
+  { id: "letter-u",            title: "Letter U",                  duration: "6 min",  status: "todo" },
+  { id: "letter-v",            title: "Letter V",                  duration: "6 min",  status: "todo" },
+  { id: "letter-w",            title: "Letter W",                  duration: "7 min",  status: "todo" },
+  { id: "letter-x",            title: "Letter X",                  duration: "6 min",  status: "todo" },
+  { id: "letter-y",            title: "Letter Y",                  duration: "6 min",  status: "todo" },
+  { id: "letter-z",            title: "Letter Z",                  duration: "6 min",  status: "todo" },
+  { id: "review-a-g",          title: "Review: ISL Letters A–G",   duration: "10 min", status: "todo" },
+  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint",   duration: "15 min", status: "todo" },
 ] as const;
+
 
 export const downloadableResources = [
   {

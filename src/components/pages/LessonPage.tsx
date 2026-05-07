@@ -27,6 +27,12 @@ interface LessonMeta {
 }
 
 const lessonMeta: Record<string, LessonMeta> = {
+  "intro-isl": {
+    title: "Introduction to ISL",
+    description: "An overview of Indian Sign Language — its history, structure, and how to get started.",
+    youtubeId: "5PF6JXzYyUI",
+    channel: "ISLRTC",
+  },
   "letter-a": {
     title: "Letter A",
     description: "Learn how to sign the letter A in Indian Sign Language.",
@@ -56,6 +62,132 @@ const lessonMeta: Record<string, LessonMeta> = {
     description: "Learn how to sign the letter E in Indian Sign Language.",
     youtubeId: "QROBU_Lf-X4",
     channel: "Sign Sense",
+  },
+  "letter-f": {
+    title: "Letter F",
+    description: "Learn how to sign the letter F in Indian Sign Language.",
+    youtubeId: "1wKAw-aCP44",
+    channel: "ISLRTC",
+  },
+  "letter-g": {
+    title: "Letter G",
+    description: "Learn how to sign the letter G in Indian Sign Language.",
+    youtubeId: "Ez8rwyZvclA",
+    channel: "SignAble Communications",
+  },
+  "letter-h": {
+    title: "Letter H",
+    description: "Learn how to sign the letter H in Indian Sign Language.",
+    youtubeId: "T2DVNMM5hmc",
+    channel: "SignAble Communications",
+  },
+  "letter-i": {
+    title: "Letter I",
+    description: "Learn how to sign the letter I in Indian Sign Language.",
+    youtubeId: "cGZRNgzl7Ks",
+    channel: "SignAble Communications",
+  },
+  "letter-j": {
+    title: "Letter J",
+    description: "Learn how to sign the letter J in Indian Sign Language.",
+    youtubeId: "CKoTMog47Eo",
+    channel: "SignAble Communications",
+  },
+  "letter-k": {
+    title: "Letter K",
+    description: "Learn how to sign the letter K in Indian Sign Language.",
+    youtubeId: "0QphTAjEJaI",
+    channel: "SignAble Communications",
+  },
+  "letter-l": {
+    title: "Letter L",
+    description: "Learn how to sign the letter L in Indian Sign Language.",
+    youtubeId: "uh4T_jmc4Sw",
+    channel: "SignAble Communications",
+  },
+  "letter-m": {
+    title: "Letter M",
+    description: "Learn how to sign the letter M in Indian Sign Language.",
+    youtubeId: "c3vj8iQpabg",
+    channel: "SignAble Communications",
+  },
+  "letter-n": {
+    title: "Letter N",
+    description: "Learn how to sign the letter N in Indian Sign Language.",
+    youtubeId: "thLt0HRBzKI",
+    channel: "SignAble Communications",
+  },
+  "letter-o": {
+    title: "Letter O",
+    description: "Learn how to sign the letter O in Indian Sign Language.",
+    youtubeId: "YuHPc6obYlQ",
+    channel: "SignAble Communications",
+  },
+  "letter-p": {
+    title: "Letter P",
+    description: "Learn how to sign the letter P in Indian Sign Language.",
+    youtubeId: "XOIHxWPt_UE",
+    channel: "SignAble Communications",
+  },
+  "letter-q": {
+    title: "Letter Q",
+    description: "Learn how to sign the letter Q in Indian Sign Language.",
+    youtubeId: "7wMVH7iJUNI",
+    channel: "SignAble Communications",
+  },
+  "letter-r": {
+    title: "Letter R",
+    description: "Learn how to sign the letter R in Indian Sign Language.",
+    youtubeId: "0Lk7_fKVCdk",
+    channel: "SignAble Communications",
+  },
+  "letter-s": {
+    title: "Letter S",
+    description: "Learn how to sign the letter S in Indian Sign Language.",
+    youtubeId: "PDbfw8isOos",
+    channel: "SignAble Communications",
+  },
+  "letter-t": {
+    title: "Letter T",
+    description: "Learn how to sign the letter T in Indian Sign Language.",
+    youtubeId: "4YI_bXVHgnk",
+    channel: "SignAble Communications",
+  },
+  "letter-u": {
+    title: "Letter U",
+    description: "Learn how to sign the letter U in Indian Sign Language.",
+    youtubeId: "0uXFilJDKw0",
+    channel: "SignAble Communications",
+  },
+  "letter-v": {
+    title: "Letter V",
+    description: "Learn how to sign the letter V in Indian Sign Language.",
+    youtubeId: "XaHVxkbbO40",
+    channel: "SignAble Communications",
+  },
+  "letter-w": {
+    title: "Letter W",
+    description: "Learn how to sign the letter W in Indian Sign Language.",
+    youtubeId: "aKLUMUQim-I",
+    channel: "SignAble Communications",
+  },
+  "letter-x": {
+    title: "Letter X",
+    description: "Learn how to sign the letter X in Indian Sign Language.",
+    youtubeId: "XtcoBPj_lhI",
+    channel: "SignAble Communications",
+  },
+  "letter-y": {
+    title: "Letter Y",
+    description: "Learn how to sign the letter Y in Indian Sign Language.",
+    youtubeId: "gf76kRO7Jb4",
+    channel: "SignAble Communications",
+  },
+  "letter-z": {
+    title: "Letter Z",
+    description: "Learn how to sign the letter Z in Indian Sign Language.",
+    youtubeId: "up4jGU_rt8c",
+    channel: "Dikshesh29",
   },
 };
 
