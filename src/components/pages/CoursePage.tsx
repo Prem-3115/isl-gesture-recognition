@@ -102,18 +102,23 @@ export function CoursePage() {
           <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Resources</h2>
           <div className="grid gap-4 md:grid-cols-3">
             {downloadableResources.map((resource) => (
-              <button
+              <a
                 key={resource.title}
-                className="flex items-center justify-between rounded-[1.25rem] border border-white/70 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                href={resource.url}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Download ${resource.title} (${resource.format}, ${resource.size})`}
+                className="flex items-center justify-between rounded-[1.25rem] border border-white/70 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30"
               >
                 <div>
                   <p className="font-medium text-slate-900">{resource.title}</p>
                   <p className="mt-1 text-sm text-slate-500">{resource.format} · {resource.size}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white">
                   <Download className="h-4 w-4" />
                 </div>
-              </button>
+              </a>
             ))}
           </div>
         </section>
