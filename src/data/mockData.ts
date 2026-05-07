@@ -153,9 +153,24 @@ export const lessonList = [
 ] as const;
 
 export const downloadableResources = [
-  { title: "ISL (Indian Sign Language) Alphabet Chart", format: "PDF", size: "2.4 MB" },
-  { title: "ISL Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
-  { title: "ISL Practice Checklist", format: "PDF", size: "1.8 MB" },
+  {
+    title: "ISL (Indian Sign Language) Alphabet Chart",
+    format: "PDF",
+    size: "2.4 MB",
+    url: "https://www.islrtc.nic.in/sites/default/files/publication/Dictionary%20of%20Indian%20Sign%20Language.pdf",
+  },
+  {
+    title: "ISL Beginner Practice Workbook",
+    format: "PDF",
+    size: "5.1 MB",
+    url: "https://www.islrtc.nic.in/sites/default/files/publication/ISL%20Resource%20Book%20for%20Beginners.pdf",
+  },
+  {
+    title: "ISL Practice Checklist",
+    format: "PDF",
+    size: "1.8 MB",
+    url: "https://www.islrtc.nic.in/sites/default/files/publication/Sign%20Language%20Teaching%20Methodology.pdf",
+  },
 ] as const;
 
 export const accuracyTrend = [
