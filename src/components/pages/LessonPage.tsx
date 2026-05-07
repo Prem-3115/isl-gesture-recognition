@@ -36,38 +36,38 @@ const lessonMeta: Record<string, LessonMeta> = {
   "letter-a": {
     title: "Letter A",
     description: "Learn how to sign the letter A in Indian Sign Language.",
-    youtubeId: "quKXRhelf_U",
-    channel: "Sign Sense",
+    youtubeId: "u_ZTEXA_WX4",
+    channel: "SignAble Communications",
   },
   "letter-b": {
     title: "Letter B",
     description: "Learn how to sign the letter B in Indian Sign Language.",
-    youtubeId: "tZbZCMC16AQ",
-    channel: "Sign Sense",
+    youtubeId: "ieWVWx9ykb8",
+    channel: "SignAble Communications",
   },
   "letter-c": {
     title: "Letter C",
     description: "Learn how to sign the letter C in Indian Sign Language.",
-    youtubeId: "SPT_G7D4Jzg",
-    channel: "Sign Sense",
+    youtubeId: "zmZ8E1O34pQ",
+    channel: "SignAble Communications",
   },
   "letter-d": {
     title: "Letter D",
     description: "Learn how to sign the letter D in Indian Sign Language.",
-    youtubeId: "91czIOShfao",
-    channel: "Sign Sense",
+    youtubeId: "cMzyA5kiFI4",
+    channel: "SignAble Communications",
   },
   "letter-e": {
     title: "Letter E",
     description: "Learn how to sign the letter E in Indian Sign Language.",
-    youtubeId: "QROBU_Lf-X4",
-    channel: "Sign Sense",
+    youtubeId: "GM5U69TAQ0c",
+    channel: "SignAble Communications",
   },
   "letter-f": {
     title: "Letter F",
     description: "Learn how to sign the letter F in Indian Sign Language.",
     youtubeId: "1wKAw-aCP44",
-    channel: "ISLRTC",
+    channel: "SignAble Communications",
   },
   "letter-g": {
     title: "Letter G",
@@ -156,7 +156,7 @@ const lessonMeta: Record<string, LessonMeta> = {
   "letter-u": {
     title: "Letter U",
     description: "Learn how to sign the letter U in Indian Sign Language.",
-    youtubeId: "0uXFilJDKw0",
+    youtubeId: "qcdivQfA41Y",
     channel: "SignAble Communications",
   },
   "letter-v": {
@@ -186,12 +186,13 @@ const lessonMeta: Record<string, LessonMeta> = {
   "letter-z": {
     title: "Letter Z",
     description: "Learn how to sign the letter Z in Indian Sign Language.",
-    youtubeId: "up4jGU_rt8c",
-    channel: "Dikshesh29",
+    youtubeId: "VdwKSyza5oI",
+    channel: "ISLRTC",
   },
 };
 
 const lessonKeys = Object.keys(lessonMeta);
+
 
 export function LessonPage() {
   const { lessonId = "letter-a" } = useParams();
