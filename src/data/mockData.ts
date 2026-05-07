@@ -30,8 +30,9 @@ export const courses = [
     title: "ISL Everyday Greetings",
     description:
       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
+    // Real ISL awareness & training session photo — ISLRTC Photo Gallery
     image:
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=75&fm=webp",
+      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/12/20251210227472721-1024x683.jpg",
     difficulty: "Beginner",
     progress: 74,
     lessonsCompleted: 6,
@@ -42,7 +43,9 @@ export const courses = [
     title: "ISL Numbers 1-100",
     description:
       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
-    image: islChart,
+    // Real ISL classroom session photo — ISLRTC Photo Gallery
+    image:
+      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/20250714144757360-1024x683.jpg",
     difficulty: "Beginner",
     progress: 20,
     lessonsCompleted: 2,
