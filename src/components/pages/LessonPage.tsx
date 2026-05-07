@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Maximize2,
-  Pause,
-  Play,
-  Volume2,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import islChart from "@/assets/isl_chart.jpg";
@@ -22,12 +19,44 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 
-const lessonMeta: Record<string, { title: string; emoji: string }> = {
-  "letter-a": { title: "Letter A", emoji: "📘" },
-  "letter-b": { title: "Letter B", emoji: "📘" },
-  "letter-c": { title: "Letter C", emoji: "📘" },
-  "letter-d": { title: "Letter D", emoji: "📘" },
-  "letter-e": { title: "Letter E", emoji: "📘" },
+interface LessonMeta {
+  title: string;
+  description: string;
+  youtubeId: string;
+  channel: string;
+}
+
+const lessonMeta: Record<string, LessonMeta> = {
+  "letter-a": {
+    title: "Letter A",
+    description: "Learn how to sign the letter A in Indian Sign Language.",
+    youtubeId: "quKXRhelf_U",
+    channel: "Sign Sense",
+  },
+  "letter-b": {
+    title: "Letter B",
+    description: "Learn how to sign the letter B in Indian Sign Language.",
+    youtubeId: "tZbZCMC16AQ",
+    channel: "Sign Sense",
+  },
+  "letter-c": {
+    title: "Letter C",
+    description: "Learn how to sign the letter C in Indian Sign Language.",
+    youtubeId: "SPT_G7D4Jzg",
+    channel: "Sign Sense",
+  },
+  "letter-d": {
+    title: "Letter D",
+    description: "Learn how to sign the letter D in Indian Sign Language.",
+    youtubeId: "91czIOShfao",
+    channel: "Sign Sense",
+  },
+  "letter-e": {
+    title: "Letter E",
+    description: "Learn how to sign the letter E in Indian Sign Language.",
+    youtubeId: "QROBU_Lf-X4",
+    channel: "Sign Sense",
+  },
 };
 
 const lessonKeys = Object.keys(lessonMeta);
@@ -35,76 +64,42 @@ const lessonKeys = Object.keys(lessonMeta);
 export function LessonPage() {
   const { lessonId = "letter-a" } = useParams();
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(12);
   const [lessonCompleted, setLessonCompleted] = useState(false);
 
-  // Detect reduced-motion preference to avoid auto-advancing progress animation
-  const prefersReducedMotion = useRef(
-    typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-
-  // BUG-003 FIX: if lessonId is unknown, show a not-found state rather than silently falling back
   const lesson = lessonMeta[lessonId] ?? null;
-  const lessonNumber = lesson ? lessonKeys.indexOf(lessonId) + 1 : 0;
+  const lessonIndex = lesson ? lessonKeys.indexOf(lessonId) : -1;
+  const lessonNumber = lessonIndex + 1;
   const totalLessons = lessonKeys.length;
+  const prevLessonId = lessonIndex > 0 ? lessonKeys[lessonIndex - 1] : null;
+  const nextLessonId = lessonIndex < lessonKeys.length - 1 ? lessonKeys[lessonIndex + 1] : null;
 
-  // Update document title per page
   useEffect(() => {
     document.title = lesson
       ? `${lesson.title} — ISL Connect`
       : "Lesson Not Found — ISL Connect";
   }, [lesson]);
 
-  useEffect(() => {
-    if (!isPlaying || prefersReducedMotion.current) return;
-
-    const interval = window.setInterval(() => {
-      setVideoProgress((previous) => {
-        const next = previous + 2;
-        if (next >= 100) {
-          window.clearInterval(interval);
-          setIsPlaying(false);
-          setLessonCompleted(true);
-          toast.success("Lesson complete. You're ready for practice.");
-          return 100;
-        }
-        return next;
-      });
-    }, 250);
-
-    return () => window.clearInterval(interval);
-  }, [isPlaying]);
-
   const handleMarkComplete = () => {
     setLessonCompleted(true);
-    setVideoProgress(100);
-    setIsPlaying(false);
-    toast.success("Lesson marked complete.");
+    toast.success("Lesson marked complete! Ready to practice?");
   };
 
-  // Fixed elapsed time calculation
-  const totalSeconds = 390; // 6 minutes 30 seconds
-  const elapsedSeconds = Math.floor((videoProgress / 100) * totalSeconds);
-  const elapsedMin = Math.floor(elapsedSeconds / 60);
-  const elapsedSec = String(elapsedSeconds % 60).padStart(2, "0");
-  const elapsed = `${elapsedMin}:${elapsedSec}`;
-
-  // BUG-003: Show a clear "not found" state for unknown lesson IDs
+  // BUG-003: Clear not-found state for unknown lesson IDs
   if (!lesson) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
         <p className="text-6xl mb-6">🔍</p>
         <h1 className="text-3xl font-semibold text-slate-950">Lesson not found</h1>
         <p className="mt-3 text-slate-600 max-w-md">
-          The lesson <code className="rounded bg-slate-100 px-2 py-0.5 text-sm">{lessonId}</code> doesn't exist yet. Choose a lesson from the course page.
+          The lesson{" "}
+          <code className="rounded bg-slate-100 px-2 py-0.5 text-sm">{lessonId}</code>{" "}
+          doesn't exist yet. Choose a lesson from the course page.
         </p>
         <Button
           className="mt-6 bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
-          onClick={() => onNavigate("course:alphabet")}
+          onClick={() => onNavigate("dashboard")}
         >
-          Back to Course
+          Back to Courses
         </Button>
       </div>
     );
@@ -113,18 +108,19 @@ export function LessonPage() {
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
+        {/* Breadcrumb */}
         <Breadcrumb className="mb-6">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate("home")} className="cursor-pointer">Home</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => onNavigate("home")} className="cursor-pointer">
+                Home
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate("dashboard")} className="cursor-pointer">Courses</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => onNavigate("course:alphabet")} className="cursor-pointer">ISL Alphabet</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => onNavigate("dashboard")} className="cursor-pointer">
+                Courses
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -133,15 +129,19 @@ export function LessonPage() {
           </BreadcrumbList>
         </Breadcrumb>
 
+        {/* Header */}
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+              ISL Alphabet · Lesson {lessonNumber} of {totalLessons}
+            </p>
             <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
-            <p className="mt-2 text-slate-600">Lesson {lessonNumber} of {totalLessons} · Learn ISL Alphabet</p>
+            <p className="mt-2 text-slate-500">{lesson.description}</p>
           </div>
           {lessonCompleted ? (
-            <div className="flex items-center gap-2 text-emerald-600" role="status">
+            <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-2 text-emerald-700" role="status">
               <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
-              Completed
+              <span className="font-medium">Completed</span>
             </div>
           ) : (
             <Button variant="outline" className="rounded-xl" onClick={handleMarkComplete}>
@@ -153,77 +153,70 @@ export function LessonPage() {
 
         <div className="grid gap-8 lg:grid-cols-[1.45fr_0.85fr]">
           <div>
-            {/* Video player */}
+            {/* ── YouTube Video Player ─────────────────────────────────── */}
             <div
-              className="group relative mb-6 aspect-video overflow-hidden rounded-[1.75rem] bg-black shadow-2xl"
+              className="relative mb-6 overflow-hidden rounded-[1.75rem] bg-black shadow-2xl"
+              style={{ aspectRatio: "16/9" }}
               role="region"
               aria-label={`Lesson video: ${lesson.title}`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-primary/30" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%)]" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                <div className="text-8xl" role="img" aria-label={`${lesson.title} preview`}>{lesson.emoji}</div>
-                <p className="mt-4 text-sm uppercase tracking-[0.25em] text-white/70">ISL lesson preview</p>
-                <p className="mt-1 text-lg text-white/90">Follow the ISL reference chart in the visual reference panel</p>
-              </div>
-              {!isPlaying && videoProgress < 100 && (
-                <button
-                  onClick={() => setIsPlaying(true)}
-                  className="absolute inset-0 flex items-center justify-center"
-                  aria-label="Play lesson"
-                >
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition hover:scale-105">
-                    <Play className="ml-1 h-8 w-8" aria-hidden="true" />
-                  </div>
-                </button>
-              )}
-              {/* Controls — always visible on touch, hover on desktop. Fixed: all buttons now have aria-labels */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
-                <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuenow={videoProgress} aria-valuemin={0} aria-valuemax={100} aria-label="Lesson progress">
-                  <div className="bg-gradient-brand h-full transition-all duration-300" style={{ width: `${videoProgress}%` }} />
-                </div>
-                <div className="flex items-center justify-between text-white">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setIsPlaying((current) => !current)}
-                      aria-label={isPlaying ? "Pause lesson" : "Play lesson"}
-                    >
-                      {isPlaying
-                        ? <Pause className="h-5 w-5" aria-hidden="true" />
-                        : <Play className="h-5 w-5" aria-hidden="true" />
-                      }
-                    </button>
-                    <button aria-label="Toggle volume">
-                      <Volume2 className="h-5 w-5" aria-hidden="true" />
-                    </button>
-                    <span className="text-sm" aria-live="off">{elapsed} / 6:30</span>
-                  </div>
-                  <button aria-label="Fullscreen">
-                    <Maximize2 className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${lesson.youtubeId}?rel=0&modestbranding=1&color=white`}
+                title={`${lesson.title} — Indian Sign Language tutorial`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full border-0"
+                loading="lazy"
+              />
             </div>
 
+            {/* Source credit */}
+            <div className="mb-6 flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+              <p className="text-sm text-slate-500">
+                Video by <span className="font-medium text-slate-700">{lesson.channel}</span> on YouTube
+              </p>
+              <a
+                href={`https://www.youtube.com/watch?v=${lesson.youtubeId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm font-medium text-primary transition hover:opacity-80"
+                aria-label={`Open ${lesson.title} video on YouTube`}
+              >
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                Watch on YouTube
+              </a>
+            </div>
+
+            {/* Prev / Next nav */}
             <div className="flex items-center justify-between">
-              <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("course:alphabet")}>
+              <Button
+                variant="outline"
+                className="rounded-xl"
+                disabled={!prevLessonId}
+                onClick={() => prevLessonId && onNavigate(`lesson:${prevLessonId}`)}
+              >
                 <ChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-                Previous Lesson
+                Previous
               </Button>
-              <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" onClick={() => onNavigate("lesson:letter-b")}>
+              <Button
+                className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+                disabled={!nextLessonId}
+                onClick={() => nextLessonId && onNavigate(`lesson:${nextLessonId}`)}
+              >
                 Next Lesson
                 <ChevronRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
 
+            {/* How-to tips */}
             <div className="mt-8 rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Practice This ISL Sign</h2>
+              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Practice This Sign</h2>
               <div className="space-y-3">
                 {[
-                  ["Handshape", "Follow the ISL reference chart in the visual reference panel and keep the handshape clear and deliberate."],
-                  ["Movement", "Position your hand clearly as per ISL guidelines and keep the gesture steady before transitioning."],
-                  ["Palm Orientation", "Match the palm direction shown in the ISL chart so the sign stays visually readable."],
-                  ["Common Mistakes", "Avoid rushing the gesture or changing finger position before the handshape is fully formed."],
+                  ["Watch carefully", "Watch the video at least twice — once to observe, once to follow along."],
+                  ["Handshape", "Pay close attention to finger positions and palm orientation in the video."],
+                  ["Mirror practice", "Use a mirror or your phone's front camera to compare your hand to the sign."],
+                  ["Test with AI", "Once you're confident, use the Practice page to test recognition with our ISL AI model."],
                 ].map(([label, description]) => (
                   <div key={label} className="rounded-2xl bg-slate-50 p-4">
                     <p className="mb-1 text-sm font-medium text-primary">{label}</p>
@@ -234,9 +227,13 @@ export function LessonPage() {
             </div>
           </div>
 
+          {/* Right panel */}
           <div className="space-y-6">
+            {/* ISL Chart */}
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-xl font-semibold text-slate-950">Visual Reference</h3>
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                Visual Reference
+              </p>
               <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
                 <img
                   src={islChart}
@@ -246,33 +243,37 @@ export function LessonPage() {
                   decoding="async"
                 />
               </div>
-              <p className="mt-4 text-center text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
+              <p className="mt-4 text-center text-sm text-slate-500">
+                Use this chart alongside the video for reference.
+              </p>
             </div>
 
+            {/* Practice CTA */}
             <Button
               className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90"
               size="lg"
               onClick={() => onNavigate("practice")}
             >
-              Practice This Sign
+              Practice This Sign with AI
             </Button>
-          </div>
-        </div>
 
-        <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
-          <h2 className="mb-4 text-2xl font-semibold text-slate-950">Key Learning Points</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            {[
-              "Follow the ISL reference chart in the visual reference panel before practicing.",
-              "Position your hand clearly as per ISL guidelines and keep the gesture readable.",
-              "Focus on clear handshape, palm direction, and timing rather than speed.",
-              "Refer to the ISL chart for accurate gestures before using AI webcam feedback.",
-            ].map((point) => (
-              <div key={point} className="flex items-start gap-3 rounded-2xl bg-white/70 p-4">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" aria-hidden="true" />
-                <p className="text-sm leading-7 text-slate-600">{point}</p>
+            {/* Key points */}
+            <div className="rounded-[1.5rem] border border-primary/10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
+              <h3 className="mb-4 text-lg font-semibold text-slate-950">Key Learning Points</h3>
+              <div className="space-y-3">
+                {[
+                  "Watch the full video before attempting the sign.",
+                  "Match the exact handshape and palm direction shown.",
+                  "Hold the sign steady before moving to the next letter.",
+                  "Use the ISL chart alongside the video for reference.",
+                ].map((point) => (
+                  <div key={point} className="flex items-start gap-3 rounded-2xl bg-white/70 p-3">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" aria-hidden="true" />
+                    <p className="text-sm leading-6 text-slate-600">{point}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
