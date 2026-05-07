@@ -79,3 +79,4 @@ export async function updateUserStats(
     profileCache = { ...profileCache, stats };
   }
 }
+

@@ -46,3 +46,4 @@ export async function sendPasswordReset(email: string) {
 export async function logoutUser() {
   await signOut(auth);
 }
+

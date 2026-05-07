@@ -4,3 +4,4 @@ export interface LayoutOutletContext {
   userName: string;
   onOpenAuth: (mode?: "login" | "signup") => void;
 }
+

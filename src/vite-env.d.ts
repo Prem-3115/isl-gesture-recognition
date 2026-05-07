@@ -34,3 +34,4 @@ declare module '@mediapipe/tasks-vision' {
 
   export const FilesetResolver: FilesetResolver;
 }
+

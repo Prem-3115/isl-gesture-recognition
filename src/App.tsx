@@ -1,5 +1,5 @@
 import { RouterProvider } from "react-router";
-import { Toaster } from "sonner@2.0.3";
+import { Toaster } from "sonner";
 import { router } from "./routes";
 
 export default function App() {
@@ -18,3 +18,4 @@ export default function App() {
     </>
   );
 }
+

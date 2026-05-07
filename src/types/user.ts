@@ -18,3 +18,4 @@ export interface UserProfile {
     bestAccuracy: number;
   };
 }
+
