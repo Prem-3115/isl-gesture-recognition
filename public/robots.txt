@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /practice
+Disallow: /achievements
+
+Sitemap: https://isl-connect.web.app/sitemap.xml

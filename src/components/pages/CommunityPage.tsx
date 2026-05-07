@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router";
 import {
   Award,
@@ -11,8 +11,8 @@ import {
   Users,
   X,
   Zap,
-} from "lucide-react@0.487.0";
-import { toast } from "sonner@2.0.3";
+} from "lucide-react";
+import { toast } from "sonner";
 import {
   communityEvents,
   discussions,
@@ -84,6 +84,10 @@ export function CommunityPage() {
   const [localPosts, setLocalPosts] = useState<LocalPost[]>([]);
   const [remindedEvents, setRemindedEvents] = useState<Set<string>>(new Set());
 
+  useEffect(() => {
+    document.title = "Community — ISL Connect";
+  }, []);
+
   const toggleJoin = (id: string) =>
     setJoinedGroups((prev) => {
       const next = new Set(prev);
@@ -145,7 +149,8 @@ export function CommunityPage() {
     toast.success("Thread posted!", { description: "Your discussion is now live." });
   };
 
-  const allPosts = [...localPosts, ...discussions];
+  // PERF FIX: memoise allPosts so it's not rebuilt on every state change
+  const allPosts = useMemo(() => [...localPosts, ...discussions], [localPosts]);
 
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -430,3 +435,4 @@ export function CommunityPage() {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { toast } from "sonner@2.0.3";
-import { LoaderCircle } from "lucide-react@0.487.0";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
 import { FAQModal } from "./FAQModal";
@@ -35,8 +35,7 @@ function resolveRoute(page: string) {
     achievements: "/achievements",
     courses: "/dashboard",
     community: "/community",
-    faqs: "/faqs",
-    about: "/",
+    about: "/about",
   };
 
   return routeMap[page] ?? "/";
@@ -54,6 +53,9 @@ function getCurrentSection(pathname: string) {
   }
   if (pathname.startsWith("/community")) {
     return "community";
+  }
+  if (pathname.startsWith("/about")) {
+    return "about";
   }
   return "home";
 }
@@ -101,6 +103,8 @@ export function Layout() {
     }
   };
 
+  // FIX: include handleNavigate and handleOpenAuth so the memoized context
+  // never captures stale closures when auth state changes.
   const outletContext = useMemo<LayoutOutletContext>(
     () => ({
       onNavigate: handleNavigate,
@@ -108,7 +112,8 @@ export function Layout() {
       userName,
       onOpenAuth: handleOpenAuth,
     }),
-    [isLoggedIn, userName],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isLoggedIn, userName, handleNavigate, handleOpenAuth],
   );
 
   if (isAuthLoading) {
@@ -122,6 +127,13 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      {/* Skip-to-content link for keyboard / screen reader users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <Header
         currentPage={getCurrentSection(location.pathname)}
         isLoggedIn={isLoggedIn}
@@ -130,7 +142,7 @@ export function Layout() {
         onOpenAuth={handleOpenAuth}
         onLogout={handleLogout}
       />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <Outlet context={outletContext} />
       </main>
       <Footer onNavigate={handleNavigate} onOpenFaq={() => setIsFaqOpen(true)} />
@@ -146,3 +158,4 @@ export function Layout() {
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Github, Hand, LoaderCircle, Lock, Mail, User } from "lucide-react@0.487.0";
+import { Eye, EyeOff, Github, Hand, LoaderCircle, Lock, Mail, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useAuth } from "../context/AuthContext";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -242,8 +242,15 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
                 </svg>
                 Google
               </Button>
-              <Button type="button" variant="outline" className="h-11 rounded-xl opacity-50" disabled title="GitHub sign-in coming soon">
-                <Github className="mr-2 h-4 w-4" />
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 rounded-xl cursor-not-allowed opacity-50"
+                disabled
+                aria-disabled="true"
+                title="GitHub sign-in coming soon"
+              >
+                <Github className="mr-2 h-4 w-4" aria-hidden="true" />
                 GitHub
               </Button>
             </div>

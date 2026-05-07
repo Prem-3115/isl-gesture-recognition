@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
-import { LoaderCircle } from "lucide-react@0.487.0";
+import { LoaderCircle } from "lucide-react";
 import { SkeletonDashboard } from "./components/SkeletonCard";
 
 // Eagerly load the homepage — it's the entry point
@@ -26,11 +26,17 @@ const AchievementsPage = lazy(() =>
 const CommunityPage = lazy(() =>
   import("./components/pages/CommunityPage").then((m) => ({ default: m.CommunityPage }))
 );
+const AboutPage = lazy(() =>
+  import("./components/pages/AboutPage").then((m) => ({ default: m.AboutPage }))
+);
+const NotFoundPage = lazy(() =>
+  import("./components/pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
+);
 
 function PageLoader() {
   return (
-    <div className="flex h-64 items-center justify-center">
-      <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+    <div className="flex h-64 items-center justify-center" role="status" aria-label="Loading page">
+      <LoaderCircle className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
     </div>
   );
 }
@@ -65,7 +71,15 @@ export const router = createBrowserRouter([
         path: "community",
         element: <Suspense fallback={<PageLoader />}><CommunityPage /></Suspense>,
       },
-      { path: "*", Component: HomePage },
+      {
+        path: "about",
+        element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>,
+      },
+      {
+        // Catch-all: dedicated 404 page instead of silently rendering HomePage
+        path: "*",
+        element: <Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>,
+      },
     ],
   },
 ]);

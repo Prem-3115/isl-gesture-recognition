@@ -10,7 +10,7 @@ import {
   Square,
   Trophy,
   X,
-} from "lucide-react@0.487.0";
+} from "lucide-react";
 import islChart from "@/assets/isl_chart.jpg";
 import { useGestureRecognition } from "@/hooks/useGestureRecognition";
 import type { LayoutOutletContext } from "@/types/layout";
@@ -28,6 +28,13 @@ export function PracticePage() {
   const [apiOnline, setApiOnline] = useState<boolean | null>(null);
   const [bestScore, setBestScore] = useState(0);
 
+  // Set page title
+  useEffect(() => {
+    document.title = "Practice — ISL Connect";
+  }, []);
+
+  // PERF FIX: Health-check only polls while camera is active.
+  // When idle, we do a single check on mount then stop to avoid unnecessary requests.
   useEffect(() => {
     const checkAPI = async () => {
       try {
@@ -40,9 +47,11 @@ export function PracticePage() {
     };
 
     checkAPI();
+    if (!cameraActive) return; // Single check when idle; interval only when camera is on
+
     const interval = window.setInterval(checkAPI, 5000);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [cameraActive]);
 
   const gestureResult = useGestureRecognition({
     videoRef,
@@ -132,29 +141,31 @@ export function PracticePage() {
             <h1 className="mt-3 text-4xl font-semibold text-slate-950">Practice with gesture recognition for ISL</h1>
           </div>
           <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("dashboard")}>
-            <X className="mr-2 h-4 w-4" />
+            <X className="mr-2 h-4 w-4" aria-hidden="true" />
             Exit
           </Button>
         </div>
 
         {apiOnline === false && (
-          <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50">
-            <Activity className="h-4 w-4 text-destructive" />
+          <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50" role="alert">
+            <Activity className="h-4 w-4 text-destructive" aria-hidden="true" />
             <AlertTitle className="text-red-900">Flask API is offline</AlertTitle>
             <AlertDescription className="text-red-800">
-              Gesture recognition for ISL needs the local backend running on `http://127.0.0.1:5000`.
+              Gesture recognition for ISL needs the local backend running on{" "}
+              <code>http://127.0.0.1:5000</code>. Start it with{" "}
+              <code>python isl_api.py</code> from the <code>backend/</code> folder.
             </AlertDescription>
           </Alert>
         )}
 
         {cameraError && (
-          <Alert className="mb-6 rounded-2xl border-amber-200 bg-amber-50">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
+          <Alert className="mb-6 rounded-2xl border-amber-200 bg-amber-50" role="alert">
+            <AlertCircle className="h-4 w-4 text-amber-600" aria-hidden="true" />
             <AlertTitle className="text-amber-900">Camera issue detected</AlertTitle>
             <AlertDescription className="flex flex-col gap-3 text-amber-800 sm:flex-row sm:items-center sm:justify-between">
               <span>{cameraError}</span>
               <Button size="sm" className="rounded-lg" onClick={startCamera}>
-                <RefreshCcw className="mr-2 h-4 w-4" />
+                <RefreshCcw className="mr-2 h-4 w-4" aria-hidden="true" />
                 Try Again
               </Button>
             </AlertDescription>
@@ -163,24 +174,33 @@ export function PracticePage() {
 
         <div className="grid gap-6 lg:grid-cols-[1.7fr_0.9fr]">
           <div className="space-y-6">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-black shadow-2xl">
+            <div
+              className="relative aspect-[16/10] overflow-hidden rounded-[2rem] bg-black shadow-2xl"
+              role="region"
+              aria-label="Webcam gesture recognition feed"
+            >
               <video
                 ref={videoRef}
                 playsInline
                 muted
+                aria-label="Live webcam feed for gesture recognition"
                 className={`absolute inset-0 h-full w-full object-cover ${cameraActive ? "scale-x-[-1]" : "hidden"}`}
               />
               <div className={`absolute inset-0 ${cameraActive ? "bg-gradient-to-br from-slate-950/20 to-primary/20" : "bg-gradient-to-br from-slate-900 to-slate-950"}`} />
 
               {!cameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-                  <Camera className="mb-4 h-16 w-16 text-white/50" />
+                  <Camera className="mb-4 h-16 w-16 text-white/50" aria-hidden="true" />
                   <h2 className="text-2xl font-semibold">Camera inactive</h2>
                   <p className="mt-3 max-w-md text-sm leading-7 text-white/70">
                     Start the real webcam flow to use the project&apos;s original MediaPipe and Flask-backed gesture recognition for ISL pipeline.
                   </p>
                   <div className="mt-6">
-                    <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={startCamera}>
+                    <Button
+                      className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+                      size="lg"
+                      onClick={startCamera}
+                    >
                       Start Real Camera
                     </Button>
                   </div>
@@ -196,20 +216,21 @@ export function PracticePage() {
                           ? "border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.35)]"
                           : "border-white/25"
                       }`}
+                      aria-hidden="true"
                     />
                   </div>
 
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
-                    <span className={`h-2.5 w-2.5 rounded-full ${statusTone}`} />
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur" aria-live="polite" aria-atomic="true">
+                    <span className={`h-2.5 w-2.5 rounded-full ${statusTone}`} aria-hidden="true" />
                     {gestureResult.status}
                   </div>
 
                   <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
-                    <BrainCircuit className="h-4 w-4" />
+                    <BrainCircuit className="h-4 w-4" aria-hidden="true" />
                     ISL recognizer active
                   </div>
 
-                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${feedbackTone}`}>
+                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${feedbackTone}`} aria-live="polite" aria-atomic="true">
                     {gestureResult.feedback}
                   </div>
 
@@ -218,10 +239,10 @@ export function PracticePage() {
                       <span>Recognition accuracy</span>
                       <span>{liveScore}%</span>
                     </div>
-                    <Progress value={liveScore} className="h-2.5 bg-white/15" />
+                    <Progress value={liveScore} className="h-2.5 bg-white/15" aria-label={`Recognition accuracy: ${liveScore}%`} />
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Button variant="destructive" size="sm" className="rounded-xl" onClick={stopCamera}>
-                        <Square className="mr-2 h-4 w-4" />
+                        <Square className="mr-2 h-4 w-4" aria-hidden="true" />
                         Stop Camera
                       </Button>
                     </div>
@@ -233,7 +254,7 @@ export function PracticePage() {
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
-                  <Trophy className="h-5 w-5 text-primary" />
+                  <Trophy className="h-5 w-5 text-primary" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-semibold text-slate-950">Live Performance Analysis</h2>
@@ -253,7 +274,7 @@ export function PracticePage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 rounded-2xl bg-gradient-to-r from-primary/8 via-secondary/8 to-accent/8 p-4 text-sm text-slate-600">
+              <div className="mt-4 rounded-2xl bg-gradient-to-r from-primary/8 via-secondary/8 to-accent/8 p-4 text-sm text-slate-600" aria-live="polite">
                 <span className="font-medium text-slate-900">ISL recognizer feedback:</span> {gestureResult.feedback}
               </div>
             </div>
@@ -263,7 +284,7 @@ export function PracticePage() {
             <div className="rounded-[1.75rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
               <div className="mb-4 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white shadow-md">
-                  <BrainCircuit className="h-5 w-5" />
+                  <BrainCircuit className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Detected Sign</p>
@@ -271,7 +292,7 @@ export function PracticePage() {
                 </div>
               </div>
               <div className="rounded-[1.5rem] border border-white/70 bg-white/90 p-5 text-center">
-                <p className="text-4xl font-semibold text-slate-950">
+                <p className="text-4xl font-semibold text-slate-950" aria-live="polite" aria-atomic="true">
                   {gestureResult.detectedSign ?? "--"}
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
@@ -282,7 +303,7 @@ export function PracticePage() {
                     <span>Confidence</span>
                     <span>{liveScore}%</span>
                   </div>
-                  <Progress value={liveScore} className="h-2.5 bg-slate-100" />
+                  <Progress value={liveScore} className="h-2.5 bg-slate-100" aria-label={`Confidence: ${liveScore}%`} />
                 </div>
               </div>
             </div>
@@ -290,7 +311,13 @@ export function PracticePage() {
             <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Reference</p>
               <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
-                <img src={islChart} alt="ISL chart reference" className="w-full object-contain" loading="lazy" decoding="async" />
+                <img
+                  src={islChart}
+                  alt="ISL alphabet chart showing hand gestures for all 26 letters A through Z"
+                  className="w-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <p className="mt-4 text-sm leading-7 text-slate-600">
                 Use the original chart bundled in the project as your visual ISL reference while testing recognition.
@@ -302,30 +329,17 @@ export function PracticePage() {
                 <h3 className="text-xl font-semibold text-slate-950">System Status</h3>
               </div>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Camera</span>
-                  <span className={cameraActive ? "text-emerald-600" : "text-slate-500"}>
-                    {cameraActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">MediaPipe Model</span>
-                  <span className={gestureResult.status === "loading" ? "text-amber-600" : "text-slate-700"}>
-                    {gestureResult.status === "loading" ? "Loading" : "Ready"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Flask API</span>
-                  <span className={apiOnline ? "text-emerald-600" : "text-red-600"}>
-                    {apiOnline ? "Online" : "Offline"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Hand Detection</span>
-                  <span className={gestureResult.handDetected ? "text-emerald-600" : "text-slate-500"}>
-                    {gestureResult.handDetected ? "Detected" : "Waiting"}
-                  </span>
-                </div>
+                {[
+                  { label: "Camera", value: cameraActive ? "Active" : "Inactive", active: cameraActive },
+                  { label: "MediaPipe Model", value: gestureResult.status === "loading" ? "Loading" : "Ready", active: gestureResult.status !== "loading" },
+                  { label: "Flask API", value: apiOnline ? "Online" : "Offline", active: !!apiOnline },
+                  { label: "Hand Detection", value: gestureResult.handDetected ? "Detected" : "Waiting", active: gestureResult.handDetected },
+                ].map(({ label, value, active }) => (
+                  <div key={label} className="flex items-center justify-between">
+                    <span className="text-slate-500">{label}</span>
+                    <span className={active ? "text-emerald-600" : "text-slate-500"}>{value}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -339,7 +353,7 @@ export function PracticePage() {
                   "Make sure the local Flask API is running before starting gesture recognition for ISL.",
                 ].map((tip) => (
                   <div key={tip} className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4">
-                    <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                    <Eye className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" aria-hidden="true" />
                     <p className="text-sm leading-7 text-slate-600">{tip}</p>
                   </div>
                 ))}
