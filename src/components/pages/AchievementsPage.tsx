@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router";
-import { Award, BookOpen, Flame, Trophy } from "lucide-react@0.487.0";
+import { Award, BookOpen, Flame, Trophy } from "lucide-react";
 import { achievements, challengingSigns, recentActivity } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { Button } from "../ui/button";
@@ -147,3 +147,4 @@ export function AchievementsPage() {
     </div>
   );
 }
+

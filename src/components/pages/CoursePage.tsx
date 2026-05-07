@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useOutletContext, useParams } from "react-router";
-import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle } from "lucide-react@0.487.0";
+import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle } from "lucide-react";
 import { courses, downloadableResources, lessonList } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
@@ -121,3 +121,4 @@ export function CoursePage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { ArrowRight, BarChart3 } from "lucide-react@0.487.0";
+import { ArrowRight, BarChart3 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
@@ -71,3 +71,4 @@ export function CourseCard({
     </div>
   );
 }
+

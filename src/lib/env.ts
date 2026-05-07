@@ -77,3 +77,4 @@ export const env = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
   },
 } as const;
+

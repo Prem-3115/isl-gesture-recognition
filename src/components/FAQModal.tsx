@@ -1,4 +1,4 @@
-import { HelpCircle } from "lucide-react@0.487.0";
+import { HelpCircle } from "lucide-react";
 import { faqs } from "@/data/mockData";
 import {
   Dialog,

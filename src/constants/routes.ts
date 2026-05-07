@@ -27,3 +27,4 @@ export const PROTECTED_ROUTES = [
 export function isProtectedRoute(pathname: string): boolean {
   return PROTECTED_ROUTES.some((prefix) => pathname.startsWith(prefix));
 }
+

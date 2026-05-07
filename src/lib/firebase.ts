@@ -22,3 +22,4 @@ setPersistence(auth, indexedDBLocalPersistence).catch((error) => {
 
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
+

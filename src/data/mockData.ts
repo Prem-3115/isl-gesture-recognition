@@ -11,7 +11,7 @@ import {
   Target,
   Trophy,
   Video,
-} from "lucide-react@0.487.0";
+} from "lucide-react";
 
 export const courses = [
   {
@@ -406,3 +406,4 @@ export const faqs = [
     a: "ISL Connect currently covers the ISL Alphabet (26 letters), Everyday Greetings, and Numbers 1-100 across three beginner-level courses. More modules covering common words, family, and daily phrases are planned.",
   },
 ] as const;
+

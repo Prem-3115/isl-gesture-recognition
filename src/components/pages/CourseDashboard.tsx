@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router";
-import { BookOpen, Flame, Target } from "lucide-react@0.487.0";
+import { BookOpen, Flame, Target } from "lucide-react";
 import { courses, recentSigns } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
@@ -131,3 +131,4 @@ export function CourseDashboard() {
     </div>
   );
 }
+
