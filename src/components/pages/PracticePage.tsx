@@ -119,11 +119,13 @@ export function PracticePage() {
   const statusTone =
     gestureResult.status === "loading"
       ? "bg-amber-400"
-      : gestureResult.status === "feedback"
-        ? "bg-emerald-500"
-        : gestureResult.handDetected
-          ? "bg-primary"
-          : "bg-slate-400";
+      : gestureResult.status === "error"
+        ? "bg-red-500"
+        : gestureResult.status === "feedback"
+          ? "bg-emerald-500"
+          : gestureResult.handDetected
+            ? "bg-primary"
+            : "bg-slate-400";
 
   const feedbackTone =
     liveScore >= 85
@@ -149,11 +151,22 @@ export function PracticePage() {
         {apiOnline === false && (
           <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50" role="alert">
             <Activity className="h-4 w-4 text-destructive" aria-hidden="true" />
-            <AlertTitle className="text-red-900">Flask API is offline</AlertTitle>
+            <AlertTitle className="text-red-900">Gesture recognition unavailable</AlertTitle>
             <AlertDescription className="text-red-800">
-              Gesture recognition for ISL needs the local backend running on{" "}
-              <code>http://127.0.0.1:5000</code>. Start it with{" "}
-              <code>python isl_api.py</code> from the <code>backend/</code> folder.
+              {import.meta.env.PROD ? (
+                <>
+                  The AI recognition backend is not deployed — it runs locally only.
+                  To use gesture recognition, run{" "}
+                  <code>python isl_api.py</code> from the <code>backend/</code> folder
+                  and open the app at <code>http://localhost:3000</code>.
+                </>
+              ) : (
+                <>
+                  The local Flask API isn&apos;t running. Start it with{" "}
+                  <code>python isl_api.py</code> from the <code>backend/</code> folder
+                  (port&nbsp;5000).
+                </>
+              )}
             </AlertDescription>
           </Alert>
         )}

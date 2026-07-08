@@ -13,6 +13,7 @@ import {
   clearProfileCache,
   type UserProfile,
 } from "../services/user.service";
+import { clearProgressCache } from "../services/progress.service";
 
 interface AuthContextType {
   user: User | null;
@@ -68,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     resetPassword: (email) => sendPasswordReset(email),
     logout: async () => {
       clearProfileCache();
+      clearProgressCache();
       await logoutUser();
     },
   };

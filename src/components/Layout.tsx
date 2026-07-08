@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
-import { LoaderCircle } from "lucide-react";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
 import { FAQModal } from "./FAQModal";
@@ -116,14 +115,6 @@ export function Layout() {
     [isLoggedIn, userName, handleNavigate, handleOpenAuth],
   );
 
-  if (isAuthLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -137,6 +128,7 @@ export function Layout() {
       <Header
         currentPage={getCurrentSection(location.pathname)}
         isLoggedIn={isLoggedIn}
+        isAuthLoading={isAuthLoading}
         userName={userName}
         onNavigate={handleNavigate}
         onOpenAuth={handleOpenAuth}

@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 interface HeaderProps {
   currentPage: string;
   isLoggedIn: boolean;
+  isAuthLoading?: boolean;
   userName: string;
   onNavigate: (page: string) => void;
   onOpenAuth: (mode?: "login" | "signup") => void;
@@ -21,6 +22,7 @@ const navItems = [
 export function Header({
   currentPage,
   isLoggedIn,
+  isAuthLoading = false,
   userName,
   onNavigate,
   onOpenAuth,
@@ -75,7 +77,13 @@ export function Header({
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          {isLoggedIn ? (
+          {isAuthLoading ? (
+            // Skeleton buttons while Firebase auth resolves — no layout shift
+            <div className="flex items-center gap-3 animate-pulse">
+              <div className="h-9 w-20 rounded-lg bg-slate-200" />
+              <div className="h-9 w-28 rounded-lg bg-slate-200" />
+            </div>
+          ) : isLoggedIn ? (
             <>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary">
                 <Sparkles className="h-4 w-4" />

@@ -14,8 +14,10 @@ app = Flask(__name__)
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://isl-connect.web.app",           # Firebase Hosting production URL
+    "https://isl-connect.web.app",
     "https://sign-language-learner-de.web.app",
+    # Add your deployed backend's allowed frontend origin here if different:
+    # "https://your-custom-domain.com",
 ]
 CORS(app, origins=ALLOWED_ORIGINS, methods=["GET", "POST", "OPTIONS"])
 
@@ -96,7 +98,16 @@ def predict():
 
     if not isinstance(data, list) or len(data) != RAW_FEATURE_COUNT:
         return jsonify({
-            "error": f"Expected {RAW_FEATURE_COUNT} landmark values.",
+            "error": f"Expected {RAW_FEATURE_COUNT} landmark values, got {len(data) if isinstance(data, list) else 'non-list'}.",
+            "prediction": None,
+        }), 400
+
+    # Validate all values are numeric — prevents numpy from raising a vague 500
+    try:
+        data = [float(v) for v in data]
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "All landmark values must be numeric.",
             "prediction": None,
         }), 400
 

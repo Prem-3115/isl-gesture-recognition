@@ -9,6 +9,8 @@ import {
 import { toast } from "sonner";
 import islChart from "@/assets/isl_chart.jpg";
 import { LayoutOutletContext } from "@/types/layout";
+import { useAuth } from "@/context/AuthContext";
+import { isLessonComplete, markLessonComplete } from "@/services/progress.service";
 import { Button } from "../ui/button";
 import {
   Breadcrumb,
@@ -197,7 +199,9 @@ const lessonKeys = Object.keys(lessonMeta);
 export function LessonPage() {
   const { lessonId = "letter-a" } = useParams();
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
+  const { user } = useAuth();
   const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [completionLoading, setCompletionLoading] = useState(true);
 
   const lesson = lessonMeta[lessonId] ?? null;
   const lessonIndex = lesson ? lessonKeys.indexOf(lessonId) : -1;
@@ -205,6 +209,31 @@ export function LessonPage() {
   const totalLessons = lessonKeys.length;
   const prevLessonId = lessonIndex > 0 ? lessonKeys[lessonIndex - 1] : null;
   const nextLessonId = lessonIndex < lessonKeys.length - 1 ? lessonKeys[lessonIndex + 1] : null;
+
+  // Load completion state from Firestore on mount (or when lesson/user changes)
+  useEffect(() => {
+    let cancelled = false;
+    setCompletionLoading(true);
+    setLessonCompleted(false);
+
+    if (!user?.uid || !lesson) {
+      setCompletionLoading(false);
+      return;
+    }
+
+    isLessonComplete(user.uid, lessonId)
+      .then((completed) => {
+        if (!cancelled) setLessonCompleted(completed);
+      })
+      .catch(() => {
+        // Firestore unavailable — fall back to local state (already false)
+      })
+      .finally(() => {
+        if (!cancelled) setCompletionLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [lessonId, user?.uid, lesson]);
 
   useEffect(() => {
     document.title = lesson
@@ -215,6 +244,13 @@ export function LessonPage() {
   const handleMarkComplete = () => {
     setLessonCompleted(true);
     toast.success("Lesson marked complete! Ready to practice?");
+
+    // Persist to Firestore if logged in; fail silently so the UI stays responsive
+    if (user?.uid) {
+      markLessonComplete(user.uid, lessonId).catch((err) => {
+        console.error("[LessonPage] Failed to persist completion:", err);
+      });
+    }
   };
 
   // BUG-003: Clear not-found state for unknown lesson IDs
@@ -271,7 +307,9 @@ export function LessonPage() {
             <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
             <p className="mt-2 text-slate-500">{lesson.description}</p>
           </div>
-          {lessonCompleted ? (
+          {completionLoading ? (
+            <div className="h-9 w-36 animate-pulse rounded-xl bg-slate-200" aria-label="Checking completion status" />
+          ) : lessonCompleted ? (
             <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-2 text-emerald-700" role="status">
               <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
               <span className="font-medium">Completed</span>
