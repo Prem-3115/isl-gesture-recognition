@@ -1,19 +1,37 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { ArrowRight, CheckCircle2, Circle, Clock3, Download, PlayCircle } from "lucide-react";
 import { courses, downloadableResources, lessonList } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
+import { useAuth } from "@/context/AuthContext";
+import { fetchCompletedLessons } from "@/services/progress.service";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Button } from "../ui/button";
 
 export function CoursePage() {
   const { courseId = "alphabet" } = useParams();
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
+  const { user } = useAuth();
+  const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
+
+  // Load completion data from Firestore
+  useEffect(() => {
+    if (!user?.uid) return;
+    fetchCompletedLessons(user.uid)
+      .then(setCompletedLessons)
+      .catch(() => { /* leave as empty Set on error */ });
+  }, [user?.uid]);
 
   const course = useMemo(
     () => courses.find((item) => item.id === courseId) ?? courses[0],
     [courseId],
   );
+
+  // Find the first incomplete lesson to resume from
+  const resumeLessonId = useMemo(() => {
+    const firstIncomplete = lessonList.find((l) => !completedLessons.has(l.id));
+    return firstIncomplete?.id ?? lessonList[0].id;
+  }, [completedLessons]);
 
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -48,7 +66,7 @@ export function CoursePage() {
               </div>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate("lesson:letter-d")}>
+                <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate(`lesson:${resumeLessonId}`)}>
                   Open Course
                 </Button>
                 <Button className="rounded-xl" size="lg" variant="outline" onClick={() => onNavigate("practice")}>
@@ -62,39 +80,44 @@ export function CoursePage() {
         <section className="mt-10">
           <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Curriculum</h2>
           <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
-            {lessonList.map((lesson, index) => (
-              <button
-                key={lesson.id}
-                onClick={() => onNavigate(`lesson:${lesson.id}`)}
-                className="group flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left last:border-b-0 hover:bg-slate-50/80"
-              >
-                <div className="flex-shrink-0">
-                  {lesson.status === "done" ? (
-                    <CheckCircle2 className="h-6 w-6 text-emerald-500" />
-                  ) : lesson.status === "in-progress" ? (
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-primary">
-                      <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
-                    </div>
-                  ) : (
-                    <Circle className="h-6 w-6 text-slate-300" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="text-sm text-slate-500">Lesson {index + 1}</span>
-                    {lesson.status === "in-progress" && (
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">In Progress</span>
+            {lessonList.map((lesson, index) => {
+              const isDone = completedLessons.has(lesson.id);
+              // Use mock status only as fallback if no Firestore data yet
+              const resolvedStatus = isDone ? "done" : lesson.status === "done" ? "done" : lesson.status;
+              return (
+                <button
+                  key={lesson.id}
+                  onClick={() => onNavigate(`lesson:${lesson.id}`)}
+                  className="group flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left last:border-b-0 hover:bg-slate-50/80"
+                >
+                  <div className="flex-shrink-0">
+                    {resolvedStatus === "done" ? (
+                      <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                    ) : resolvedStatus === "in-progress" ? (
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-primary">
+                        <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
+                      </div>
+                    ) : (
+                      <Circle className="h-6 w-6 text-slate-300" />
                     )}
                   </div>
-                  <p className={`text-base ${lesson.status === "todo" ? "text-slate-500" : "text-slate-900"}`}>{lesson.title}</p>
-                </div>
-                <div className="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
-                  <Clock3 className="h-4 w-4" />
-                  {lesson.duration}
-                </div>
-                <ArrowRight className="h-4 w-4 text-primary opacity-0 transition group-hover:opacity-100" />
-              </button>
-            ))}
+                  <div className="flex-1">
+                    <div className="mb-1 flex items-center gap-2">
+                      <span className="text-sm text-slate-500">Lesson {index + 1}</span>
+                      {resolvedStatus === "in-progress" && (
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">In Progress</span>
+                      )}
+                    </div>
+                    <p className={`text-base ${resolvedStatus === "todo" ? "text-slate-500" : "text-slate-900"}`}>{lesson.title}</p>
+                  </div>
+                  <div className="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
+                    <Clock3 className="h-4 w-4" />
+                    {lesson.duration}
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-primary opacity-0 transition group-hover:opacity-100" />
+                </button>
+              );
+            })}
           </div>
         </section>
 

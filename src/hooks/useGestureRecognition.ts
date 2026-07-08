@@ -22,6 +22,7 @@ export interface GestureResult {
   status: RecognitionStatus;
   landmarks: Landmark[] | null;
   detectedSign: string | null;
+  /** Confidence in range [0, 1]. 0 when no prediction or API offline. */
   confidence: number;
 }
 
@@ -235,13 +236,13 @@ export function useGestureRecognition({
         return;
       }
 
-      const newFeedback = 'Flask API not responding - is it running?';
+      const newFeedback = 'Flask API not responding — is it running on port 5000?';
       if (lastFeedbackRef.current !== newFeedback) {
         lastFeedbackRef.current = newFeedback;
         setResult({
           feedback: newFeedback,
           handDetected: true,
-          status: 'detecting',
+          status: 'error',
           landmarks,
           detectedSign: null,
           confidence: 0,
