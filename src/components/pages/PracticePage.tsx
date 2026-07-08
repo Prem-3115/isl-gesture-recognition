@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import islChart from "@/assets/isl_chart.jpg";
 import { useGestureRecognition } from "@/hooks/useGestureRecognition";
+import { API_HEALTH } from "@/lib/api";
 import type { LayoutOutletContext } from "@/types/layout";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
@@ -38,7 +39,7 @@ export function PracticePage() {
   useEffect(() => {
     const checkAPI = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/health");
+        const res = await fetch(API_HEALTH);
         const data = await res.json();
         setApiOnline(res.ok && data.model_loaded === true);
       } catch {
