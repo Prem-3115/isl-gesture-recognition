@@ -345,11 +345,24 @@ export function PracticePage() {
           <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50" role="alert">
             <Activity className="h-4 w-4 text-destructive" aria-hidden="true" />
             <AlertTitle className="text-red-900">Gesture recognition unavailable</AlertTitle>
-            <AlertDescription className="text-red-800">
+            <AlertDescription className="text-red-800 leading-7">
               {import.meta.env.PROD ? (
-                <>The AI backend runs locally only. Start it with <code>python isl_api.py</code> from the <code>backend/</code> folder.</>
+                <span>
+                  The AI backend runs locally only. To use gesture recognition, run{" "}
+                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">python isl_api.py</code>{" "}
+                  from the{" "}
+                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">backend/</code>{" "}
+                  folder, then open{" "}
+                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">http://localhost:3000</code>.
+                </span>
               ) : (
-                <>Flask API not running. Start it with <code>python isl_api.py</code> (port 5000).</>
+                <span>
+                  Flask API not running. Start it with{" "}
+                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">python isl_api.py</code>{" "}
+                  from the{" "}
+                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">backend/</code>{" "}
+                  folder (port 5000).
+                </span>
               )}
             </AlertDescription>
           </Alert>
