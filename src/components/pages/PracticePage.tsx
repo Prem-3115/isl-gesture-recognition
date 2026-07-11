@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import {
-  Activity,
   AlertCircle,
   BrainCircuit,
   Camera,
@@ -340,32 +339,12 @@ export function PracticePage() {
           </div>
         </div>
 
-        {/* ── Alerts ─────────────────────────────────────────────────── */}
-        {apiOnline === false && (
-          <Alert className="mb-6 rounded-2xl border-destructive/20 bg-red-50" role="alert">
-            <Activity className="h-4 w-4 text-destructive" aria-hidden="true" />
-            <AlertTitle className="text-red-900">Gesture recognition unavailable</AlertTitle>
-            <AlertDescription className="text-red-800 leading-7">
-              {import.meta.env.PROD ? (
-                <span>
-                  The AI backend runs locally only. To use gesture recognition, run{" "}
-                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">python isl_api.py</code>{" "}
-                  from the{" "}
-                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">backend/</code>{" "}
-                  folder, then open{" "}
-                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">http://localhost:3000</code>.
-                </span>
-              ) : (
-                <span>
-                  Flask API not running. Start it with{" "}
-                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">python isl_api.py</code>{" "}
-                  from the{" "}
-                  <code className="inline rounded bg-red-100 px-1 py-0.5 text-xs font-mono whitespace-nowrap">backend/</code>{" "}
-                  folder (port 5000).
-                </span>
-              )}
-            </AlertDescription>
-          </Alert>
+        {/* ── Dev-only API indicator (never shown in production) ─── */}
+        {!import.meta.env.PROD && apiOnline === false && (
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
+            <span className="h-2 w-2 rounded-full bg-amber-400" />
+            <span>Dev: Flask API offline — run <code className="font-mono text-xs">python isl_api.py</code> on port 5000</span>
+          </div>
         )}
 
         {cameraError && (
