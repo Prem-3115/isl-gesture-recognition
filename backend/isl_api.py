@@ -29,7 +29,7 @@ AMBIGUITY_MARGIN = 0.08
 
 # ── Simple in-memory rate limiter ──────────────────────────────────────────
 # Limits each IP to MAX_REQUESTS per WINDOW_SECONDS on the /predict endpoint.
-MAX_REQUESTS = 60       # per window
+MAX_REQUESTS = 2000     # per window
 WINDOW_SECONDS = 60     # rolling window length
 _rate_store: dict = defaultdict(list)  # ip -> [timestamp, ...]
 

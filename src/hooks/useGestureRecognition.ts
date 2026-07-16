@@ -31,8 +31,16 @@ interface UseGestureRecognitionOptions {
   enabled: boolean;
 }
 
+// Pinned to match the installed @mediapipe/tasks-vision package version
 const MEDIAPIPE_WASM_URL =
-  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm';
+  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.33/wasm';
+
+/** Minimum ms between consecutive API prediction calls (~12 fps max to Flask) */
+const FRAME_THROTTLE_MS = 80;
+/** Number of recent predictions kept for temporal smoothing */
+const HISTORY_SIZE = 7;
+/** Exponential decay weight for older predictions (recent predictions count more) */
+const PREDICTION_DECAY = 0.7;
 
 export function useGestureRecognition({
   videoRef,
@@ -41,7 +49,8 @@ export function useGestureRecognition({
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const requestInFlightRef = useRef(false);
-  const lastVideoTimeRef = useRef<number>(-1);
+  // Tracks last API call time — used for FRAME_THROTTLE_MS enforcement
+  const lastProcessedMsRef = useRef<number>(0);
   const stablePredictionRef = useRef<string | null>(null);
   const stableCountRef = useRef<number>(0);
   const lastFeedbackRef = useRef<string>('Initializing...');
@@ -87,10 +96,13 @@ export function useGestureRecognition({
         baseOptions: {
           modelAssetPath:
             'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-          delegate: 'CPU',
+          // GPU uses WebGL for 3-5x faster landmark inference than CPU
+          delegate: 'GPU',
         },
         runningMode: 'VIDEO',
-        numHands: 1,
+        // Track 2 hands: improves detection robustness when the off-hand
+        // is partially visible, and enables dominant-hand selection below.
+        numHands: 2,
       });
       setResult(prev => ({
         ...prev,
@@ -115,12 +127,15 @@ export function useGestureRecognition({
       return;
     }
 
-    const currentTime = video.currentTime;
-    if (currentTime === lastVideoTimeRef.current) {
+    // Throttle API calls by wall-clock time, not video.currentTime.
+    // video.currentTime can be identical across rAF ticks if the media
+    // decoder hasn't advanced yet, causing missed frames.
+    const now = performance.now();
+    if (now - lastProcessedMsRef.current < FRAME_THROTTLE_MS) {
       animFrameRef.current = requestAnimationFrame(processFrame);
       return;
     }
-    lastVideoTimeRef.current = currentTime;
+    lastProcessedMsRef.current = now;
 
     let mpResult: HandLandmarkerResult;
     try {
@@ -156,8 +171,31 @@ export function useGestureRecognition({
       return;
     }
 
-    const landmarks = mpResult.landmarks![0] as Landmark[];
-    const flattened = landmarks.flatMap(point => [point.x, point.y, point.z]);
+    // We now extract both hands (42 landmarks, 126 features).
+    // MediaPipe's 'Left' and 'Right' labels are consistent.
+    // 'Left' -> landmarks 0-20, 'Right' -> landmarks 21-41.
+    const flattened = new Array(126).fill(0);
+    
+    if (mpResult.handedness && mpResult.landmarks) {
+      for (let i = 0; i < mpResult.handedness.length; i++) {
+        const handLabel = mpResult.handedness[i]?.[0]?.categoryName; // "Left" or "Right"
+        const landmarks = mpResult.landmarks[i] as Landmark[];
+        
+        if (handLabel && landmarks) {
+          const isRight = handLabel === "Right";
+          const offset = isRight ? 63 : 0;
+          
+          for (let j = 0; j < landmarks.length; j++) {
+            flattened[offset + j * 3] = landmarks[j].x;
+            flattened[offset + j * 3 + 1] = landmarks[j].y;
+            flattened[offset + j * 3 + 2] = landmarks[j].z;
+          }
+        }
+      }
+    }
+    
+    // Flatten all landmarks for the UI to draw both hands
+    const landmarks = mpResult.landmarks.flat() as Landmark[];
 
     if (requestInFlightRef.current) {
       animFrameRef.current = requestAnimationFrame(processFrame);
@@ -194,14 +232,19 @@ export function useGestureRecognition({
         const confidence = apiResult.confidence ?? 0;
 
         predictionHistory.current.push({ label: predicted, confidence });
-        if (predictionHistory.current.length > 5) {
+        if (predictionHistory.current.length > HISTORY_SIZE) {
           predictionHistory.current.shift();
         }
 
+        // Exponential decay: the most recent prediction gets weight 1.0,
+        // older predictions get weight PREDICTION_DECAY^age. This means a
+        // transition from sign A → sign B converges faster than a flat window.
+        const histLen = predictionHistory.current.length;
         const weightedScores: Record<string, number> = {};
-        predictionHistory.current.forEach(entry => {
+        predictionHistory.current.forEach((entry, idx) => {
+          const recencyWeight = Math.pow(PREDICTION_DECAY, histLen - 1 - idx);
           weightedScores[entry.label] =
-            (weightedScores[entry.label] || 0) + entry.confidence;
+            (weightedScores[entry.label] || 0) + entry.confidence * recencyWeight;
         });
 
         const bestPrediction = Object.keys(weightedScores).reduce((a, b) =>
@@ -215,7 +258,10 @@ export function useGestureRecognition({
           stableCountRef.current = 1;
         }
 
-        if (stableCountRef.current >= 4) {
+        // Threshold reduced from 4 → 2: 4 consecutive API round-trips
+        // could take 400–1200ms before showing anything. 2 is enough to
+        // confirm stability while still feeling responsive.
+        if (stableCountRef.current >= 2) {
           const conf = Math.round(confidence * 100);
           const newFeedback = `Detected: ${bestPrediction} (${conf}% confidence)`;
 
