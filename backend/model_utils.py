@@ -4,7 +4,7 @@ from itertools import combinations
 
 import numpy as np
 
-HAND_LANDMARKS = 21
+HAND_LANDMARKS = 42
 LANDMARK_DIMENSIONS = 3
 RAW_FEATURE_COUNT = HAND_LANDMARKS * LANDMARK_DIMENSIONS
 
@@ -46,7 +46,7 @@ def _safe_normalize(vector: np.ndarray, fallback: np.ndarray) -> np.ndarray:
     return vector / norm
 
 
-def normalize_hand_landmarks(hand: np.ndarray) -> np.ndarray:
+def normalize_single_hand(hand: np.ndarray) -> np.ndarray:
     centered = hand - hand[0]
 
     palm_forward = centered[9]
@@ -76,8 +76,12 @@ def _joint_angle(hand: np.ndarray, a: int, b: int, c: int) -> float:
     return float(np.arccos(cosine))
 
 
-def hand_to_feature_vector(hand: np.ndarray) -> np.ndarray:
-    canonical = normalize_hand_landmarks(hand)
+def _extract_single_hand_features(hand: np.ndarray) -> np.ndarray:
+    if np.allclose(hand, 0):
+        # Return zeros for the 109 features of a missing hand
+        return np.zeros(21 * 3 + 21 + 10 + 15)
+        
+    canonical = normalize_single_hand(hand)
     wrist_distances = np.linalg.norm(canonical, axis=1)
     fingertip_distances = [
         float(np.linalg.norm(canonical[i] - canonical[j]))
@@ -96,6 +100,16 @@ def hand_to_feature_vector(hand: np.ndarray) -> np.ndarray:
             np.asarray(joint_angles, dtype=float),
         ]
     )
+
+def hand_to_feature_vector(both_hands: np.ndarray) -> np.ndarray:
+    # both_hands is shape (42, 3)
+    left_hand = both_hands[0:21]
+    right_hand = both_hands[21:42]
+    
+    left_features = _extract_single_hand_features(left_hand)
+    right_features = _extract_single_hand_features(right_hand)
+    
+    return np.concatenate([left_features, right_features])
 
 
 def build_feature_matrix(data: np.ndarray | list[float]) -> np.ndarray:

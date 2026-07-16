@@ -158,6 +158,9 @@ export function PracticePage() {
   // Session stats
   const [sessionBest, setSessionBest] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  // EMA-smoothed confidence score — prevents the confidence bar and mastery
+  // indicators from flickering on every frame change.
+  const [smoothedScore, setSmoothedScore] = useState(0);
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -184,13 +187,24 @@ export function PracticePage() {
   const gestureResult = useGestureRecognition({ videoRef, enabled: cameraActive });
   const liveScore = Math.round((gestureResult.confidence ?? 0) * 100);
 
+  // Exponential moving average of liveScore: decays toward 0 when the camera
+  // is off or the hand disappears, converges quickly when a new sign is held.
+  // Used for all displays so the UI feels stable rather than jittery.
+  useEffect(() => {
+    const EMA_ALPHA = 0.3;
+    setSmoothedScore(prev => {
+      if (!cameraActive || liveScore === 0) return Math.round(prev * 0.85);
+      return Math.round(prev * (1 - EMA_ALPHA) + liveScore * EMA_ALPHA);
+    });
+  }, [liveScore, cameraActive]);
+
   // Streak tracking (only in challenge mode)
   const { streak, resetStreak } = useStreak(
     mode === "challenge" ? gestureResult.detectedSign : null,
     mode === "challenge" ? targetSign : null,
   );
 
-  // Update session best score
+  // Update session best score (raw liveScore for true peak tracking)
   useEffect(() => {
     setSessionBest((prev) => Math.max(prev, liveScore));
   }, [liveScore]);
@@ -233,7 +247,13 @@ export function PracticePage() {
         setCameraError("Camera not supported in this browser.");
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        // 640×480 @ 30fps: optimal for MediaPipe hand landmark inference.
+        // No constraint defaults to whatever the browser picks (sometimes 4K
+        // or 15fps), which wastes CPU and makes tracking jittery.
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, min: 24 } },
+        audio: false,
+      });
       if (!videoRef.current) {
         stream.getTracks().forEach((t) => t.stop());
         return;
@@ -277,17 +297,17 @@ export function PracticePage() {
 
   // Derived visual state
   const masteryLevel = useMemo(() => {
-    if (liveScore >= 90) return { label: "Excellent", color: "text-emerald-600" };
-    if (liveScore >= 75) return { label: "Strong", color: "text-blue-600" };
-    if (liveScore >= 55) return { label: "Developing", color: "text-violet-600" };
+    if (smoothedScore >= 90) return { label: "Excellent", color: "text-emerald-600" };
+    if (smoothedScore >= 75) return { label: "Strong", color: "text-blue-600" };
+    if (smoothedScore >= 55) return { label: "Developing", color: "text-violet-600" };
     return { label: "Warming up", color: "text-slate-400" };
-  }, [liveScore]);
+  }, [smoothedScore]);
 
   const isCorrectInChallenge =
     mode === "challenge" &&
     !!gestureResult.detectedSign &&
     gestureResult.detectedSign.toUpperCase() === targetSign.toUpperCase() &&
-    liveScore >= 55;
+    smoothedScore >= 55;
 
   const statusTone =
     gestureResult.status === "loading" ? "bg-amber-400" :
@@ -297,8 +317,8 @@ export function PracticePage() {
 
   const feedbackBg =
     isCorrectInChallenge ? "bg-emerald-500/90" :
-    liveScore >= 85 ? "bg-emerald-500/90" :
-    liveScore >= 60 ? "bg-primary/90" : "bg-slate-500/90";
+    smoothedScore >= 85 ? "bg-emerald-500/90" :
+    smoothedScore >= 60 ? "bg-primary/90" : "bg-slate-500/90";
 
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
@@ -551,12 +571,12 @@ export function PracticePage() {
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5">
                     <div className="mb-2 flex justify-between text-xs text-white/70">
                       <span>Confidence</span>
-                      <span className={isCorrectInChallenge ? "text-emerald-400 font-semibold" : ""}>{liveScore}%</span>
+                      <span className={isCorrectInChallenge ? "text-emerald-400 font-semibold" : ""}>{smoothedScore}%</span>
                     </div>
                     <Progress
-                      value={liveScore}
+                      value={smoothedScore}
                       className="h-2.5 bg-white/15"
-                      aria-label={`Recognition confidence: ${liveScore}%`}
+                      aria-label={`Recognition confidence: ${smoothedScore}%`}
                     />
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Button variant="destructive" size="sm" className="rounded-xl" onClick={stopCamera}>
@@ -592,7 +612,7 @@ export function PracticePage() {
 
               {/* Score rings */}
               <div className="flex flex-wrap justify-around gap-6 rounded-2xl bg-slate-50 p-5">
-                <ScoreRing score={liveScore} label="Live Score" color="#8B5CF6" />
+                <ScoreRing score={smoothedScore} label="Live Score" color="#8B5CF6" />
                 <ScoreRing score={sessionBest} label="Session Best" color="#EC4899" />
                 {mode === "challenge" && (
                   <ScoreRing
@@ -666,9 +686,9 @@ export function PracticePage() {
                 <div className="mt-4">
                   <div className="mb-1.5 flex justify-between text-xs text-slate-500">
                     <span>Confidence</span>
-                    <span>{liveScore}%</span>
+                    <span>{smoothedScore}%</span>
                   </div>
-                  <Progress value={liveScore} className="h-2.5 bg-slate-100" />
+                  <Progress value={smoothedScore} className="h-2.5 bg-slate-100" />
                 </div>
               </div>
             </div>

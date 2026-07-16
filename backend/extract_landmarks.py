@@ -31,15 +31,15 @@ options = HandLandmarkerOptions(
     base_options=mp_python.BaseOptions(model_asset_path=MODEL_PATH),
     running_mode=RunningMode.IMAGE,
     num_hands=2,
-    min_hand_detection_confidence=0.3,
-    min_hand_presence_confidence=0.3,
-    min_tracking_confidence=0.3,
+    min_hand_detection_confidence=0.7,
+    min_hand_presence_confidence=0.7,
+    min_tracking_confidence=0.7,
 )
 detector = HandLandmarker.create_from_options(options)
 
 # ── CSV header ────────────────────────────────────────────────────────────────
 header = ['label']
-for i in range(21):
+for i in range(42):
     header += [f'x{i}', f'y{i}', f'z{i}']
 
 # ── Process dataset ───────────────────────────────────────────────────────────
@@ -102,25 +102,20 @@ for label in sorted(os.listdir(DATASET_DIR)):
             skipped += 1
             continue
 
-        # Use first detected hand
-        landmarks = result.hand_landmarks[0]
+        # Extract 126 elements (42 landmarks * 3 coords)
+        # Left -> offset 0, Right -> offset 63
+        combined_features = [0.0] * 126
+        for idx, handedness in enumerate(result.handedness):
+            hand_label = handedness[0].category_name
+            landmarks = result.hand_landmarks[idx]
+            
+            offset = 63 if hand_label == "Right" else 0
+            for j, lm in enumerate(landmarks):
+                combined_features[offset + j*3]     = lm.x
+                combined_features[offset + j*3 + 1] = lm.y
+                combined_features[offset + j*3 + 2] = lm.z
 
-        # Extract x, y, z
-        coords = []
-        for lm in landmarks:
-            coords += [lm.x, lm.y, lm.z]
-
-        # Normalize: subtract wrist (landmark 0)
-        wx, wy, wz = coords[0], coords[1], coords[2]
-        normalized = []
-        for i in range(21):
-            normalized += [
-                coords[i*3]   - wx,
-                coords[i*3+1] - wy,
-                coords[i*3+2] - wz,
-            ]
-
-        rows.append([label] + normalized)
+        rows.append([label] + combined_features)
         label_processed += 1
         processed += 1
 
