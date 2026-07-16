@@ -58,6 +58,7 @@ for label in sorted(os.listdir(DATASET_DIR)):
         ])
 
 print(f"Found {total_images} total images")
+print(f"Estimated time: ~{total_images * 0.04 / 60:.0f} minutes")
 print(f"Starting extraction...\n")
 
 import mediapipe as mp
@@ -75,8 +76,10 @@ for label in sorted(os.listdir(DATASET_DIR)):
     label_processed = 0
     label_skipped   = 0
 
-    for img_file in images:
+    for img_idx, img_file in enumerate(images):
         img_path = os.path.join(label_dir, img_file)
+        if img_idx % 100 == 0:
+            print(f"    [{label}] {img_idx}/{len(images)} images...", flush=True)
 
         # Read image with OpenCV
         img_bgr = cv2.imread(img_path)
@@ -131,7 +134,7 @@ with open(OUTPUT_CSV, 'w', newline='') as f:
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 print(f"\n{'='*50}")
-print(f"✅ DONE!")
+print("DONE! CSV saved.")
 print(f"{'='*50}")
 print(f"Total images       : {total_images}")
 print(f"Successfully processed: {processed}")
