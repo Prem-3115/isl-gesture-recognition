@@ -9,13 +9,26 @@ LANDMARK_DIMENSIONS = 3
 RAW_FEATURE_COUNT = HAND_LANDMARKS * LANDMARK_DIMENSIONS
 
 FINGERTIP_INDICES = (4, 8, 12, 16, 20)
+
 ANGLE_TRIPLETS = (
-    (0, 1, 2), (1, 2, 3), (2, 3, 4),
-    (0, 5, 6), (5, 6, 7), (6, 7, 8),
-    (0, 9, 10), (9, 10, 11), (10, 11, 12),
-    (0, 13, 14), (13, 14, 15), (14, 15, 16),
-    (0, 17, 18), (17, 18, 19), (18, 19, 20),
+    # Flexion angles — along each finger's chain
+    (0, 1, 2), (1, 2, 3), (2, 3, 4),           # thumb
+    (0, 5, 6), (5, 6, 7), (6, 7, 8),            # index
+    (0, 9, 10), (9, 10, 11), (10, 11, 12),      # middle
+    (0, 13, 14), (13, 14, 15), (14, 15, 16),    # ring
+    (0, 17, 18), (17, 18, 19), (18, 19, 20),    # pinky
+    # Abduction angles — spread between adjacent fingers at MCP level
+    # Fix #11: these distinguish signs like R/U, V/3, 4/5 that differ only in spread
+    (1, 0, 5),    # thumb–index spread
+    (5, 0, 9),    # index–middle spread
+    (9, 0, 13),   # middle–ring spread
+    (13, 0, 17),  # ring–pinky spread
 )
+
+# Single source of truth for feature vector length per hand (Fix #10)
+# 21 landmarks×3 coords  +  21 wrist distances  +  C(5,2)=10 fingertip distances
+# + len(ANGLE_TRIPLETS) joint/abduction angles  =  113
+FEATURES_PER_HAND: int = 21 * 3 + 21 + 10 + len(ANGLE_TRIPLETS)
 
 
 def reshape_landmarks(data: np.ndarray | list[float]) -> np.ndarray:
@@ -47,14 +60,40 @@ def _safe_normalize(vector: np.ndarray, fallback: np.ndarray) -> np.ndarray:
 
 
 def normalize_single_hand(hand: np.ndarray) -> np.ndarray:
+    """Return a rotation- and scale-invariant canonical representation.
+
+    Fix #1: Full Gram-Schmidt orthonormalization.
+    The original code passed palm_side directly into the cross product with
+    y_axis. When the hand is seen nearly edge-on, palm_side and y_axis become
+    nearly parallel, so their cross product collapses to near-zero and the
+    [0,0,1] fallback fires — destroying rotation invariance for that frame.
+
+    The fix: project palm_side onto the plane perpendicular to y_axis first
+    (Gram-Schmidt step), so the cross product always yields a well-defined z_axis.
+    """
     centered = hand - hand[0]
 
+    # After centering, centered[0] == origin, so centered[9] is already the
+    # wrist→MCP9 direction vector — a valid palm "up" (y) direction.
     palm_forward = centered[9]
+    # Side vector across the palm (index MCP → pinky MCP).
     palm_side = centered[5] - centered[17]
 
+    # ── Full Gram-Schmidt orthonormal frame ──────────────────────────────
+    # Step 1: primary axis — palm forward direction
     y_axis = _safe_normalize(palm_forward, np.array([0.0, 1.0, 0.0]))
-    z_axis = _safe_normalize(np.cross(palm_side, y_axis), np.array([0.0, 0.0, 1.0]))
+
+    # Step 2: remove the y-component from palm_side so the cross product
+    # never collapses, even when palm_side ∥ y_axis (edge-on hand views).
+    palm_side_ortho = palm_side - np.dot(palm_side, y_axis) * y_axis
+    z_axis = _safe_normalize(
+        np.cross(palm_side_ortho, y_axis), np.array([0.0, 0.0, 1.0])
+    )
+
+    # Step 3: derive x from the corrected y and z
     x_axis = _safe_normalize(np.cross(y_axis, z_axis), np.array([1.0, 0.0, 0.0]))
+
+    # Step 4: re-derive z to guarantee strict orthonormality
     z_axis = _safe_normalize(np.cross(x_axis, y_axis), np.array([0.0, 0.0, 1.0]))
 
     rotation = np.stack([x_axis, y_axis, z_axis], axis=1)
@@ -77,9 +116,13 @@ def _joint_angle(hand: np.ndarray, a: int, b: int, c: int) -> float:
 
 
 def _extract_single_hand_features(hand: np.ndarray) -> np.ndarray:
-    if np.allclose(hand, 0):
-        # Return zeros for the 109 features of a missing hand
-        return np.zeros(21 * 3 + 21 + 10 + 15)
+    # Fix #4: use exact equality instead of np.allclose.
+    # np.allclose (rtol=1e-5, atol=1e-8) returned True for real hands near the
+    # frame edge whose x/y coords are small but non-zero, silently discarding
+    # valid landmark data. Absent hands are always set to exactly 0.0 by both
+    # extract_landmarks.py and the frontend, so exact equality is safe here.
+    if np.all(hand == 0.0):
+        return np.zeros(FEATURES_PER_HAND)
         
     canonical = normalize_single_hand(hand)
     wrist_distances = np.linalg.norm(canonical, axis=1)

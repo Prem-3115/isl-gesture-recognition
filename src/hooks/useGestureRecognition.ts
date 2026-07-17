@@ -35,12 +35,11 @@ interface UseGestureRecognitionOptions {
 const MEDIAPIPE_WASM_URL =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.33/wasm';
 
-/** Minimum ms between consecutive API prediction calls (~12 fps max to Flask) */
-const FRAME_THROTTLE_MS = 80;
 /** Number of recent predictions kept for temporal smoothing */
 const HISTORY_SIZE = 7;
 /** Exponential decay weight for older predictions (recent predictions count more) */
 const PREDICTION_DECAY = 0.7;
+
 
 export function useGestureRecognition({
   videoRef,
@@ -49,8 +48,6 @@ export function useGestureRecognition({
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const requestInFlightRef = useRef(false);
-  // Tracks last API call time — used for FRAME_THROTTLE_MS enforcement
-  const lastProcessedMsRef = useRef<number>(0);
   const stablePredictionRef = useRef<string | null>(null);
   const stableCountRef = useRef<number>(0);
   const lastFeedbackRef = useRef<string>('Initializing...');
@@ -127,19 +124,14 @@ export function useGestureRecognition({
       return;
     }
 
-    // Throttle API calls by wall-clock time, not video.currentTime.
-    // video.currentTime can be identical across rAF ticks if the media
-    // decoder hasn't advanced yet, causing missed frames.
+    // Capture timestamp once for this frame.
+    // Fix #12: pass the same `now` to detectForVideo to guarantee a
+    // monotonically consistent timestamp with the loop's throttle check.
     const now = performance.now();
-    if (now - lastProcessedMsRef.current < FRAME_THROTTLE_MS) {
-      animFrameRef.current = requestAnimationFrame(processFrame);
-      return;
-    }
-    lastProcessedMsRef.current = now;
 
     let mpResult: HandLandmarkerResult;
     try {
-      mpResult = landmarker.detectForVideo(video, performance.now());
+      mpResult = landmarker.detectForVideo(video, now);
     } catch {
       animFrameRef.current = requestAnimationFrame(processFrame);
       return;
@@ -212,6 +204,12 @@ export function useGestureRecognition({
           const conf = Math.round((apiResult.confidence ?? 0) * 100);
           const newFeedback = `Hand detected - hold steadier (${conf}%)`;
 
+          // Fix #5: clear stale history on ambiguous frames so they cannot
+          // ghost-predict old signs when confidence recovers on the next frame.
+          predictionHistory.current = [];
+          stablePredictionRef.current = null;
+          stableCountRef.current = 0;
+
           if (lastFeedbackRef.current !== newFeedback) {
             lastFeedbackRef.current = newFeedback;
             setResult({
@@ -241,15 +239,24 @@ export function useGestureRecognition({
         // transition from sign A → sign B converges faster than a flat window.
         const histLen = predictionHistory.current.length;
         const weightedScores: Record<string, number> = {};
+        const totalWeights: Record<string, number> = {};
         predictionHistory.current.forEach((entry, idx) => {
           const recencyWeight = Math.pow(PREDICTION_DECAY, histLen - 1 - idx);
           weightedScores[entry.label] =
             (weightedScores[entry.label] || 0) + entry.confidence * recencyWeight;
+          // Track sum of weights per label so we can normalise to a true average
+          totalWeights[entry.label] = (totalWeights[entry.label] || 0) + recencyWeight;
         });
 
         const bestPrediction = Object.keys(weightedScores).reduce((a, b) =>
           weightedScores[a] > weightedScores[b] ? a : b
         );
+
+        // Fix #7: smoothed confidence = weighted average of confidences for
+        // the winning label across history, NOT the raw last-frame value.
+        // This ensures the displayed % always matches bestPrediction.
+        const smoothedConfidence =
+          weightedScores[bestPrediction] / totalWeights[bestPrediction];
 
         if (stablePredictionRef.current === bestPrediction) {
           stableCountRef.current += 1;
@@ -258,11 +265,10 @@ export function useGestureRecognition({
           stableCountRef.current = 1;
         }
 
-        // Threshold reduced from 4 → 2: 4 consecutive API round-trips
-        // could take 400–1200ms before showing anything. 2 is enough to
-        // confirm stability while still feeling responsive.
+        // Threshold: 2 consecutive matching predictions is enough to confirm
+        // stability while still feeling responsive.
         if (stableCountRef.current >= 2) {
-          const conf = Math.round(confidence * 100);
+          const conf = Math.round(smoothedConfidence * 100);
           const newFeedback = `Detected: ${bestPrediction} (${conf}% confidence)`;
 
           if (lastFeedbackRef.current !== newFeedback) {
@@ -273,7 +279,7 @@ export function useGestureRecognition({
               status: 'feedback',
               landmarks,
               detectedSign: bestPrediction,
-              confidence,
+              confidence: smoothedConfidence,
             });
           }
         }

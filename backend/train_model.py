@@ -39,8 +39,30 @@ print(f"Feature vector size: {X.shape[1]}\n")
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
-print(f"Training samples: {len(X_train)}")
+print(f"Training samples (before augmentation): {len(X_train)}")
 print(f"Test samples: {len(X_test)}\n")
+
+# ── Gaussian noise augmentation ───────────────────────────────────────────────
+# Add jittered copies of every training sample to simulate webcam noise.
+# Each feature in the vector is a normalised coordinate or derived angle;
+# std=0.005 corresponds to ~0.5% of the [0,1] coordinate range (~1-2 pixels
+# in a 320px frame) — realistic for real-time webcam imprecision.
+# Applied ONLY to X_train so the test set stays clean (no leakage).
+AUGMENT_FACTOR = 5   # 5 jittered copies per original sample
+NOISE_STD = 0.005
+
+print(f"Augmenting training set {AUGMENT_FACTOR}× with Gaussian noise (std={NOISE_STD})...")
+rng = np.random.default_rng(seed=42)
+aug_X_list = [X_train]
+aug_y_list = [y_train]
+for _ in range(AUGMENT_FACTOR):
+    noise = rng.normal(0, NOISE_STD, size=X_train.shape)
+    aug_X_list.append(X_train + noise)
+    aug_y_list.append(y_train)
+
+X_train = np.vstack(aug_X_list)
+y_train = np.concatenate(aug_y_list)
+print(f"Training samples (after augmentation):  {len(X_train)}\n")
 
 model = VotingClassifier(
     estimators=[
