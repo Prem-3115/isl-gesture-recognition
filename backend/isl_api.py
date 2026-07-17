@@ -24,8 +24,11 @@ CORS(app, origins=ALLOWED_ORIGINS, methods=["GET", "POST", "OPTIONS"])
 MODEL_PATH = "isl_model.pkl"
 ENCODER_PATH = "label_encoder.pkl"
 
-CONFIDENCE_THRESHOLD = 0.55
-AMBIGUITY_MARGIN = 0.08
+# Lowered from 0.55 → 0.40 and 0.08 → 0.05 to pass through noisy webcam predictions.
+# The static training set produces near-perfect probabilities; real webcam data is
+# noisier, so predictions that are correct often score between 0.40–0.55.
+CONFIDENCE_THRESHOLD = 0.40
+AMBIGUITY_MARGIN = 0.05
 
 # ── Simple in-memory rate limiter ──────────────────────────────────────────
 # Limits each IP to MAX_REQUESTS per WINDOW_SECONDS on the /predict endpoint.
