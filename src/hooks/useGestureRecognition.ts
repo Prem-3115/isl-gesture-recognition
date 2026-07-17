@@ -195,7 +195,7 @@ export function useGestureRecognition({
     }
     
     // Flatten all landmarks for the UI to draw both hands
-    const landmarks = mpResult.landmarks.flat() as Landmark[];
+    const landmarks = (mpResult.landmarks || []).flat() as Landmark[];
 
     if (requestInFlightRef.current) {
       animFrameRef.current = requestAnimationFrame(processFrame);

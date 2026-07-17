@@ -8,10 +8,17 @@ declare module '@mediapipe/tasks-vision' {
     visibility?: number;
   }
 
+  export interface Category {
+    index: number;
+    score: number;
+    categoryName: string;
+    displayName: string;
+  }
+
   export interface HandLandmarkerResult {
     landmarks?: NormalizedLandmark[][];
-    handedness?: Array<{ displayName: string; index: number; score: number }>;
-    handednesses?: Array<{ displayName: string; index: number; score: number }>;
+    handedness?: Category[][];
+    handednesses?: Category[][];
   }
 
   export interface FilesetResolver {
