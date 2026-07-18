@@ -85,10 +85,14 @@ export function Header({
             </div>
           ) : isLoggedIn ? (
             <>
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary">
+              <button
+                onClick={() => handleNav("profile")}
+                className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary transition hover:bg-primary/20 active:scale-[0.98]"
+                aria-label="View your profile"
+              >
                 <Sparkles className="h-4 w-4" />
                 {userName}
-              </div>
+              </button>
               <Button variant="outline" onClick={onLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
@@ -142,7 +146,12 @@ export function Header({
             <div className="mt-2 grid gap-3 border-t border-slate-200 pt-4">
               {isLoggedIn ? (
                 <>
-                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">{userName}</div>
+                  <button
+                    className="rounded-2xl bg-primary/10 px-4 py-3 text-left text-sm font-medium text-primary"
+                    onClick={() => { setMobileOpen(false); onNavigate("profile"); }}
+                  >
+                    {userName} · View Profile
+                  </button>
                   <Button variant="outline" onClick={() => { setMobileOpen(false); onLogout(); }}>
                     Logout
                   </Button>
