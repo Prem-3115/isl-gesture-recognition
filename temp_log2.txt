@@ -1,0 +1,1199 @@
+commit e986ba9db16d21e13f430d49c490498880bf3594
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Mar 25 16:42:56 2026 +0530
+
+    ui added
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+new file mode 100644
+index 00000000..142bc32d
+--- /dev/null
++++ b/src/data/mockData.ts
+@@ -0,0 +1,256 @@
++import {
++  Award,
++  BookOpen,
++  Brain,
++  Camera,
++  Flame,
++  Hand,
++  Sparkles,
++  Star,
++  Target,
++  Trophy,
++  Video,
++} from "lucide-react@0.487.0";
++
++export const courses = [
++  {
++    id: "alphabet",
++    title: "ISL Alphabet Fundamentals",
++    description:
++      "Build a strong signing foundation with guided lessons for every core alphabet handshape.",
++    image:
++      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
++    difficulty: "Beginner",
++    progress: 46,
++    lessonsCompleted: 4,
++    totalLessons: 10,
++    duration: "2.5 hours",
++    enrolled: "12,450+",
++    rating: "4.8/5",
++  },
++  {
++    id: "greetings",
++    title: "Everyday Greetings",
++    description:
++      "Practice hello, thank you, introductions, and social phrases used in daily conversation.",
++    image:
++      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
++    difficulty: "Beginner",
++    progress: 74,
++    lessonsCompleted: 6,
++    totalLessons: 8,
++    duration: "1.8 hours",
++    enrolled: "9,860+",
++    rating: "4.9/5",
++  },
++  {
++    id: "numbers",
++    title: "Numbers 1-100",
++    description:
++      "Learn number signs with short drills, memory checks, and quick real-world practice prompts.",
++    image:
++      "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
++    difficulty: "Beginner",
++    progress: 20,
++    lessonsCompleted: 2,
++    totalLessons: 10,
++    duration: "2.1 hours",
++    enrolled: "8,420+",
++    rating: "4.7/5",
++  },
++] as const;
++
++export const featuredStats = [
++  { value: "50K+", label: "learners" },
++  { value: "500+", label: "signs" },
++  { value: "95%", label: "satisfaction" },
++  { value: "24/7", label: "AI support" },
++] as const;
++
++export const howItWorks = [
++  {
++    title: "Watch & Learn",
++    description:
++      "Follow short expert-led lessons that break each sign into shape, motion, and orientation.",
++    icon: Video,
++    accent: "from-primary to-secondary",
++  },
++  {
++    title: "Practice with AI",
++    description:
++      "Use your camera or demo mode to get instant recognition feedback and confidence scores.",
++    icon: Camera,
++    accent: "from-secondary to-accent",
++  },
++  {
++    title: "Track & Master",
++    description:
++      "See weekly improvements, revisit difficult signs, and celebrate streaks and milestones.",
++    icon: Target,
++    accent: "from-accent to-primary",
++  },
++] as const;
++
++export const featureTiles = [
++  {
++    title: "Authentic Content",
++    description:
++      "Lessons are structured around practical Indian Sign Language usage and community-first learning.",
++    icon: Hand,
++  },
++  {
++    title: "AI Recognition",
++    description:
++      "Real-time simulated feedback helps learners understand positioning, confidence, and timing.",
++    icon: Brain,
++  },
++  {
++    title: "Expert Instructors",
++    description:
++      "Each module is framed like a guided classroom session with focused repetition and cues.",
++    icon: Sparkles,
++  },
++  {
++    title: "Flexible Schedule",
++    description:
++      "Five-minute drills, full lessons, and progress dashboards let you learn at your own pace.",
++    icon: BookOpen,
++  },
++] as const;
++
++export const testimonials = [
++  {
++    name: "Ananya Mehta",
++    role: "Student, Delhi",
++    quote:
++      "The practice flow feels encouraging instead of intimidating. I finally stuck with learning ISL every week.",
++  },
++  {
++    name: "Rahul Kapoor",
++    role: "Teacher, Mumbai",
++    quote:
++      "My students loved how clear the step-by-step lesson cards are. The progress dashboard keeps them motivated.",
++  },
++  {
++    name: "Sneha Patel",
++    role: "Healthcare Worker, Ahmedabad",
++    quote:
++      "The sign references and quick AI tips helped me build confidence using essential phrases at work.",
++  },
++] as const;
++
++export const weeklyGoals = [
++  { label: "Practice Sessions", current: 4, target: 5 },
++  { label: "New Signs", current: 8, target: 10 },
++  { label: "Accuracy Goal", current: 89, target: 90 },
++] as const;
++
++export const recentSigns = [
++  { sign: "Letter A", accuracy: 92, lastPracticed: "2 min ago" },
++  { sign: "Letter B", accuracy: 87, lastPracticed: "18 min ago" },
++  { sign: "Thank You", accuracy: 95, lastPracticed: "1 hour ago" },
++  { sign: "Number 5", accuracy: 84, lastPracticed: "3 hours ago" },
++] as const;
++
++export const lessonList = [
++  { id: "intro-isl", title: "Introduction to ISL", duration: "8 min", status: "done" },
++  { id: "letter-a", title: "Letter A", duration: "6 min", status: "done" },
++  { id: "letter-b", title: "Letter B", duration: "6 min", status: "done" },
++  { id: "letter-c", title: "Letter C", duration: "6 min", status: "done" },
++  { id: "letter-d", title: "Letter D", duration: "7 min", status: "in-progress" },
++  { id: "letter-e", title: "Letter E", duration: "6 min", status: "todo" },
++  { id: "letter-f", title: "Letter F", duration: "6 min", status: "todo" },
++  { id: "letter-g", title: "Letter G", duration: "7 min", status: "todo" },
++  { id: "review-a-g", title: "Review: Letters A-G", duration: "10 min", status: "todo" },
++  { id: "alphabet-checkpoint", title: "Checkpoint Practice", duration: "15 min", status: "todo" },
++] as const;
++
++export const downloadableResources = [
++  { title: "ISL Alphabet Chart", format: "PDF", size: "2.4 MB" },
++  { title: "Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
++  { title: "Common Mistakes Checklist", format: "PDF", size: "1.8 MB" },
++] as const;
++
++export const accuracyTrend = [
++  { day: "Mon", accuracy: 75 },
++  { day: "Tue", accuracy: 79 },
++  { day: "Wed", accuracy: 82 },
++  { day: "Thu", accuracy: 84 },
++  { day: "Fri", accuracy: 86 },
++  { day: "Sat", accuracy: 90 },
++  { day: "Sun", accuracy: 89 },
++] as const;
++
++export const categoryProgress = [
++  { category: "Alphabet", signs: 26 },
++  { category: "Greetings", signs: 18 },
++  { category: "Numbers", signs: 35 },
++  { category: "Family", signs: 12 },
++  { category: "Common Words", signs: 33 },
++] as const;
++
++export const masteryDistribution = [
++  { name: "Mastered", value: 42, color: "#8B5CF6" },
++  { name: "Strong", value: 28, color: "#EC4899" },
++  { name: "Developing", value: 20, color: "#06B6D4" },
++  { name: "Needs Practice", value: 10, color: "#CBD5E1" },
++] as const;
++
++export const achievements = [
++  {
++    name: "Alphabet Apprentice",
++    description: "Completed the full alphabet pathway with 80%+ average accuracy.",
++    icon: Award,
++    earned: true,
++    date: "Oct 1, 2025",
++  },
++  {
++    name: "Greeting Guru",
++    description: "Mastered 15 essential greeting signs for daily conversation.",
++    icon: Trophy,
++    earned: true,
++    date: "Oct 7, 2025",
++  },
++  {
++    name: "Streak Starter",
++    description: "Practiced for 5 consecutive days and built a reliable habit.",
++    icon: Flame,
++    earned: true,
++    date: "Oct 11, 2025",
++  },
++  {
++    name: "Quick Study",
++    description: "Finished 10 lessons in under two weeks with strong retention.",
++    icon: Sparkles,
++    earned: true,
++    date: "Oct 18, 2025",
++  },
++  {
++    name: "Perfect Practice",
++    description: "Reach 100% accuracy on 10 different signs.",
++    icon: Target,
++    earned: false,
++    progress: 60,
++  },
++  {
++    name: "Century Club",
++    description: "Master 100+ signs across alphabet, greetings, and numbers.",
++    icon: Star,
++    earned: false,
++    progress: 82,
++  },
++] as const;
++
++export const recentActivity = [
++  { label: "Completed Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
++  { label: 'Practiced "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
++  { label: 'Unlocked badge: "Quick Study"', time: "1 day ago", tone: "bg-accent" },
++  { label: "Started Numbers 1-100 course", time: "2 days ago", tone: "bg-slate-400" },
++] as const;
++
++export const challengingSigns = [
++  { sign: "Letter Q", accuracy: 68, attempts: 12 },
++  { sign: "Letter Z", accuracy: 72, attempts: 10 },
++  { sign: "Number 7", accuracy: 75, attempts: 8 },
++  { sign: "Thank You", accuracy: 76, attempts: 7 },
++] as const;
+
+commit ebbd84350ca57e696325239c558c44543e336be8
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Mar 25 18:02:24 2026 +0530
+
+    fixed somethings in ui
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 142bc32d..268e0204 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -1,3 +1,4 @@
++import islChart from "@/assets/isl_chart.jpg";
+ import {
+   Award,
+   BookOpen,
+@@ -15,11 +16,10 @@ import {
+ export const courses = [
+   {
+     id: "alphabet",
+-    title: "ISL Alphabet Fundamentals",
++    title: "Learn ISL Alphabet",
+     description:
+-      "Build a strong signing foundation with guided lessons for every core alphabet handshape.",
+-    image:
+-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
++      "Build a strong ISL foundation with guided lessons for the ISL alphabet and beginner-friendly practice.",
++    image: islChart,
+     difficulty: "Beginner",
+     progress: 46,
+     lessonsCompleted: 4,
+@@ -30,9 +30,9 @@ export const courses = [
+   },
+   {
+     id: "greetings",
+-    title: "Everyday Greetings",
++    title: "ISL Everyday Greetings",
+     description:
+-      "Practice hello, thank you, introductions, and social phrases used in daily conversation.",
++      "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
+     image:
+       "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+     difficulty: "Beginner",
+@@ -45,11 +45,10 @@ export const courses = [
+   },
+   {
+     id: "numbers",
+-    title: "Numbers 1-100",
++    title: "ISL Numbers 1-100",
+     description:
+-      "Learn number signs with short drills, memory checks, and quick real-world practice prompts.",
+-    image:
+-      "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
++      "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
++    image: islChart,
+     difficulty: "Beginner",
+     progress: 20,
+     lessonsCompleted: 2,
+@@ -71,21 +70,21 @@ export const howItWorks = [
+   {
+     title: "Watch & Learn",
+     description:
+-      "Follow short expert-led lessons that break each sign into shape, motion, and orientation.",
++      "Follow short expert-led ISL lessons that break each sign into shape, motion, and orientation.",
+     icon: Video,
+     accent: "from-primary to-secondary",
+   },
+   {
+     title: "Practice with AI",
+     description:
+-      "Use your camera or demo mode to get instant recognition feedback and confidence scores.",
++      "Use your camera to get instant gesture recognition for ISL with confidence feedback and visual guidance.",
+     icon: Camera,
+     accent: "from-secondary to-accent",
+   },
+   {
+     title: "Track & Master",
+     description:
+-      "See weekly improvements, revisit difficult signs, and celebrate streaks and milestones.",
++      "See weekly ISL progress, revisit difficult signs, and celebrate streaks and milestones.",
+     icon: Target,
+     accent: "from-accent to-primary",
+   },
+@@ -95,25 +94,25 @@ export const featureTiles = [
+   {
+     title: "Authentic Content",
+     description:
+-      "Lessons are structured around practical Indian Sign Language usage and community-first learning.",
++      "Lessons are structured around practical ISL (Indian Sign Language) usage and community-first learning.",
+     icon: Hand,
+   },
+   {
+     title: "AI Recognition",
+     description:
+-      "Real-time simulated feedback helps learners understand positioning, confidence, and timing.",
++      "Real-time feedback supports gesture recognition for ISL and helps learners improve positioning, confidence, and timing.",
+     icon: Brain,
+   },
+   {
+     title: "Expert Instructors",
+     description:
+-      "Each module is framed like a guided classroom session with focused repetition and cues.",
++      "Each module is framed like a guided ISL classroom session with focused repetition and clear visual cues.",
+     icon: Sparkles,
+   },
+   {
+     title: "Flexible Schedule",
+     description:
+-      "Five-minute drills, full lessons, and progress dashboards let you learn at your own pace.",
++      "Five-minute drills, full lessons, and ISL progress dashboards let you learn at your own pace.",
+     icon: BookOpen,
+   },
+ ] as const;
+@@ -161,14 +160,14 @@ export const lessonList = [
+   { id: "letter-e", title: "Letter E", duration: "6 min", status: "todo" },
+   { id: "letter-f", title: "Letter F", duration: "6 min", status: "todo" },
+   { id: "letter-g", title: "Letter G", duration: "7 min", status: "todo" },
+-  { id: "review-a-g", title: "Review: Letters A-G", duration: "10 min", status: "todo" },
+-  { id: "alphabet-checkpoint", title: "Checkpoint Practice", duration: "15 min", status: "todo" },
++  { id: "review-a-g", title: "Review: ISL Letters A-G", duration: "10 min", status: "todo" },
++  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint", duration: "15 min", status: "todo" },
+ ] as const;
+ 
+ export const downloadableResources = [
+-  { title: "ISL Alphabet Chart", format: "PDF", size: "2.4 MB" },
+-  { title: "Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
+-  { title: "Common Mistakes Checklist", format: "PDF", size: "1.8 MB" },
++  { title: "ISL (Indian Sign Language) Alphabet Chart", format: "PDF", size: "2.4 MB" },
++  { title: "ISL Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
++  { title: "ISL Practice Checklist", format: "PDF", size: "1.8 MB" },
+ ] as const;
+ 
+ export const accuracyTrend = [
+@@ -199,14 +198,14 @@ export const masteryDistribution = [
+ export const achievements = [
+   {
+     name: "Alphabet Apprentice",
+-    description: "Completed the full alphabet pathway with 80%+ average accuracy.",
++    description: "Completed the full ISL alphabet pathway with 80%+ average accuracy.",
+     icon: Award,
+     earned: true,
+     date: "Oct 1, 2025",
+   },
+   {
+     name: "Greeting Guru",
+-    description: "Mastered 15 essential greeting signs for daily conversation.",
++    description: "Mastered 15 essential ISL greeting signs for daily conversation.",
+     icon: Trophy,
+     earned: true,
+     date: "Oct 7, 2025",
+@@ -227,14 +226,14 @@ export const achievements = [
+   },
+   {
+     name: "Perfect Practice",
+-    description: "Reach 100% accuracy on 10 different signs.",
++    description: "Reach 100% accuracy on 10 different ISL signs.",
+     icon: Target,
+     earned: false,
+     progress: 60,
+   },
+   {
+     name: "Century Club",
+-    description: "Master 100+ signs across alphabet, greetings, and numbers.",
++    description: "Master 100+ ISL signs across alphabet, greetings, and numbers.",
+     icon: Star,
+     earned: false,
+     progress: 82,
+@@ -242,8 +241,8 @@ export const achievements = [
+ ] as const;
+ 
+ export const recentActivity = [
+-  { label: "Completed Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
+-  { label: 'Practiced "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
++  { label: "Completed ISL Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
++  { label: 'Practiced ISL "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
+   { label: 'Unlocked badge: "Quick Study"', time: "1 day ago", tone: "bg-accent" },
+   { label: "Started Numbers 1-100 course", time: "2 days ago", tone: "bg-slate-400" },
+ ] as const;
+
+commit 28d7c8c7feee10a69637fd5b86ae36df886ca9f5
+Author: Shreyank <you@example.com>
+Date:   Thu Mar 26 13:52:11 2026 +0530
+
+    perf: lazy load routes, split chunks, cache Firestore reads, IndexedDB auth, optimize images
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 268e0204..43cdb9e1 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -34,7 +34,7 @@ export const courses = [
+     description:
+       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
+     image:
+-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
++      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=75&fm=webp",
+     difficulty: "Beginner",
+     progress: 74,
+     lessonsCompleted: 6,
+
+commit 9cf1054e0ac781b3e487c924dcc0f1e32eed371f
+Author: Shreyank <you@example.com>
+Date:   Sun Mar 29 12:40:15 2026 +0530
+
+    feat: add Community page with leaderboard, discussions, study groups, sign of the day, and events; fix TypeScript RefObject error; pre-load MediaPipe model on mount; pin MediaPipe CDN version for caching
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 43cdb9e1..99a64c07 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -253,3 +253,144 @@ export const challengingSigns = [
+   { sign: "Number 7", accuracy: 75, attempts: 8 },
+   { sign: "Thank You", accuracy: 76, attempts: 7 },
+ ] as const;
++
++// ─── Community Page Data ────────────────────────────────────────────────────
++
++export const leaderboard = [
++  { rank: 1, name: "Priya Sharma", city: "Delhi", signsLearned: 214, streak: 32, accuracy: 97 },
++  { rank: 2, name: "Arjun Mehta", city: "Mumbai", signsLearned: 198, streak: 28, accuracy: 95 },
++  { rank: 3, name: "Sneha Reddy", city: "Bengaluru", signsLearned: 179, streak: 21, accuracy: 93 },
++  { rank: 4, name: "Kabir Verma", city: "Pune", signsLearned: 163, streak: 18, accuracy: 91 },
++  { rank: 5, name: "Ananya Singh", city: "Chennai", signsLearned: 151, streak: 15, accuracy: 90 },
++  { rank: 6, name: "Rohan Desai", city: "Kolkata", signsLearned: 138, streak: 12, accuracy: 88 },
++  { rank: 7, name: "Meera Nair", city: "Hyderabad", signsLearned: 124, streak: 12, accuracy: 89 },
++  { rank: 8, name: "Vikram Joshi", city: "Jaipur", signsLearned: 116, streak: 9, accuracy: 86 },
++] as const;
++
++export const discussions = [
++  {
++    id: "d1",
++    author: "Priya Sharma",
++    initials: "PS",
++    time: "2 hours ago",
++    topic: "Tips for practising ISL letters J and Z?",
++    body: "I keep confusing the wrist rotation for J and Z. Any tips on how to remember the difference quickly?",
++    replies: 14,
++    likes: 28,
++    tag: "Alphabet",
++  },
++  {
++    id: "d2",
++    author: "Kabir Verma",
++    initials: "KV",
++    time: "5 hours ago",
++    topic: "Flask API sometimes freezes mid-session",
++    body: "When my hand goes out of frame for a second the prediction stops and I have to restart the camera. Anyone else?",
++    replies: 8,
++    likes: 12,
++    tag: "Practice",
++  },
++  {
++    id: "d3",
++    author: "Sneha Reddy",
++    initials: "SR",
++    time: "1 day ago",
++    topic: "Completed the ISL greetings course — my experience",
++    body: "Just finished the everyday greetings module with 93% average. The AI feedback was incredibly helpful. Highly recommend going through it twice.",
++    replies: 22,
++    likes: 47,
++    tag: "Milestone",
++  },
++  {
++    id: "d4",
++    author: "Meera Nair",
++    initials: "MN",
++    time: "2 days ago",
++    topic: "Resources for ISL Number signs beyond 20?",
++    body: "The course only goes up to 10. Has anyone found good reference material for ISL numbers in the 20-100 range?",
++    replies: 6,
++    likes: 9,
++    tag: "Resources",
++  },
++] as const;
++
++export const studyGroups = [
++  {
++    id: "sg1",
++    name: "Alphabet & Basics",
++    description: "For newcomers mastering the 26 ISL alphabets and foundational hand shapes.",
++    members: 184,
++    icon: Hand,
++    accent: "from-primary to-secondary",
++    tag: "Beginner",
++  },
++  {
++    id: "sg2",
++    name: "Daily Practice Group",
++    description: "Commit to at least one practice session per day. Share your scores and keep each other accountable.",
++    members: 92,
++    icon: Flame,
++    accent: "from-secondary to-accent",
++    tag: "Active",
++  },
++  {
++    id: "sg3",
++    name: "ISL Educators",
++    description: "Teachers, therapists, and healthcare professionals learning ISL for work.",
++    members: 57,
++    icon: Sparkles,
++    accent: "from-accent to-primary",
++    tag: "Professional",
++  },
++  {
++    id: "sg4",
++    name: "High Score Hunters",
++    description: "Compete for the weekly accuracy leaderboard. Share your gestures and get peer feedback.",
++    members: 43,
++    icon: Trophy,
++    accent: "from-primary via-secondary to-accent",
++    tag: "Competitive",
++  },
++] as const;
++
++export const signOfTheDay = {
++  sign: "NAMASTE",
++  description: "The classic Indian greeting — place both palms together in front of your chest, fingers pointing upward, and give a small bow of the head.",
++  category: "Greetings",
++  practiceCount: 1248,
++  topAccuracy: 97,
++} as const;
++
++export const communityEvents = [
++  {
++    id: "e1",
++    title: "ISL Alphabet Speed Round",
++    date: "Apr 5, 2026",
++    time: "6:00 PM IST",
++    type: "Live Challenge",
++    interested: 38,
++  },
++  {
++    id: "e2",
++    title: "Beginner Q&A with the ISL team",
++    date: "Apr 10, 2026",
++    time: "5:00 PM IST",
++    type: "Webinar",
++    interested: 120,
++  },
++  {
++    id: "e3",
++    title: "Weekly Leaderboard Resets Every Sunday",
++    date: "Every Sunday",
++    time: "12:00 AM IST",
++    type: "Recurring",
++    interested: 0,
++  },
++] as const;
++
++export const communityStats = [
++  { value: "50K+", label: "Members" },
++  { value: "2.4M", label: "Signs Practised" },
++  { value: "18K+", label: "Discussion Posts" },
++  { value: "340+", label: "Study Sessions" },
++] as const;
+
+commit 00ec2366fbe75a7555977bad6c4ca7288db4e57d
+Author: Shreyank <you@example.com>
+Date:   Sun Mar 29 12:55:28 2026 +0530
+
+    feat: add FAQ accordion to HomePage and fix footer FAQs navigation link
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 99a64c07..ce12881f 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -394,3 +394,38 @@ export const communityStats = [
+   { value: "18K+", label: "Discussion Posts" },
+   { value: "340+", label: "Study Sessions" },
+ ] as const;
++
++export const faqs = [
++  {
++    q: "What is ISL Connect?",
++    a: "ISL Connect is an AI-powered platform for learning Indian Sign Language (ISL). It combines structured video lessons, real-time gesture recognition via your webcam, and progress tracking to make daily ISL practice feel approachable.",
++  },
++  {
++    q: "Do I need any special hardware to use the gesture recognition?",
++    a: "No special hardware is needed — just a standard webcam. The AI recognition uses MediaPipe and runs directly in your browser. You also need the local Flask backend running on your machine for the ML model to work.",
++  },
++  {
++    q: "How does the AI gesture recognition work?",
++    a: "When you start a practice session, your webcam feed is processed by MediaPipe to extract 21 hand landmarks. These landmarks are sent to a local Flask API that runs a trained ML classifier to identify which ISL sign you are performing, along with a confidence score.",
++  },
++  {
++    q: "Is my camera footage stored or sent to any server?",
++    a: "No. All camera processing happens locally in your browser and on your machine. No video is recorded or transmitted to any external server.",
++  },
++  {
++    q: "Why does gesture recognition show 'Flask API is offline'?",
++    a: "The gesture recognition needs the local Python backend running. Open a terminal, go to the 'backend' folder, and run: python isl_api.py. Once it starts on port 5000, the system status will update automatically.",
++  },
++  {
++    q: "How do I track my progress?",
++    a: "Your progress is tracked on the Achievements page, which shows accuracy trends, signs learned per category, mastery distribution, recent activity, and challenging signs worth revisiting.",
++  },
++  {
++    q: "Can I use ISL Connect without creating an account?",
++    a: "You can browse the homepage and course listings without an account. To access lessons, practice mode, achievements, and the community, you will need to sign in or create a free account.",
++  },
++  {
++    q: "What ISL content is currently available?",
++    a: "ISL Connect currently covers the ISL Alphabet (26 letters), Everyday Greetings, and Numbers 1-100 across three beginner-level courses. More modules covering common words, family, and daily phrases are planned.",
++  },
++] as const;
+
+commit ed73fb6cac27d0ee5b0d99a21e6391448b999f5f
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Apr 1 15:32:43 2026 +0530
+
+    Remove fabricated stats and validate Firebase config
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index ce12881f..011e46c4 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -24,9 +24,6 @@ export const courses = [
+     progress: 46,
+     lessonsCompleted: 4,
+     totalLessons: 10,
+-    duration: "2.5 hours",
+-    enrolled: "12,450+",
+-    rating: "4.8/5",
+   },
+   {
+     id: "greetings",
+@@ -39,9 +36,6 @@ export const courses = [
+     progress: 74,
+     lessonsCompleted: 6,
+     totalLessons: 8,
+-    duration: "1.8 hours",
+-    enrolled: "9,860+",
+-    rating: "4.9/5",
+   },
+   {
+     id: "numbers",
+@@ -53,17 +47,12 @@ export const courses = [
+     progress: 20,
+     lessonsCompleted: 2,
+     totalLessons: 10,
+-    duration: "2.1 hours",
+-    enrolled: "8,420+",
+-    rating: "4.7/5",
+   },
+ ] as const;
+ 
+ export const featuredStats = [
+-  { value: "50K+", label: "learners" },
+-  { value: "500+", label: "signs" },
+-  { value: "95%", label: "satisfaction" },
+-  { value: "24/7", label: "AI support" },
++  { value: "Structured", label: "guided lessons" },
++  { value: "Interactive", label: "practice flow" },
+ ] as const;
+ 
+ export const howItWorks = [
+@@ -141,14 +130,13 @@ export const testimonials = [
+ export const weeklyGoals = [
+   { label: "Practice Sessions", current: 4, target: 5 },
+   { label: "New Signs", current: 8, target: 10 },
+-  { label: "Accuracy Goal", current: 89, target: 90 },
+ ] as const;
+ 
+ export const recentSigns = [
+-  { sign: "Letter A", accuracy: 92, lastPracticed: "2 min ago" },
+-  { sign: "Letter B", accuracy: 87, lastPracticed: "18 min ago" },
+-  { sign: "Thank You", accuracy: 95, lastPracticed: "1 hour ago" },
+-  { sign: "Number 5", accuracy: 84, lastPracticed: "3 hours ago" },
++  { sign: "Letter A", lastPracticed: "2 min ago" },
++  { sign: "Letter B", lastPracticed: "18 min ago" },
++  { sign: "Thank You", lastPracticed: "1 hour ago" },
++  { sign: "Number 5", lastPracticed: "3 hours ago" },
+ ] as const;
+ 
+ export const lessonList = [
+@@ -198,7 +186,7 @@ export const masteryDistribution = [
+ export const achievements = [
+   {
+     name: "Alphabet Apprentice",
+-    description: "Completed the full ISL alphabet pathway with 80%+ average accuracy.",
++    description: "Completed the full ISL alphabet pathway.",
+     icon: Award,
+     earned: true,
+     date: "Oct 1, 2025",
+@@ -226,14 +214,14 @@ export const achievements = [
+   },
+   {
+     name: "Perfect Practice",
+-    description: "Reach 100% accuracy on 10 different ISL signs.",
++    description: "Keep refining hand shapes and movement with repeated practice.",
+     icon: Target,
+     earned: false,
+     progress: 60,
+   },
+   {
+     name: "Century Club",
+-    description: "Master 100+ ISL signs across alphabet, greetings, and numbers.",
++    description: "Continue exploring more ISL vocabulary across each course.",
+     icon: Star,
+     earned: false,
+     progress: 82,
+@@ -242,29 +230,29 @@ export const achievements = [
+ 
+ export const recentActivity = [
+   { label: "Completed ISL Lesson: Letter D", time: "2 hours ago", tone: "bg-primary" },
+-  { label: 'Practiced ISL "Hello" with 92% accuracy', time: "5 hours ago", tone: "bg-secondary" },
++  { label: 'Practiced ISL "Hello"', time: "5 hours ago", tone: "bg-secondary" },
+   { label: 'Unlocked badge: "Quick Study"', time: "1 day ago", tone: "bg-accent" },
+   { label: "Started Numbers 1-100 course", time: "2 days ago", tone: "bg-slate-400" },
+ ] as const;
+ 
+ export const challengingSigns = [
+-  { sign: "Letter Q", accuracy: 68, attempts: 12 },
+-  { sign: "Letter Z", accuracy: 72, attempts: 10 },
+-  { sign: "Number 7", accuracy: 75, attempts: 8 },
+-  { sign: "Thank You", accuracy: 76, attempts: 7 },
++  { sign: "Letter Q", note: "Review the hand orientation slowly and compare it with the chart." },
++  { sign: "Letter Z", note: "Focus on the motion path and keep the hand steady between repeats." },
++  { sign: "Number 7", note: "Check finger positioning before speeding up your practice." },
++  { sign: "Thank You", note: "Practice the starting hand position and ending motion together." },
+ ] as const;
+ 
+ // ─── Community Page Data ────────────────────────────────────────────────────
+ 
+ export const leaderboard = [
+-  { rank: 1, name: "Priya Sharma", city: "Delhi", signsLearned: 214, streak: 32, accuracy: 97 },
+-  { rank: 2, name: "Arjun Mehta", city: "Mumbai", signsLearned: 198, streak: 28, accuracy: 95 },
+-  { rank: 3, name: "Sneha Reddy", city: "Bengaluru", signsLearned: 179, streak: 21, accuracy: 93 },
+-  { rank: 4, name: "Kabir Verma", city: "Pune", signsLearned: 163, streak: 18, accuracy: 91 },
+-  { rank: 5, name: "Ananya Singh", city: "Chennai", signsLearned: 151, streak: 15, accuracy: 90 },
+-  { rank: 6, name: "Rohan Desai", city: "Kolkata", signsLearned: 138, streak: 12, accuracy: 88 },
+-  { rank: 7, name: "Meera Nair", city: "Hyderabad", signsLearned: 124, streak: 12, accuracy: 89 },
+-  { rank: 8, name: "Vikram Joshi", city: "Jaipur", signsLearned: 116, streak: 9, accuracy: 86 },
++  { rank: 1, name: "Priya Sharma", city: "Delhi" },
++  { rank: 2, name: "Arjun Mehta", city: "Mumbai" },
++  { rank: 3, name: "Sneha Reddy", city: "Bengaluru" },
++  { rank: 4, name: "Kabir Verma", city: "Pune" },
++  { rank: 5, name: "Ananya Singh", city: "Chennai" },
++  { rank: 6, name: "Rohan Desai", city: "Kolkata" },
++  { rank: 7, name: "Meera Nair", city: "Hyderabad" },
++  { rank: 8, name: "Vikram Joshi", city: "Jaipur" },
+ ] as const;
+ 
+ export const discussions = [
+@@ -296,7 +284,7 @@ export const discussions = [
+     initials: "SR",
+     time: "1 day ago",
+     topic: "Completed the ISL greetings course — my experience",
+-    body: "Just finished the everyday greetings module with 93% average. The AI feedback was incredibly helpful. Highly recommend going through it twice.",
++    body: "Just finished the everyday greetings module. The AI feedback was incredibly helpful, especially when repeating signs slowly before speeding up.",
+     replies: 22,
+     likes: 47,
+     tag: "Milestone",
+@@ -319,7 +307,6 @@ export const studyGroups = [
+     id: "sg1",
+     name: "Alphabet & Basics",
+     description: "For newcomers mastering the 26 ISL alphabets and foundational hand shapes.",
+-    members: 184,
+     icon: Hand,
+     accent: "from-primary to-secondary",
+     tag: "Beginner",
+@@ -327,8 +314,7 @@ export const studyGroups = [
+   {
+     id: "sg2",
+     name: "Daily Practice Group",
+-    description: "Commit to at least one practice session per day. Share your scores and keep each other accountable.",
+-    members: 92,
++    description: "Commit to regular practice sessions and keep each other accountable.",
+     icon: Flame,
+     accent: "from-secondary to-accent",
+     tag: "Active",
+@@ -337,16 +323,14 @@ export const studyGroups = [
+     id: "sg3",
+     name: "ISL Educators",
+     description: "Teachers, therapists, and healthcare professionals learning ISL for work.",
+-    members: 57,
+     icon: Sparkles,
+     accent: "from-accent to-primary",
+     tag: "Professional",
+   },
+   {
+     id: "sg4",
+-    name: "High Score Hunters",
+-    description: "Compete for the weekly accuracy leaderboard. Share your gestures and get peer feedback.",
+-    members: 43,
++    name: "Peer Feedback Circle",
++    description: "Share practice clips, compare techniques, and get peer feedback.",
+     icon: Trophy,
+     accent: "from-primary via-secondary to-accent",
+     tag: "Competitive",
+@@ -357,8 +341,6 @@ export const signOfTheDay = {
+   sign: "NAMASTE",
+   description: "The classic Indian greeting — place both palms together in front of your chest, fingers pointing upward, and give a small bow of the head.",
+   category: "Greetings",
+-  practiceCount: 1248,
+-  topAccuracy: 97,
+ } as const;
+ 
+ export const communityEvents = [
+@@ -380,7 +362,7 @@ export const communityEvents = [
+   },
+   {
+     id: "e3",
+-    title: "Weekly Leaderboard Resets Every Sunday",
++    title: "Weekly Community Check-In",
+     date: "Every Sunday",
+     time: "12:00 AM IST",
+     type: "Recurring",
+@@ -388,12 +370,7 @@ export const communityEvents = [
+   },
+ ] as const;
+ 
+-export const communityStats = [
+-  { value: "50K+", label: "Members" },
+-  { value: "2.4M", label: "Signs Practised" },
+-  { value: "18K+", label: "Discussion Posts" },
+-  { value: "340+", label: "Study Sessions" },
+-] as const;
++export const communityStats: { label: string; value: string }[] = [] as const;
+ 
+ export const faqs = [
+   {
+@@ -418,7 +395,7 @@ export const faqs = [
+   },
+   {
+     q: "How do I track my progress?",
+-    a: "Your progress is tracked on the Achievements page, which shows accuracy trends, signs learned per category, mastery distribution, recent activity, and challenging signs worth revisiting.",
++    a: "Use the Achievements page as a reflection space for recent activity, learning highlights, and signs worth revisiting in your next practice session.",
+   },
+   {
+     q: "Can I use ISL Connect without creating an account?",
+
+commit ad970965f288000a43a94378e57807549fda4a22
+Author: Shreyank <you@example.com>
+Date:   Thu May 7 14:13:42 2026 +0530
+
+    chore: stage all remaining project source files and normalise line endings
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 011e46c4..7b4807b2 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -11,7 +11,7 @@ import {
+   Target,
+   Trophy,
+   Video,
+-} from "lucide-react@0.487.0";
++} from "lucide-react";
+ 
+ export const courses = [
+   {
+@@ -406,3 +406,4 @@ export const faqs = [
+     a: "ISL Connect currently covers the ISL Alphabet (26 letters), Everyday Greetings, and Numbers 1-100 across three beginner-level courses. More modules covering common words, family, and daily phrases are planned.",
+   },
+ ] as const;
++
+
+commit 0a05e41531a71aaeb13bdf5c83456d0a7935d286
+Author: Shreyank <you@example.com>
+Date:   Thu May 7 15:03:16 2026 +0530
+
+    fix: wire up Course Resources download buttons with real ISLRTC PDF URLs
+    
+    - Changed <button> to <a href download> so clicking actually starts the download
+    - Added real url fields to each downloadableResources entry pointing to
+      publicly available PDFs from ISLRTC (islrtc.nic.in):
+      - ISL Dictionary / Alphabet Chart
+      - ISL Resource Book for Beginners (Workbook)
+      - Sign Language Teaching Methodology (Checklist)
+    - Added aria-label for screen reader accessibility
+    - Added hover border highlight for visual feedback
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 7b4807b2..3770e099 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -153,9 +153,24 @@ export const lessonList = [
+ ] as const;
+ 
+ export const downloadableResources = [
+-  { title: "ISL (Indian Sign Language) Alphabet Chart", format: "PDF", size: "2.4 MB" },
+-  { title: "ISL Beginner Practice Workbook", format: "PDF", size: "5.1 MB" },
+-  { title: "ISL Practice Checklist", format: "PDF", size: "1.8 MB" },
++  {
++    title: "ISL (Indian Sign Language) Alphabet Chart",
++    format: "PDF",
++    size: "2.4 MB",
++    url: "https://www.islrtc.nic.in/sites/default/files/publication/Dictionary%20of%20Indian%20Sign%20Language.pdf",
++  },
++  {
++    title: "ISL Beginner Practice Workbook",
++    format: "PDF",
++    size: "5.1 MB",
++    url: "https://www.islrtc.nic.in/sites/default/files/publication/ISL%20Resource%20Book%20for%20Beginners.pdf",
++  },
++  {
++    title: "ISL Practice Checklist",
++    format: "PDF",
++    size: "1.8 MB",
++    url: "https://www.islrtc.nic.in/sites/default/files/publication/Sign%20Language%20Teaching%20Methodology.pdf",
++  },
+ ] as const;
+ 
+ export const accuracyTrend = [
+
+commit bf8fe717fa7e1ccb2b0321fd7f914156ec73e8d6
+Author: Shreyank <you@example.com>
+Date:   Thu May 7 15:12:22 2026 +0530
+
+    feat: replace all generic stock photos with real ISLRTC images
+    
+    Removed Unsplash stock photos (random people with laptops/generic shots)
+    and replaced with real photos from ISLRTC's official photo gallery
+    (cdnbbsr.s3waas.gov.in):
+    
+    - HomePage hero: ISL signing demonstration event photo
+    - Greetings course card: ISL awareness & training session group photo
+    - Numbers course card: ISL classroom session photo
+    
+    All photos are publicly available from the Indian Sign Language Research
+    and Training Centre (islrtc.nic.in) official website gallery.
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 3770e099..256241e9 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -30,8 +30,9 @@ export const courses = [
+     title: "ISL Everyday Greetings",
+     description:
+       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
++    // Real ISL awareness & training session photo — ISLRTC Photo Gallery
+     image:
+-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=75&fm=webp",
++      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/12/20251210227472721-1024x683.jpg",
+     difficulty: "Beginner",
+     progress: 74,
+     lessonsCompleted: 6,
+@@ -42,7 +43,9 @@ export const courses = [
+     title: "ISL Numbers 1-100",
+     description:
+       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
+-    image: islChart,
++    // Real ISL classroom session photo — ISLRTC Photo Gallery
++    image:
++      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/20250714144757360-1024x683.jpg",
+     difficulty: "Beginner",
+     progress: 20,
+     lessonsCompleted: 2,
+
+commit 42231261af42714f6c66513b23a3a9739d56486e
+Author: Shreyank <you@example.com>
+Date:   Thu May 7 16:28:10 2026 +0530
+
+    feat: add YouTube videos for all 26 ISL alphabet letters (A-Z) + intro
+    
+    LessonPage.tsx: expanded lessonMeta from 5 entries (A-E) to full 28 entries:
+    - intro-isl: ISLRTC official intro video (5PF6JXzYyUI)
+    - A-E: Sign Sense channel (existing)
+    - F: ISLRTC (1wKAw-aCP44)
+    - G-Y: SignAble Communications (Ez8rwyZvclA ... gf76kRO7Jb4)
+    - Z: Dikshesh29 ISL tutorial (up4jGU_rt8c)
+    
+    mockData.ts: expanded lessonList from 10 entries (A-G + review + checkpoint)
+    to 29 entries covering full A-Z alphabet + review + checkpoint.
+    
+    All videos are Indian Sign Language (ISL) - not ASL or BSL.
+    Prev/Next navigation works across the full A-Z sequence.
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index 256241e9..ee7e6923 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -143,18 +143,38 @@ export const recentSigns = [
+ ] as const;
+ 
+ export const lessonList = [
+-  { id: "intro-isl", title: "Introduction to ISL", duration: "8 min", status: "done" },
+-  { id: "letter-a", title: "Letter A", duration: "6 min", status: "done" },
+-  { id: "letter-b", title: "Letter B", duration: "6 min", status: "done" },
+-  { id: "letter-c", title: "Letter C", duration: "6 min", status: "done" },
+-  { id: "letter-d", title: "Letter D", duration: "7 min", status: "in-progress" },
+-  { id: "letter-e", title: "Letter E", duration: "6 min", status: "todo" },
+-  { id: "letter-f", title: "Letter F", duration: "6 min", status: "todo" },
+-  { id: "letter-g", title: "Letter G", duration: "7 min", status: "todo" },
+-  { id: "review-a-g", title: "Review: ISL Letters A-G", duration: "10 min", status: "todo" },
+-  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint", duration: "15 min", status: "todo" },
++  { id: "intro-isl",           title: "Introduction to ISL",       duration: "8 min",  status: "done" },
++  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "done" },
++  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "done" },
++  { id: "letter-c",            title: "Letter C",                  duration: "6 min",  status: "done" },
++  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "in-progress" },
++  { id: "letter-e",            title: "Letter E",                  duration: "6 min",  status: "todo" },
++  { id: "letter-f",            title: "Letter F",                  duration: "6 min",  status: "todo" },
++  { id: "letter-g",            title: "Letter G",                  duration: "7 min",  status: "todo" },
++  { id: "letter-h",            title: "Letter H",                  duration: "6 min",  status: "todo" },
++  { id: "letter-i",            title: "Letter I",                  duration: "6 min",  status: "todo" },
++  { id: "letter-j",            title: "Letter J",                  duration: "6 min",  status: "todo" },
++  { id: "letter-k",            title: "Letter K",                  duration: "6 min",  status: "todo" },
++  { id: "letter-l",            title: "Letter L",                  duration: "6 min",  status: "todo" },
++  { id: "letter-m",            title: "Letter M",                  duration: "6 min",  status: "todo" },
++  { id: "letter-n",            title: "Letter N",                  duration: "6 min",  status: "todo" },
++  { id: "letter-o",            title: "Letter O",                  duration: "6 min",  status: "todo" },
++  { id: "letter-p",            title: "Letter P",                  duration: "6 min",  status: "todo" },
++  { id: "letter-q",            title: "Letter Q",                  duration: "6 min",  status: "todo" },
++  { id: "letter-r",            title: "Letter R",                  duration: "6 min",  status: "todo" },
++  { id: "letter-s",            title: "Letter S",                  duration: "6 min",  status: "todo" },
++  { id: "letter-t",            title: "Letter T",                  duration: "6 min",  status: "todo" },
++  { id: "letter-u",            title: "Letter U",                  duration: "6 min",  status: "todo" },
++  { id: "letter-v",            title: "Letter V",                  duration: "6 min",  status: "todo" },
++  { id: "letter-w",            title: "Letter W",                  duration: "7 min",  status: "todo" },
++  { id: "letter-x",            title: "Letter X",                  duration: "6 min",  status: "todo" },
++  { id: "letter-y",            title: "Letter Y",                  duration: "6 min",  status: "todo" },
++  { id: "letter-z",            title: "Letter Z",                  duration: "6 min",  status: "todo" },
++  { id: "review-a-g",          title: "Review: ISL Letters A–G",   duration: "10 min", status: "todo" },
++  { id: "alphabet-checkpoint", title: "ISL Alphabet Checkpoint",   duration: "15 min", status: "todo" },
+ ] as const;
+ 
++
+ export const downloadableResources = [
+   {
+     title: "ISL (Indian Sign Language) Alphabet Chart",
+
+commit 6355e2e98b9bbff1dbecacff90a19cab946086ad
+Author: Shreyank <you@example.com>
+Date:   Sat Jul 18 13:15:20 2026 +0530
+
+     Elevated UI to premium minimalist and integrated new ML model codebase
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index ee7e6923..feae302b 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -30,9 +30,7 @@ export const courses = [
+     title: "ISL Everyday Greetings",
+     description:
+       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
+-    // Real ISL awareness & training session photo — ISLRTC Photo Gallery
+-    image:
+-      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/12/20251210227472721-1024x683.jpg",
++    image: islChart,
+     difficulty: "Beginner",
+     progress: 74,
+     lessonsCompleted: 6,
+@@ -43,9 +41,7 @@ export const courses = [
+     title: "ISL Numbers 1-100",
+     description:
+       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
+-    // Real ISL classroom session photo — ISLRTC Photo Gallery
+-    image:
+-      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/20250714144757360-1024x683.jpg",
++    image: islChart,
+     difficulty: "Beginner",
+     progress: 20,
+     lessonsCompleted: 2,
+@@ -136,18 +132,27 @@ export const weeklyGoals = [
+ ] as const;
+ 
+ export const recentSigns = [
+-  { sign: "Letter A", lastPracticed: "2 min ago" },
+-  { sign: "Letter B", lastPracticed: "18 min ago" },
+-  { sign: "Thank You", lastPracticed: "1 hour ago" },
++  { sign: "Letter C", lastPracticed: "2 min ago" },
++  { sign: "Number 1", lastPracticed: "18 min ago" },
++  { sign: "Number 2", lastPracticed: "1 hour ago" },
+   { sign: "Number 5", lastPracticed: "3 hours ago" },
+ ] as const;
+ 
+ export const lessonList = [
+   { id: "intro-isl",           title: "Introduction to ISL",       duration: "8 min",  status: "done" },
+-  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "done" },
+-  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "done" },
+-  { id: "letter-c",            title: "Letter C",                  duration: "6 min",  status: "done" },
+-  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "in-progress" },
++  { id: "letter-c",            title: "Letter C (AI Active)",      duration: "6 min",  status: "done" },
++  { id: "number-1",            title: "Number 1 (AI Active)",      duration: "5 min",  status: "done" },
++  { id: "number-2",            title: "Number 2 (AI Active)",      duration: "5 min",  status: "in-progress" },
++  { id: "number-3",            title: "Number 3 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-4",            title: "Number 4 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-5",            title: "Number 5 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-6",            title: "Number 6 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-7",            title: "Number 7 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-8",            title: "Number 8 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "number-9",            title: "Number 9 (AI Active)",      duration: "5 min",  status: "todo" },
++  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "todo" },
++  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "todo" },
++  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "todo" },
+   { id: "letter-e",            title: "Letter E",                  duration: "6 min",  status: "todo" },
+   { id: "letter-f",            title: "Letter F",                  duration: "6 min",  status: "todo" },
+   { id: "letter-g",            title: "Letter G",                  duration: "7 min",  status: "todo" },
+
+commit 36f7d2ab1e20f1b1ae9debb8cd04c6c8c2c6ee0e
+Author: Shreyank <you@example.com>
+Date:   Sat Jul 18 13:49:16 2026 +0530
+
+     Reverted course images to stock photos
+
+diff --git a/src/data/mockData.ts b/src/data/mockData.ts
+index feae302b..d2cda432 100644
+--- a/src/data/mockData.ts
++++ b/src/data/mockData.ts
+@@ -1,4 +1,3 @@
+-import islChart from "@/assets/isl_chart.jpg";
+ import {
+   Award,
+   BookOpen,
+@@ -19,7 +18,7 @@ export const courses = [
+     title: "Learn ISL Alphabet",
+     description:
+       "Build a strong ISL foundation with guided lessons for the ISL alphabet and beginner-friendly practice.",
+-    image: islChart,
++    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+     difficulty: "Beginner",
+     progress: 46,
+     lessonsCompleted: 4,
+@@ -30,7 +29,7 @@ export const courses = [
+     title: "ISL Everyday Greetings",
+     description:
+       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
+-    image: islChart,
++    image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+     difficulty: "Beginner",
+     progress: 74,
+     lessonsCompleted: 6,
+@@ -41,7 +40,7 @@ export const courses = [
+     title: "ISL Numbers 1-100",
+     description:
+       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
+-    image: islChart,
++    image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
+     difficulty: "Beginner",
+     progress: 20,
+     lessonsCompleted: 2,

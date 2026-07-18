@@ -6,7 +6,7 @@ import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Button } from "../ui/button";
-import heroIllustration from "@/assets/hero_illustration.png";
+import islChart from "@/assets/isl_chart.jpg";
 
 export function HomePage() {
   const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<LayoutOutletContext>();
@@ -24,7 +24,7 @@ export function HomePage() {
               <Sparkles className="h-4 w-4" />
               Intelligent practice for modern ISL learners
             </div>
-            <h1 className="max-w-3xl text-5xl font-bold leading-[1.1] tracking-tight text-slate-950 lg:text-6xl">
+            <h1 className="max-w-3xl text-5xl font-extrabold leading-[1.1] tracking-tight text-slate-950 sm:text-6xl">
               Master ISL (Indian Sign Language) with{" "}
               <span className="text-primary">Intelligent Practice</span>
             </h1>
@@ -46,7 +46,7 @@ export function HomePage() {
                 className="h-12 rounded-xl border-slate-200 bg-white px-8 text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
                 onClick={() => onNavigate("dashboard")}
               >
-                <span className="font-medium text-slate-700">Explore Courses</span>
+                <span className="font-medium">Explore Courses</span>
               </Button>
             </div>
             <div className="mt-12 grid grid-cols-2 gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-4">
@@ -59,17 +59,17 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="relative mt-8 lg:mt-0">
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-2 shadow-elevation">
-              <div className="rounded-2xl bg-slate-50">
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-2 shadow-elevation">
+              <div className="overflow-hidden rounded-2xl bg-slate-50">
                 <ImageWithFallback
-                  src={heroIllustration}
-                  alt="ISL Connect interactive learning illustration"
-                  className="h-[440px] w-full object-cover"
+                  src={islChart}
+                  alt="ISL alphabet chart showing hand gestures for all letters"
+                  className="h-[440px] w-full object-contain"
                 />
               </div>
             </div>
-            <div className="absolute -bottom-6 -left-6 z-10 w-72 rounded-[1.5rem] border border-slate-200 bg-white/90 p-5 shadow-elevation backdrop-blur-md">
+            <div className="absolute -bottom-6 -left-6 w-72 rounded-[1.5rem] border border-slate-200 bg-white/90 p-5 shadow-elevation backdrop-blur-md">
               <p className="text-sm font-bold text-slate-900">Practice with live feedback</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Use the webcam flow, compare your hand shape with the ISL chart, and refine each sign step by step.
@@ -114,7 +114,7 @@ export function HomePage() {
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {courses.map((course, index) => (
+            {courses.map((course) => (
               <CourseCard
                 key={course.id}
                 id={course.id}
@@ -122,7 +122,6 @@ export function HomePage() {
                 description={course.description}
                 image={course.image}
                 difficulty={course.difficulty}
-                index={index}
                 onViewCourse={(id) => onNavigate(`course:${id}`)}
               />
             ))}
@@ -138,7 +137,7 @@ export function HomePage() {
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {featureTiles.map((feature) => (
-              <div key={feature.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+              <div key={feature.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex h-10 w-10 items-center justify-center rounded bg-slate-100">
                   <feature.icon className="h-5 w-5 text-primary" />
                 </div>
@@ -157,12 +156,8 @@ export function HomePage() {
             <h2 className="text-3xl font-bold text-slate-950">Learners using ISL Connect in real life</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((item, index) => (
-              <div 
-                key={item.name} 
-                className="card-enter rounded-xl border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover"
-                style={{ animationDelay: `${index * 40}ms` }}
-              >
+            {testimonials.map((item) => (
+              <div key={item.name} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex gap-1">
                   {Array.from({ length: 5 }).map((_, index) => (
                     <Star key={index} className="h-4 w-4 fill-slate-300 text-slate-300" />
@@ -190,7 +185,7 @@ export function HomePage() {
           <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Start Today</p>
-              <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">Practice ISL with AI, learn with confidence, and build a steady routine.</h2>
+              <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Practice ISL with AI, learn with confidence, and build a steady routine.</h2>
             </div>
             <Button
               size="lg"
