@@ -210,7 +210,7 @@ export function AboutPage() {
               className="h-14 rounded-xl bg-white px-8 text-slate-950 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
               onClick={() => onNavigate("dashboard")}
             >
-              <span className="font-semibold">Explore Courses</span>
+              <span className="font-semibold text-slate-950">Explore Courses</span>
             </Button>
           </div>
         </div>
