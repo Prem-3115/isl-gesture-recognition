@@ -41,6 +41,19 @@ export async function markLessonComplete(uid: string, lessonId: string): Promise
 }
 
 /**
+ * Log when a user attempts to practice a disabled two-handed sign.
+ * This helps prioritize which signs to rebuild the pipeline for first.
+ */
+export async function logDisabledLessonAccess(uid: string, signId: string): Promise<void> {
+  const ref = doc(db, "telemetry", "disabled_signs", "access_counts", signId);
+  // Using setDoc with merge to ensure the document exists and we don't overwrite if we use transactions later.
+  // For a basic counter, we could use increment(), but we'll keep it simple for now, or just log the event.
+  // Let's use increment from firestore
+  const { increment } = await import("firebase/firestore");
+  await setDoc(ref, { count: increment(1), lastAccessed: serverTimestamp() }, { merge: true });
+}
+
+/**
  * Fetch the set of completed lesson IDs for a user.
  * Returns an empty Set if the user has no progress or Firestore is unavailable.
  */

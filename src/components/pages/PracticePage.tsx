@@ -21,6 +21,8 @@ import islChart from "@/assets/isl_chart.jpg";
 import { useGestureRecognition } from "@/hooks/useGestureRecognition";
 import { useStreak } from "@/hooks/useStreak";
 import { API_HEALTH } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import { logDisabledLessonAccess } from "@/services/progress.service";
 import type { LayoutOutletContext } from "@/types/layout";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
@@ -33,6 +35,8 @@ const ALL_SIGNS = [
   "N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
   "1","2","3","4","5","6","7","8","9",
 ];
+
+const SUPPORTED_SIGNS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C"];
 
 // ─── Confetti Component ──────────────────────────────────────────────────────
 
@@ -142,6 +146,7 @@ type PracticeMode = "free" | "challenge";
 
 export function PracticePage() {
   const { onNavigate } = useOutletContext<LayoutOutletContext>();
+  const { user } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -263,10 +268,15 @@ export function PracticePage() {
   // Challenge navigation
   const goToSign = useCallback((index: number) => {
     const newIndex = Math.max(0, Math.min(ALL_SIGNS.length - 1, index));
+    const sign = ALL_SIGNS[newIndex];
     setTargetIndex(newIndex);
-    setTargetSign(ALL_SIGNS[newIndex]);
+    setTargetSign(sign);
     resetStreak();
-  }, [resetStreak]);
+    
+    if (!SUPPORTED_SIGNS.includes(sign) && user?.uid) {
+      logDisabledLessonAccess(user.uid, sign).catch(console.error);
+    }
+  }, [resetStreak, user?.uid]);
 
   const randomSign = useCallback(() => {
     const current = targetIndex;
@@ -283,10 +293,16 @@ export function PracticePage() {
     return { label: "Warming up", color: "text-slate-400" };
   }, [liveScore]);
 
+  const isSupportedTarget = SUPPORTED_SIGNS.includes(targetSign);
+
+  const filteredDetectedSign = gestureResult.detectedSign && SUPPORTED_SIGNS.includes(gestureResult.detectedSign.toUpperCase()) 
+    ? gestureResult.detectedSign 
+    : null;
+
   const isCorrectInChallenge =
     mode === "challenge" &&
-    !!gestureResult.detectedSign &&
-    gestureResult.detectedSign.toUpperCase() === targetSign.toUpperCase() &&
+    !!filteredDetectedSign &&
+    filteredDetectedSign.toUpperCase() === targetSign.toUpperCase() &&
     liveScore >= 55;
 
   const statusTone =
@@ -316,7 +332,7 @@ export function PracticePage() {
             {/* Mode toggle */}
             <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
               <button
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${mode === "free" ? "bg-primary text-white" : "text-slate-600 hover:bg-slate-50"}`}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${mode === "free" ? "bg-primary text-primary-foreground" : "text-slate-600 hover:bg-slate-50"}`}
                 onClick={() => { setMode("free"); resetStreak(); }}
                 aria-pressed={mode === "free"}
               >
@@ -324,7 +340,7 @@ export function PracticePage() {
                 Free Practice
               </button>
               <button
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${mode === "challenge" ? "bg-primary text-white" : "text-slate-600 hover:bg-slate-50"}`}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${mode === "challenge" ? "bg-primary text-primary-foreground" : "text-slate-600 hover:bg-slate-50"}`}
                 onClick={() => setMode("challenge")}
                 aria-pressed={mode === "challenge"}
               >
@@ -362,23 +378,23 @@ export function PracticePage() {
 
         {/* ── Challenge Target Banner ────────────────────────────────── */}
         {mode === "challenge" && (
-          <div className={`mb-6 overflow-hidden rounded-[1.75rem] shadow-lg transition-all ${isCorrectInChallenge ? "bg-gradient-to-r from-emerald-500 to-teal-500" : "bg-gradient-brand"}`}>
+          <div className={`mb-6 overflow-hidden rounded-[1.75rem] shadow-lg transition-all ${isCorrectInChallenge ? "bg-gradient-to-r from-emerald-500 to-teal-500" : "bg-primary"}`}>
             <div className="relative px-6 py-5">
               <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-              <div className="relative flex flex-col items-center gap-4 text-white sm:flex-row sm:justify-between">
+              <div className="relative flex flex-col items-center gap-4 text-primary-foreground sm:flex-row sm:justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-white/25 text-3xl font-bold shadow-lg">
                     {targetSign}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white/80">Target Sign</p>
+                    <p className="text-sm font-medium text-primary-foreground/80">Target Sign</p>
                     <p className="text-2xl font-semibold">
                       {targetSign.length === 1 && !["1","2","3","4","5","6","7","8","9"].includes(targetSign)
                         ? `Letter ${targetSign}`
                         : `Number ${targetSign}`}
                     </p>
                     {isCorrectInChallenge && (
-                      <p className="mt-1 text-sm font-medium text-white/90">✓ Correct! Hold it steady…</p>
+                      <p className="mt-1 text-sm font-medium text-primary-foreground/90">✓ Correct! Hold it steady…</p>
                     )}
                   </div>
                 </div>
@@ -390,21 +406,21 @@ export function PracticePage() {
                       <Flame className="h-5 w-5 text-orange-300" />
                       {streak.current}
                     </p>
-                    <p className="text-xs text-white/70">Current streak</p>
+                    <p className="text-xs text-primary-foreground/70">Current streak</p>
                   </div>
                   <div className="text-center">
                     <p className="flex items-center justify-center gap-1 text-2xl font-bold">
                       <Trophy className="h-5 w-5 text-yellow-300" />
                       {streak.best}
                     </p>
-                    <p className="text-xs text-white/70">Best streak</p>
+                    <p className="text-xs text-primary-foreground/70">Best streak</p>
                   </div>
                   <div className="text-center">
                     <p className="flex items-center justify-center gap-1 text-2xl font-bold">
                       <Zap className="h-5 w-5 text-cyan-300" />
                       {streak.totalCorrect}
                     </p>
-                    <p className="text-xs text-white/70">Total correct</p>
+                    <p className="text-xs text-primary-foreground/70">Total correct</p>
                   </div>
                 </div>
 
@@ -444,7 +460,7 @@ export function PracticePage() {
                     onClick={() => goToSign(i)}
                     aria-label={`Practice sign ${s}`}
                     aria-pressed={s === targetSign}
-                    className={`h-8 w-8 rounded-lg text-sm font-semibold transition ${s === targetSign ? "bg-white text-primary shadow" : "bg-white/15 text-white/80 hover:bg-white/25"}`}
+                    className={`h-8 w-8 rounded-lg text-sm font-semibold transition ${s === targetSign ? "bg-white text-primary shadow" : "bg-white/15 text-primary-foreground/80 hover:bg-white/25"}`}
                   >
                     {s}
                   </button>
@@ -478,23 +494,46 @@ export function PracticePage() {
 
               {/* Inactive state */}
               {!cameraActive && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-primary-foreground">
                   <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-white/10">
-                    <Camera className="h-10 w-10 text-white/60" aria-hidden="true" />
+                    <Camera className="h-10 w-10 text-primary-foreground/60" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl font-semibold">Camera inactive</h2>
-                  <p className="mt-3 max-w-sm text-sm leading-7 text-white/60">
-                    {mode === "challenge"
-                      ? `Start your camera and practice signing "${targetSign}". The AI will track your accuracy in real time.`
-                      : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model."}
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-primary-foreground/60">
+                    {mode === "challenge" && !isSupportedTarget
+                      ? `The sign "${targetSign}" requires two hands and is currently unsupported by the AI. We are tracking requests to prioritize it!`
+                      : mode === "challenge"
+                        ? `Start your camera and practice signing "${targetSign}". The AI will track your accuracy in real time.`
+                        : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model. Note: Only 1-9 and C are currently supported."}
                   </p>
                   <div className="mt-6">
                     <Button
-                      className="bg-gradient-brand rounded-xl border-0 px-8 text-white hover:opacity-90"
+                      className="bg-primary rounded-xl border-0 px-8 text-primary-foreground hover:opacity-90 disabled:opacity-50"
                       size="lg"
                       onClick={startCamera}
+                      disabled={mode === "challenge" && !isSupportedTarget}
                     >
-                      Start Camera
+                      {mode === "challenge" && !isSupportedTarget ? "AI Practice Coming Soon" : "Start Camera"}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {cameraActive && mode === "challenge" && !isSupportedTarget && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 px-6 text-center text-primary-foreground z-10">
+                  <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-amber-500/20">
+                    <AlertCircle className="h-10 w-10 text-amber-400" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-amber-400">Two-Handed Sign</h2>
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-primary-foreground/80">
+                    The sign <strong>"{targetSign}"</strong> is a two-handed sign. Our current AI model only supports one-handed tracking. We've logged your interest!
+                  </p>
+                  <div className="mt-6">
+                    <Button
+                      className="bg-white/10 rounded-xl border border-white/20 px-8 text-primary-foreground hover:bg-white/20"
+                      onClick={randomSign}
+                    >
+                      Try a supported sign
                     </Button>
                   </div>
                 </div>
@@ -517,39 +556,39 @@ export function PracticePage() {
                   </div>
 
                   {/* Big detected sign overlay in challenge mode */}
-                  {mode === "challenge" && gestureResult.detectedSign && (
+                  {mode === "challenge" && filteredDetectedSign && (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
                       <div
-                        className={`flex h-24 w-24 items-center justify-center rounded-[1.75rem] text-5xl font-bold text-white shadow-2xl transition-all ${
+                        className={`flex h-24 w-24 items-center justify-center rounded-[1.75rem] text-5xl font-bold text-primary-foreground shadow-2xl transition-all ${
                           isCorrectInChallenge ? "bg-emerald-500/80 scale-110" : "bg-black/40 scale-100"
                         }`}
                         style={{ transition: "all 0.2s ease" }}
                       >
-                        {gestureResult.detectedSign}
+                        {filteredDetectedSign}
                       </div>
                     </div>
                   )}
 
                   {/* Status pill */}
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur" aria-live="polite">
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-primary-foreground backdrop-blur" aria-live="polite">
                     <span className={`h-2.5 w-2.5 rounded-full ${statusTone}`} aria-hidden="true" />
                     {gestureResult.status}
                   </div>
 
                   {/* AI badge */}
-                  <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-white backdrop-blur">
+                  <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs text-primary-foreground backdrop-blur">
                     <BrainCircuit className="h-4 w-4" aria-hidden="true" />
                     ISL recognizer active
                   </div>
 
                   {/* Feedback bubble */}
-                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-white shadow-lg ${feedbackBg} transition-colors`} aria-live="polite">
+                  <div className={`absolute left-4 top-16 max-w-sm rounded-2xl px-4 py-3 text-sm text-primary-foreground shadow-lg ${feedbackBg} transition-colors`} aria-live="polite">
                     {gestureResult.feedback}
                   </div>
 
                   {/* Bottom bar */}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5">
-                    <div className="mb-2 flex justify-between text-xs text-white/70">
+                    <div className="mb-2 flex justify-between text-xs text-primary-foreground/70">
                       <span>Confidence</span>
                       <span className={isCorrectInChallenge ? "text-emerald-400 font-semibold" : ""}>{liveScore}%</span>
                     </div>
@@ -566,7 +605,7 @@ export function PracticePage() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          className="rounded-xl bg-white/15 text-white hover:bg-white/25"
+                          className="rounded-xl bg-white/15 text-primary-foreground hover:bg-white/25"
                           onClick={randomSign}
                         >
                           <Shuffle className="mr-2 h-4 w-4" />Random Sign
@@ -604,7 +643,7 @@ export function PracticePage() {
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full border-[10px] border-emerald-200">
                     <span className="text-center text-sm font-bold leading-tight text-slate-900">
-                      {gestureResult.detectedSign ?? "--"}
+                      {filteredDetectedSign ?? "--"}
                     </span>
                   </div>
                   <span className="text-xs text-slate-500">Detected</span>
@@ -630,7 +669,7 @@ export function PracticePage() {
             {/* Detected sign card */}
             <div className="rounded-[1.75rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-md">
                   <BrainCircuit className="h-5 w-5" />
                 </div>
                 <div>
@@ -652,15 +691,15 @@ export function PracticePage() {
                   aria-atomic="true"
                   style={{ lineHeight: 1.1 }}
                 >
-                  {gestureResult.detectedSign ?? "--"}
+                  {filteredDetectedSign ?? "--"}
                 </p>
                 {isCorrectInChallenge && (
                   <p className="mt-2 text-sm font-semibold text-emerald-600">✓ Matches target!</p>
                 )}
-                {!isCorrectInChallenge && gestureResult.detectedSign && mode === "challenge" && (
+                {!isCorrectInChallenge && filteredDetectedSign && mode === "challenge" && (
                   <p className="mt-2 text-sm text-slate-500">Looking for: <span className="font-bold text-primary">{targetSign}</span></p>
                 )}
-                {!gestureResult.detectedSign && (
+                {!filteredDetectedSign && (
                   <p className="mt-2 text-sm text-slate-400">Waiting for stable sign…</p>
                 )}
                 <div className="mt-4">

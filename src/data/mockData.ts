@@ -30,9 +30,7 @@ export const courses = [
     title: "ISL Everyday Greetings",
     description:
       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
-    // Real ISL awareness & training session photo — ISLRTC Photo Gallery
-    image:
-      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/12/20251210227472721-1024x683.jpg",
+    image: islChart,
     difficulty: "Beginner",
     progress: 74,
     lessonsCompleted: 6,
@@ -43,9 +41,7 @@ export const courses = [
     title: "ISL Numbers 1-100",
     description:
       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
-    // Real ISL classroom session photo — ISLRTC Photo Gallery
-    image:
-      "https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/20250714144757360-1024x683.jpg",
+    image: islChart,
     difficulty: "Beginner",
     progress: 20,
     lessonsCompleted: 2,
@@ -136,18 +132,27 @@ export const weeklyGoals = [
 ] as const;
 
 export const recentSigns = [
-  { sign: "Letter A", lastPracticed: "2 min ago" },
-  { sign: "Letter B", lastPracticed: "18 min ago" },
-  { sign: "Thank You", lastPracticed: "1 hour ago" },
+  { sign: "Letter C", lastPracticed: "2 min ago" },
+  { sign: "Number 1", lastPracticed: "18 min ago" },
+  { sign: "Number 2", lastPracticed: "1 hour ago" },
   { sign: "Number 5", lastPracticed: "3 hours ago" },
 ] as const;
 
 export const lessonList = [
   { id: "intro-isl",           title: "Introduction to ISL",       duration: "8 min",  status: "done" },
-  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "done" },
-  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "done" },
-  { id: "letter-c",            title: "Letter C",                  duration: "6 min",  status: "done" },
-  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "in-progress" },
+  { id: "letter-c",            title: "Letter C (AI Active)",      duration: "6 min",  status: "done" },
+  { id: "number-1",            title: "Number 1 (AI Active)",      duration: "5 min",  status: "done" },
+  { id: "number-2",            title: "Number 2 (AI Active)",      duration: "5 min",  status: "in-progress" },
+  { id: "number-3",            title: "Number 3 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-4",            title: "Number 4 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-5",            title: "Number 5 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-6",            title: "Number 6 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-7",            title: "Number 7 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-8",            title: "Number 8 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "number-9",            title: "Number 9 (AI Active)",      duration: "5 min",  status: "todo" },
+  { id: "letter-a",            title: "Letter A",                  duration: "6 min",  status: "todo" },
+  { id: "letter-b",            title: "Letter B",                  duration: "6 min",  status: "todo" },
+  { id: "letter-d",            title: "Letter D",                  duration: "7 min",  status: "todo" },
   { id: "letter-e",            title: "Letter E",                  duration: "6 min",  status: "todo" },
   { id: "letter-f",            title: "Letter F",                  duration: "6 min",  status: "todo" },
   { id: "letter-g",            title: "Letter G",                  duration: "7 min",  status: "todo" },
