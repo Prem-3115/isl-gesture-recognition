@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { useAuth } from "../context/AuthContext";
 
-const protectedPrefixes = ["/dashboard", "/courses", "/course/", "/lesson/", "/practice", "/achievements", "/community"];
+const protectedPrefixes = ["/dashboard", "/courses", "/course/", "/lesson/", "/practice", "/achievements", "/community", "/profile"];
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
@@ -40,6 +40,7 @@ function resolveRoute(page: string) {
     contact: "/contact",
     privacy: "/privacy",
     terms: "/terms",
+    profile: "/profile",
   };
 
   return routeMap[page] ?? "/";
@@ -115,9 +116,10 @@ export function Layout() {
       isLoggedIn,
       userName,
       onOpenAuth: handleOpenAuth,
+      onLogout: handleLogout,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoggedIn, userName, handleNavigate, handleOpenAuth],
+    [isLoggedIn, userName, handleNavigate, handleOpenAuth, handleLogout],
   );
 
 

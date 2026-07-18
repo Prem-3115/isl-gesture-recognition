@@ -31,6 +31,9 @@ const AboutPage = lazy(() =>
 const NotFoundPage = lazy(() =>
   import("./components/pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
 );
+const ProfilePage = lazy(() =>
+  import("./components/pages/ProfilePage").then((m) => ({ default: m.ProfilePage }))
+);
 const StaticPage = lazy(() =>
   import("./components/pages/StaticPage").then((m) => ({ default: m.StaticPage }))
 );
@@ -73,6 +76,10 @@ export const router = createBrowserRouter([
       {
         path: "about",
         element: <Suspense fallback={<SkeletonPage />}><AboutPage /></Suspense>,
+      },
+      {
+        path: "profile",
+        element: <Suspense fallback={<SkeletonPage />}><ProfilePage /></Suspense>,
       },
       {
         path: "help",
