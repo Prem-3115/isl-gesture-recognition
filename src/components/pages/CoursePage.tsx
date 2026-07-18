@@ -66,7 +66,7 @@ export function CoursePage() {
               </div>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate(`lesson:${resumeLessonId}`)}>
+                <Button className="bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90" size="lg" onClick={() => onNavigate(`lesson:${resumeLessonId}`)}>
                   Open Course
                 </Button>
                 <Button className="rounded-xl" size="lg" variant="outline" onClick={() => onNavigate("practice")}>
@@ -138,7 +138,7 @@ export function CoursePage() {
                   <p className="font-medium text-slate-900">{resource.title}</p>
                   <p className="mt-1 text-sm text-slate-500">{resource.format} · {resource.size}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
                   <Download className="h-4 w-4" />
                 </div>
               </a>

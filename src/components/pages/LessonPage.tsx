@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import islChart from "@/assets/isl_chart.jpg";
 import { LayoutOutletContext } from "@/types/layout";
 import { useAuth } from "@/context/AuthContext";
-import { isLessonComplete, markLessonComplete } from "@/services/progress.service";
+import { isLessonComplete, markLessonComplete, logDisabledLessonAccess } from "@/services/progress.service";
 import { Button } from "../ui/button";
 import {
   Breadcrumb,
@@ -27,6 +27,8 @@ interface LessonMeta {
   youtubeId: string;
   channel: string;
 }
+
+const SUPPORTED_LESSONS = ["letter-c", "number-1", "number-2", "number-3", "number-4", "number-5", "number-6", "number-7", "number-8", "number-9"];
 
 const lessonMeta: Record<string, LessonMeta> = {
   "intro-isl": {
@@ -191,6 +193,15 @@ const lessonMeta: Record<string, LessonMeta> = {
     youtubeId: "VdwKSyza5oI",
     channel: "ISLRTC",
   },
+  "number-1": { title: "Number 1", description: "Learn how to sign Number 1.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-2": { title: "Number 2", description: "Learn how to sign Number 2.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-3": { title: "Number 3", description: "Learn how to sign Number 3.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-4": { title: "Number 4", description: "Learn how to sign Number 4.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-5": { title: "Number 5", description: "Learn how to sign Number 5.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-6": { title: "Number 6", description: "Learn how to sign Number 6.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-7": { title: "Number 7", description: "Learn how to sign Number 7.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-8": { title: "Number 8", description: "Learn how to sign Number 8.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-9": { title: "Number 9", description: "Learn how to sign Number 9.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
 };
 
 const lessonKeys = Object.keys(lessonMeta);
@@ -241,9 +252,17 @@ export function LessonPage() {
       : "Lesson Not Found — ISL Connect";
   }, [lesson]);
 
+  // Track disabled lesson access when they land on the page
+  useEffect(() => {
+    if (user?.uid && lessonId && lessonId.startsWith("letter-") && !SUPPORTED_LESSONS.includes(lessonId)) {
+      const sign = lessonId.split("-")[1].toUpperCase();
+      logDisabledLessonAccess(user.uid, sign).catch(console.error);
+    }
+  }, [lessonId, user?.uid]);
+
   const handleMarkComplete = () => {
     setLessonCompleted(true);
-    toast.success("Lesson marked complete! Ready to practice?");
+    toast.success("Lesson marked complete!");
 
     // Persist to Firestore if logged in; fail silently so the UI stays responsive
     if (user?.uid) {
@@ -265,7 +284,7 @@ export function LessonPage() {
           doesn't exist yet. Choose a lesson from the course page.
         </p>
         <Button
-          className="mt-6 bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+          className="mt-6 bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90"
           onClick={() => onNavigate("dashboard")}
         >
           Back to Courses
@@ -370,7 +389,7 @@ export function LessonPage() {
                 Previous
               </Button>
               <Button
-                className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+                className="bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90"
                 disabled={!nextLessonId}
                 onClick={() => nextLessonId && onNavigate(`lesson:${nextLessonId}`)}
               >
@@ -420,13 +439,20 @@ export function LessonPage() {
             </div>
 
             {/* Practice CTA */}
-            <Button
-              className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90"
-              size="lg"
-              onClick={() => onNavigate("practice")}
-            >
-              Practice This Sign with AI
-            </Button>
+            {SUPPORTED_LESSONS.includes(lessonId) ? (
+              <Button
+                className="bg-primary h-12 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
+                size="lg"
+                onClick={() => onNavigate("practice")}
+              >
+                Practice This Sign with AI
+              </Button>
+            ) : lessonId !== "intro-isl" && !lessonId.includes("review") && !lessonId.includes("checkpoint") ? (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-center text-sm text-amber-800">
+                <p className="font-semibold">AI Practice Coming Soon</p>
+                <p className="mt-1 opacity-80">This is a two-handed sign. Practice with the video and use "Mark Complete" when ready.</p>
+              </div>
+            ) : null}
 
             {/* Key points */}
             <div className="rounded-[1.5rem] border border-primary/10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">

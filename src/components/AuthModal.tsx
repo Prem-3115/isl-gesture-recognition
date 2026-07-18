@@ -120,11 +120,11 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="overflow-hidden border-white/60 bg-white/95 p-0 sm:max-w-md">
-        <div className="bg-gradient-brand h-2 w-full" />
+        <div className="bg-primary h-2 w-full" />
         <div className="p-6">
           <DialogHeader>
             <div className="mb-2 flex items-center justify-center">
-              <div className="bg-gradient-brand flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-lg">
+              <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-2xl text-primary-foreground shadow-lg">
                 <Hand className="h-6 w-6" />
               </div>
             </div>
@@ -209,7 +209,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
 
             <Button
               type="submit"
-              className="bg-gradient-brand h-11 w-full rounded-xl border-0 text-white hover:opacity-90"
+              className="bg-primary h-11 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
               size="lg"
               disabled={isLoading}
             >

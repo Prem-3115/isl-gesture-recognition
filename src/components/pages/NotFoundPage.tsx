@@ -36,7 +36,7 @@ export function NotFoundPage() {
         </Button>
         <Button
           onClick={() => navigate("/")}
-          className="bg-gradient-brand h-11 rounded-xl border-0 text-white hover:opacity-90"
+          className="bg-primary h-11 rounded-xl border-0 text-primary-foreground hover:opacity-90"
         >
           <Home className="mr-2 h-4 w-4" aria-hidden="true" />
           Back to Home

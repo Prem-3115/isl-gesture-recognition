@@ -6,6 +6,7 @@ import { LayoutOutletContext } from "@/types/layout";
 import { CourseCard } from "../CourseCard";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Button } from "../ui/button";
+import islChart from "@/assets/isl_chart.jpg";
 
 export function HomePage() {
   const { onNavigate, isLoggedIn, onOpenAuth } = useOutletContext<LayoutOutletContext>();
@@ -17,63 +18,60 @@ export function HomePage() {
   return (
     <div className="pb-6">
       <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
-        <div className="absolute inset-x-0 top-0 h-[32rem] bg-gradient-to-b from-primary/10 via-secondary/8 to-transparent" />
-        <div className="absolute left-[-6rem] top-20 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute right-[-4rem] top-10 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-sm text-primary shadow-sm">
+            <div className="mb-6 inline-flex items-center gap-2 rounded bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 border border-slate-200">
               <Sparkles className="h-4 w-4" />
               Intelligent practice for modern ISL learners
             </div>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-slate-950 sm:text-6xl">
+            <h1 className="max-w-3xl text-5xl font-extrabold leading-[1.1] tracking-tight text-slate-950 sm:text-6xl">
               Master ISL (Indian Sign Language) with{" "}
-              <span className="text-gradient-brand">Intelligent Practice</span>
+              <span className="text-primary">Intelligent Practice</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
               Learn through short ISL video lessons, webcam-based feedback, and guided practice flows that make consistent study feel approachable.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-gradient-brand h-12 rounded-xl border-0 px-6 text-white hover:opacity-90"
+                className="group/btn h-12 rounded-xl bg-primary px-8 text-primary-foreground shadow-sm transition-all hover:bg-primary/95 hover:shadow-md active:scale-[0.98]"
                 onClick={() => (isLoggedIn ? onNavigate("lesson:letter-a") : onOpenAuth("signup"))}
               >
-                Start Free Lesson
-                <ArrowRight className="h-4 w-4" />
+                <span className="font-semibold">Start Free Lesson</span>
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="h-12 rounded-xl border-slate-200 bg-white/80 px-6"
+                className="h-12 rounded-xl border-slate-200 bg-white px-8 text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
                 onClick={() => onNavigate("dashboard")}
               >
-                Explore Courses
+                <span className="font-medium">Explore Courses</span>
               </Button>
             </div>
-            <div className="mt-12 grid grid-cols-2 gap-4 rounded-[1.5rem] border border-white/60 bg-white/80 p-5 shadow-sm sm:grid-cols-4">
+            <div className="mt-12 grid grid-cols-2 gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-4">
               {featuredStats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-gradient-brand text-2xl font-semibold">{stat.value}</p>
-                  <p className="mt-1 text-sm capitalize text-slate-500">{stat.label}</p>
+                  <p className="text-3xl font-extrabold tracking-tight text-primary">{stat.value}</p>
+                  <p className="mt-1 text-sm font-medium capitalize text-slate-500">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="relative">
-            <div className="panel-glow overflow-hidden rounded-[2rem] border border-white/60 bg-white p-3">
-              <div className="overflow-hidden rounded-[1.5rem]">
+            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-2 shadow-elevation">
+              <div className="overflow-hidden rounded-2xl bg-slate-50">
                 <ImageWithFallback
-                  src="https://cdnbbsr.s3waas.gov.in/s3f7e2b2b75b04175610e5a00c1e221ebb/uploads/2025/07/202507141877307940-1024x683.jpg"
-                  alt="A presenter signing in Indian Sign Language at an ISLRTC demonstration event"
-                  className="h-[440px] w-full object-cover"
+                  src={islChart}
+                  alt="ISL alphabet chart showing hand gestures for all letters"
+                  className="h-[440px] w-full object-contain"
                 />
               </div>
             </div>
-            <div className="panel-glow absolute -bottom-6 left-4 w-64 rounded-3xl border border-white/70 bg-white/95 p-4">
-              <p className="text-sm font-medium text-slate-700">Practice with live feedback</p>
-              <p className="mt-2 text-sm leading-6 text-slate-500">
+            <div className="absolute -bottom-6 -left-6 w-72 rounded-[1.5rem] border border-slate-200 bg-white/90 p-5 shadow-elevation backdrop-blur-md">
+              <p className="text-sm font-bold text-slate-900">Practice with live feedback</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Use the webcam flow, compare your hand shape with the ISL chart, and refine each sign step by step.
               </p>
             </div>
@@ -81,22 +79,22 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8 border-y border-slate-200">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-2xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">How It Works</p>
-            <h2 className="text-3xl font-semibold text-slate-950 sm:text-4xl">A clear path from first sign to confident practice</h2>
+            <h2 className="text-3xl font-bold text-slate-950 sm:text-4xl">A clear path from first sign to confident practice</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {howItWorks.map((step, index) => (
-              <div key={step.title} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-8 shadow-sm">
+              <div key={step.title} className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
                 <div className="mb-6 flex items-center justify-between">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${step.accent} text-white`}>
-                    <step.icon className="h-7 w-7" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded bg-slate-100 text-primary">
+                    <step.icon className="h-6 w-6" />
                   </div>
-                  <span className="text-5xl font-semibold text-slate-100">0{index + 1}</span>
+                  <span className="text-4xl font-bold text-slate-200">0{index + 1}</span>
                 </div>
-                <h3 className="mb-3 text-xl">{step.title}</h3>
+                <h3 className="mb-3 text-lg font-bold text-slate-900">{step.title}</h3>
                 <p className="text-sm leading-7 text-slate-600">{step.description}</p>
               </div>
             ))}
@@ -109,10 +107,10 @@ export function HomePage() {
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Popular Courses</p>
-              <h2 className="text-3xl font-semibold text-slate-950">Start with the most loved pathways</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Start with the most loved pathways</h2>
             </div>
-            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("dashboard")}>
-              View All Courses
+            <Button variant="outline" className="rounded-xl shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]" onClick={() => onNavigate("dashboard")}>
+              <span className="font-medium">View All Courses</span>
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
@@ -131,19 +129,19 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8 border-y border-slate-200">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-2xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Why ISL Connect</p>
-            <h2 className="text-3xl font-semibold text-slate-950">Built to make deliberate practice feel accessible</h2>
+            <h2 className="text-3xl font-bold text-slate-950">Built to make deliberate practice feel accessible</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {featureTiles.map((feature) => (
-              <div key={feature.title} className="rounded-[1.5rem] border border-white/70 bg-white/85 p-6 shadow-sm">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
+              <div key={feature.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded bg-slate-100">
                   <feature.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="mb-3 text-lg">{feature.title}</h3>
+                <h3 className="mb-3 text-base font-bold text-slate-900">{feature.title}</h3>
                 <p className="text-sm leading-7 text-slate-600">{feature.description}</p>
               </div>
             ))}
@@ -155,23 +153,23 @@ export function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-2xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Testimonials</p>
-            <h2 className="text-3xl font-semibold text-slate-950">Learners using ISL Connect in real life</h2>
+            <h2 className="text-3xl font-bold text-slate-950">Learners using ISL Connect in real life</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {testimonials.map((item) => (
-              <div key={item.name} className="rounded-[1.5rem] border border-white/70 bg-white/90 p-6 shadow-sm">
+              <div key={item.name} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex gap-1">
                   {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    <Star key={index} className="h-4 w-4 fill-slate-300 text-slate-300" />
                   ))}
                 </div>
-                <p className="min-h-28 text-sm leading-7 text-slate-600">"{item.quote}"</p>
+                <p className="min-h-28 text-sm leading-7 text-slate-700">"{item.quote}"</p>
                 <div className="mt-6 flex items-center gap-3">
-                  <div className="bg-gradient-brand flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-semibold text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-sm font-bold text-slate-900">
                     {item.name.split(" ").map((part) => part[0]).join("")}
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{item.name}</p>
+                    <p className="font-bold text-slate-900">{item.name}</p>
                     <p className="text-sm text-slate-500">{item.role}</p>
                   </div>
                 </div>
@@ -182,21 +180,20 @@ export function HomePage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="bg-gradient-brand relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-8 py-12 text-white shadow-2xl">
-          <div className="absolute -right-12 top-0 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute -left-8 bottom-0 h-40 w-40 rounded-full bg-black/10 blur-2xl" />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-950 px-8 py-16 text-primary-foreground shadow-elevation">
+          <div className="absolute right-0 top-0 h-96 w-96 -translate-y-1/2 translate-x-1/3 rounded-full bg-white/5 blur-3xl" />
+          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Start Today</p>
-              <h2 className="text-3xl font-semibold">Practice ISL with AI, learn with confidence, and build a steady routine.</h2>
+              <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Start Today</p>
+              <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Practice ISL with AI, learn with confidence, and build a steady routine.</h2>
             </div>
             <Button
               size="lg"
               variant="secondary"
-              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+              className="h-14 rounded-xl bg-white px-8 text-slate-950 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
               onClick={() => (isLoggedIn ? onNavigate("dashboard") : onOpenAuth("signup"))}
             >
-              {isLoggedIn ? "Go to Dashboard" : "Sign Up Free"}
+              <span className="font-semibold">{isLoggedIn ? "Go to Dashboard" : "Sign Up Free"}</span>
             </Button>
           </div>
         </div>

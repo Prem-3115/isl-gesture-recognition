@@ -117,7 +117,7 @@ export function AchievementsPage() {
       <div className="mx-auto max-w-7xl">
 
         {/* ── Profile Banner ───────────────────────────────────── */}
-        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+        <section className="bg-primary relative mb-8 overflow-hidden rounded-[2rem] p-8 text-primary-foreground shadow-2xl">
           <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
@@ -126,9 +126,9 @@ export function AchievementsPage() {
             </div>
             <div className="flex-1">
               <h1 className="text-4xl font-semibold">{userName}</h1>
-              <p className="mt-1 text-white/70">Level {level} ISL Learner · {xp} XP</p>
+              <p className="mt-1 text-primary-foreground/70">Level {level} ISL Learner · {xp} XP</p>
               <div className="mt-3 w-full max-w-xs">
-                <div className="mb-1 flex justify-between text-xs text-white/70">
+                <div className="mb-1 flex justify-between text-xs text-primary-foreground/70">
                   <span>XP Progress</span>
                   <span>{200 - (xp % 200)} XP to Level {level + 1}</span>
                 </div>

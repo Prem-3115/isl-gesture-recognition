@@ -14,11 +14,11 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-brand flex h-10 w-10 items-center justify-center rounded-2xl text-white">
+              <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-2xl text-primary-foreground">
                 <Hand className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-gradient-brand text-lg font-semibold">ISL Connect</p>
+                <p className="text-primary text-lg font-semibold">ISL Connect</p>
                 <p className="text-xs text-slate-500">Learn, practice, belong</p>
               </div>
             </div>

@@ -59,20 +59,18 @@ export function AboutPage() {
   return (
     <div className="pb-16">
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16">
-        <div className="absolute inset-x-0 top-0 h-[28rem] bg-gradient-to-b from-primary/10 via-secondary/8 to-transparent" />
-        <div className="absolute left-[-6rem] top-20 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute right-[-4rem] top-10 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
+      <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="absolute inset-x-0 top-0 h-[32rem] bg-gradient-to-b from-slate-100 via-slate-50 to-transparent" />
         <div className="relative mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-2 text-sm text-primary shadow-sm">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
+            <Sparkles className="h-4 w-4 text-slate-400" aria-hidden="true" />
             About ISL Connect
           </div>
-          <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight text-slate-950 sm:text-6xl">
+          <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-slate-950 sm:text-7xl">
             Making Indian Sign Language{" "}
-            <span className="text-gradient-brand">accessible to all</span>
+            <span className="text-slate-500">accessible to all</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-600">
             ISL Connect is a student-built, AI-powered learning platform that
             helps people learn and practice Indian Sign Language (ISL) through
             short lessons, real-time webcam gesture recognition, and an
@@ -84,23 +82,23 @@ export function AboutPage() {
       {/* Mission */}
       <section className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="overflow-hidden rounded-[2rem] border border-white/60 bg-white/85 p-8 shadow-sm md:p-12">
-            <div className="grid gap-10 md:grid-cols-2">
+          <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-elevation md:p-12 lg:p-16">
+            <div className="grid gap-12 md:grid-cols-2">
               <div>
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+                <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
                   Our Mission
                 </p>
-                <h2 className="text-3xl font-semibold text-slate-950">
+                <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                   Bridge communication gaps with technology
                 </h2>
-                <p className="mt-4 text-slate-600 leading-7">
+                <p className="mt-6 text-slate-600 leading-relaxed">
                   Over 18 million people in India are deaf or hard of hearing.
                   ISL (Indian Sign Language) is their primary mode of
                   communication, yet resources for learning it are scarce,
                   expensive, or inaccessible. ISL Connect was built to change
                   that — combining modern AI with deliberate practice flows.
                 </p>
-                <p className="mt-4 text-slate-600 leading-7">
+                <p className="mt-4 text-slate-600 leading-relaxed">
                   Built as a Design Engineering project, the platform features a
                   real gesture recognition pipeline using MediaPipe and a
                   custom-trained scikit-learn model on ISL alphabet data.
@@ -109,19 +107,19 @@ export function AboutPage() {
               <div className="grid grid-cols-2 gap-4 content-start">
                 {[
                   { icon: Hand, label: "35 ISL Signs", sub: "A–Z + 1–9 digits" },
-                  { icon: BrainCircuit, label: "AI Recognition", sub: "MediaPipe + Flask" },
+                  { icon: BrainCircuit, label: "AI Recognition", sub: "MediaPipe + ML" },
                   { icon: BookOpen, label: "Structured Lessons", sub: "Guided curriculum" },
                   { icon: Users, label: "Community", sub: "Peer learning" },
                 ].map(({ icon: Icon, label, sub }) => (
                   <div
                     key={label}
-                    className="rounded-[1.5rem] bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-5"
+                    className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition-colors hover:border-slate-300 hover:bg-white hover:shadow-sm"
                   >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-slate-900 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-primary group-hover:text-white group-hover:ring-0">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
                     </div>
-                    <p className="font-semibold text-slate-950">{label}</p>
-                    <p className="mt-1 text-sm text-slate-500">{sub}</p>
+                    <p className="font-bold text-slate-900">{label}</p>
+                    <p className="mt-1 text-sm font-medium text-slate-500">{sub}</p>
                   </div>
                 ))}
               </div>
@@ -131,13 +129,13 @@ export function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="px-4 py-12 sm:px-6 lg:px-8">
+      <section className="px-4 py-16 sm:px-6 lg:px-8 border-y border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+          <div className="mb-12 max-w-2xl">
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
               What We Stand For
             </p>
-            <h2 className="text-3xl font-semibold text-slate-950">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
               Our core values
             </h2>
           </div>
@@ -145,17 +143,17 @@ export function AboutPage() {
             {values.map((v) => (
               <div
                 key={v.title}
-                className="rounded-[1.5rem] border border-white/70 bg-white/85 p-6 shadow-sm"
+                className="group rounded-[1.5rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation"
               >
                 <div
-                  className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${v.accent} text-white`}
+                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-slate-200 transition-colors group-hover:bg-primary group-hover:text-white group-hover:ring-0 text-slate-900"
                 >
-                  <v.icon className="h-5 w-5" aria-hidden="true" />
+                  <v.icon className="h-6 w-6" aria-hidden="true" />
                 </div>
-                <h3 className="mb-3 text-lg font-semibold text-slate-950">
+                <h3 className="mb-3 text-xl font-bold tracking-tight text-slate-900">
                   {v.title}
                 </h3>
-                <p className="text-sm leading-7 text-slate-600">
+                <p className="text-sm leading-relaxed text-slate-600">
                   {v.description}
                 </p>
               </div>
@@ -181,7 +179,7 @@ export function AboutPage() {
                 key={i}
                 className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm text-center"
               >
-                <div className="bg-gradient-brand mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[1.25rem] text-lg font-semibold text-white shadow-lg">
+                <div className="bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[1.25rem] text-lg font-semibold text-primary-foreground shadow-lg">
                   {member.initials}
                 </div>
                 <p className="font-semibold text-slate-950">{member.name}</p>
@@ -193,26 +191,26 @@ export function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-4 py-12 sm:px-6 lg:px-8">
-        <div className="bg-gradient-brand relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-8 py-12 text-white shadow-2xl">
-          <div className="absolute -right-12 top-0 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute -left-8 bottom-0 h-40 w-40 rounded-full bg-black/10 blur-2xl" />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-950 px-8 py-16 text-primary-foreground shadow-elevation">
+          <div className="absolute -right-12 top-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
+          <div className="absolute -left-8 bottom-0 h-80 w-80 rounded-full bg-black/20 blur-3xl" />
+          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+              <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
                 Start Learning
               </p>
-              <h2 className="text-3xl font-semibold">
+              <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
                 Ready to start your ISL journey?
               </h2>
             </div>
             <Button
               size="lg"
               variant="secondary"
-              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+              className="h-14 rounded-xl bg-white px-8 text-slate-950 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
               onClick={() => onNavigate("dashboard")}
             >
-              Explore Courses
+              <span className="font-semibold">Explore Courses</span>
             </Button>
           </div>
         </div>

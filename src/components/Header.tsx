@@ -42,11 +42,11 @@ export function Header({
           onClick={() => handleNav("home")}
           className="flex items-center gap-3 transition-opacity hover:opacity-90"
         >
-          <div className="bg-gradient-brand flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-lg shadow-primary/20">
+          <div className="bg-primary flex h-11 w-11 items-center justify-center rounded-2xl text-primary-foreground shadow-lg shadow-primary/20">
             <Hand className="h-5 w-5" />
           </div>
           <div className="text-left">
-            <p className="text-gradient-brand text-lg font-semibold leading-none">ISL Connect</p>
+            <p className="text-primary text-lg font-semibold leading-none">ISL Connect</p>
             <p className="mt-1 text-xs text-slate-500">AI-powered ISL learning</p>
           </div>
         </button>
@@ -99,7 +99,7 @@ export function Header({
               <Button variant="ghost" onClick={() => onOpenAuth("login")}>
                 Sign In
               </Button>
-              <Button className="bg-gradient-brand border-0 text-white hover:opacity-90" onClick={() => onOpenAuth("signup")}>
+              <Button className="bg-primary border-0 text-primary-foreground hover:opacity-90" onClick={() => onOpenAuth("signup")}>
                 Get Started
               </Button>
             </>
@@ -152,7 +152,7 @@ export function Header({
                   <Button variant="outline" onClick={() => { setMobileOpen(false); onOpenAuth("login"); }}>
                     Sign In
                   </Button>
-                  <Button className="bg-gradient-brand border-0 text-white hover:opacity-90" onClick={() => { setMobileOpen(false); onOpenAuth("signup"); }}>
+                  <Button className="bg-primary border-0 text-primary-foreground hover:opacity-90" onClick={() => { setMobileOpen(false); onOpenAuth("signup"); }}>
                     Get Started
                   </Button>
                 </>
