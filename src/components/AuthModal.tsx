@@ -98,6 +98,10 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
       onClose();
     } catch (error: any) {
       console.error(`${provider} sign-in error:`, error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        // Silently ignore or show a friendly cancellation message instead of a red error
+        return;
+      }
       toast.error(error.message || `Failed to sign in with ${provider}.`);
     } finally {
       setIsLoading(false);
