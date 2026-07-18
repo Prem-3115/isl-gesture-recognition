@@ -1,4 +1,3 @@
-import islChart from "@/assets/isl_chart.jpg";
 import {
   Award,
   BookOpen,
@@ -19,7 +18,7 @@ export const courses = [
     title: "Learn ISL Alphabet",
     description:
       "Build a strong ISL foundation with guided lessons for the ISL alphabet and beginner-friendly practice.",
-    image: islChart,
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
     difficulty: "Beginner",
     progress: 46,
     lessonsCompleted: 4,
@@ -30,7 +29,7 @@ export const courses = [
     title: "ISL Everyday Greetings",
     description:
       "Practice ISL greetings, introductions, and common social phrases used in daily conversation. Refer to the ISL chart for accurate gestures.",
-    image: islChart,
+    image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
     difficulty: "Beginner",
     progress: 74,
     lessonsCompleted: 6,
@@ -41,7 +40,7 @@ export const courses = [
     title: "ISL Numbers 1-100",
     description:
       "Learn ISL numbers with short drills, memory checks, and quick real-world practice prompts. Refer to the ISL chart for accurate gestures.",
-    image: islChart,
+    image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
     difficulty: "Beginner",
     progress: 20,
     lessonsCompleted: 2,
