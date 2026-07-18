@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { useAuth } from "../context/AuthContext";
 
-const protectedPrefixes = ["/dashboard", "/course/", "/lesson/", "/practice", "/achievements", "/community"];
+const protectedPrefixes = ["/dashboard", "/courses", "/course/", "/lesson/", "/practice", "/achievements", "/community"];
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
@@ -35,13 +35,18 @@ function resolveRoute(page: string) {
     courses: "/dashboard",
     community: "/community",
     about: "/about",
+    help: "/help",
+    accessibility: "/accessibility",
+    contact: "/contact",
+    privacy: "/privacy",
+    terms: "/terms",
   };
 
   return routeMap[page] ?? "/";
 }
 
 function getCurrentSection(pathname: string) {
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/course/") || pathname.startsWith("/lesson/")) {
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/courses") || pathname.startsWith("/course/") || pathname.startsWith("/lesson/")) {
     return "courses";
   }
   if (pathname.startsWith("/practice")) {
@@ -135,8 +140,11 @@ export function Layout() {
         onLogout={handleLogout}
       />
       <main id="main-content" className="flex-1">
-        <Outlet context={outletContext} />
+        <div key={location.pathname} className="page-enter">
+          <Outlet context={outletContext} />
+        </div>
       </main>
+      <ScrollRestoration />
       <Footer onNavigate={handleNavigate} onOpenFaq={() => setIsFaqOpen(true)} />
       <AuthModal
         isOpen={isAuthOpen}

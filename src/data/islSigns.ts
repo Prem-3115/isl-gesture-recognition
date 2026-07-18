@@ -361,6 +361,7 @@ export const ISL_GREETINGS: ISLSign[] = [
   // Add verified ISL greetings here after chart is provided
 ];
 
+// @ts-ignore - Placeholder for future use
 const _UNUSED_GREETINGS_PLACEHOLDER: ISLSign[] = [
   {
     id: 'hello', label: 'Hello', category: 'greeting', emoji: '👋', twoHanded: false,

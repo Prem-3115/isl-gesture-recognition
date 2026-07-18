@@ -6,7 +6,6 @@ import {
   Calendar,
   Flame,
   Hand,
-  Star,
   Target,
   Trophy,
   Zap,
@@ -120,7 +119,7 @@ export function CourseDashboard() {
         {/* ── Header ──────────────────────────────────────────── */}
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
-          <h1 className="mt-2 text-4xl font-semibold text-slate-950">
+          <h1 className="mt-2 text-4xl font-bold text-slate-950">
             {greetingTime}, {userName} 👋
           </h1>
           <p className="mt-2 text-slate-500">
@@ -133,7 +132,7 @@ export function CourseDashboard() {
         {/* ── XP + Streak Banner ──────────────────────────────── */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* XP Level */}
-          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
+          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium uppercase tracking-wider text-slate-500">Your Level</p>
@@ -154,27 +153,47 @@ export function CourseDashboard() {
           </div>
 
           {/* Streak */}
-          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-orange-50 ring-1 ring-orange-500/20">
-              <Flame className="h-6 w-6 text-orange-500" />
+          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-accent-secondary/10 ring-1 ring-accent-secondary/20">
+              <Flame className="h-6 w-6 text-accent-secondary" />
             </div>
             <p className="text-3xl font-bold tracking-tight text-slate-950">{streak}</p>
             <p className="mt-1 text-sm font-medium text-slate-500">Day streak</p>
             {streak >= 3 && (
-              <p className="mt-2 text-xs font-bold text-orange-600">🔥 You're on a roll!</p>
+              <p className="mt-2 flex items-center text-xs font-bold text-accent-secondary">
+                <Flame className="mr-1 h-4 w-4" /> You're on a roll!
+              </p>
             )}
           </div>
 
           {/* Overall Progress */}
-          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-emerald-50 ring-1 ring-emerald-600/20">
-              <Trophy className="h-6 w-6 text-emerald-600" />
+          <div className="flex flex-col rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-accent-secondary/10 ring-1 ring-accent-secondary/20">
+              <Trophy className="h-6 w-6 text-accent-secondary" />
             </div>
-            <p className="text-3xl font-bold tracking-tight text-slate-950">{completedCount}/{totalLessons}</p>
-            <p className="mt-1 text-sm font-medium text-slate-500">Lessons done</p>
-            <div className="mt-3">
-              <Progress value={overallProgress} className="h-2.5 bg-slate-100" />
-            </div>
+            {completedCount === 0 ? (
+              <div className="flex flex-1 flex-col justify-between">
+                <p className="text-sm font-medium leading-relaxed text-slate-600">
+                  Start your first lesson to track your progress here.
+                </p>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="mt-3 w-full rounded-xl"
+                  onClick={() => onNavigate("lesson:letter-a")}
+                >
+                  Start Lesson
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-3xl font-bold tracking-tight text-slate-950">{completedCount}/{totalLessons}</p>
+                <p className="mt-1 text-sm font-medium text-slate-500">Lessons done</p>
+                <div className="mt-auto pt-3">
+                  <Progress value={overallProgress} className="h-2.5 bg-slate-100" />
+                </div>
+              </>
+            )}
           </div>
         </section>
 
@@ -256,7 +275,7 @@ export function CourseDashboard() {
         {/* ── Focus Cards ─────────────────────────────────────── */}
         <section className="mb-8 grid gap-6 lg:grid-cols-3">
           {DASHBOARD_FOCUS.map((item) => (
-            <div key={item.title} className="group rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
+            <div key={item.title} className="group rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-900/5 transition-colors group-hover:bg-primary group-hover:text-white">
                 <item.icon className="h-5 w-5 transition-colors group-hover:text-white" />
               </div>
@@ -269,13 +288,13 @@ export function CourseDashboard() {
         {/* ── Active Courses ──────────────────────────────────── */}
         <section className="mb-8">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-slate-950">Active Courses</h2>
+            <h2 className="text-2xl font-bold text-slate-950">Active Courses</h2>
             <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("home")}>
               Browse More
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {courses.map((course) => (
+            {courses.map((course, index) => (
               <CourseCard
                 key={course.id}
                 id={course.id}
@@ -283,6 +302,7 @@ export function CourseDashboard() {
                 description={course.description}
                 image={course.image}
                 difficulty={course.difficulty}
+                index={index}
                 onViewCourse={(id) => onNavigate(`course:${id}`)}
               />
             ))}
@@ -293,7 +313,7 @@ export function CourseDashboard() {
         <section>
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
+              <h2 className="text-2xl font-bold text-slate-950">Recently Practiced Signs</h2>
               <p className="mt-1 text-sm text-slate-500">Jump back into any sign for a quick refresher</p>
             </div>
             <Button variant="outline" className="rounded" onClick={() => onNavigate("practice")}>

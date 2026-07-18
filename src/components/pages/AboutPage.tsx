@@ -45,7 +45,7 @@ const values = [
     title: "Community Driven",
     description:
       "Our community spaces connect learners, enable peer support, and create shared milestones that keep motivation high.",
-    accent: "from-emerald-400 to-teal-500",
+    accent: "from-accent to-indigo-500",
   },
 ];
 
@@ -66,7 +66,7 @@ export function AboutPage() {
             <Sparkles className="h-4 w-4 text-slate-400" aria-hidden="true" />
             About ISL Connect
           </div>
-          <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-slate-950 sm:text-7xl">
+          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-slate-950 sm:text-7xl">
             Making Indian Sign Language{" "}
             <span className="text-slate-500">accessible to all</span>
           </h1>
@@ -143,7 +143,7 @@ export function AboutPage() {
             {values.map((v) => (
               <div
                 key={v.title}
-                className="group rounded-[1.5rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation"
+                className="group rounded-[1.5rem] border border-slate-200 bg-white p-8 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover"
               >
                 <div
                   className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-slate-200 transition-colors group-hover:bg-primary group-hover:text-white group-hover:ring-0 text-slate-900"
@@ -169,7 +169,7 @@ export function AboutPage() {
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               The Team
             </p>
-            <h2 className="text-3xl font-semibold text-slate-950">
+            <h2 className="text-3xl font-bold text-slate-950">
               Built by students, for everyone
             </h2>
           </div>

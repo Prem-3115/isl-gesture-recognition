@@ -4,6 +4,7 @@ import {
   AlertCircle,
   BrainCircuit,
   Camera,
+  Check,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -125,7 +126,7 @@ function ScoreRing({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
-            style={{ transition: "stroke-dashoffset 0.4s ease" }}
+            className="circle-progress"
           />
         </svg>
         <span
@@ -203,7 +204,8 @@ export function PracticePage() {
   // Celebrate milestone streaks
   useEffect(() => {
     if (!streak.milestone) return;
-    toast.success(`🔥 ${streak.milestone}-streak! You're on fire!`, {
+    toast.success(`${streak.milestone}-streak! You're on fire!`, {
+      icon: <Flame className="h-5 w-5 text-orange-500" />,
       duration: 3000,
     });
   }, [streak.milestone]);
@@ -324,7 +326,7 @@ export function PracticePage() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">AI Practice</p>
-            <h1 className="mt-2 text-3xl font-semibold text-slate-950 sm:text-4xl">
+            <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">
               Practice with Gesture Recognition
             </h1>
           </div>
@@ -356,7 +358,7 @@ export function PracticePage() {
         </div>
 
         {/* ── Dev-only API indicator (never shown in production) ─── */}
-        {!import.meta.env.PROD && apiOnline === false && (
+        {import.meta.env.DEV && apiOnline === false && (
           <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
             <span>Dev: Flask API offline — run <code className="font-mono text-xs">python isl_api.py</code> on port 5000</span>
@@ -394,7 +396,9 @@ export function PracticePage() {
                         : `Number ${targetSign}`}
                     </p>
                     {isCorrectInChallenge && (
-                      <p className="mt-1 text-sm font-medium text-primary-foreground/90">✓ Correct! Hold it steady…</p>
+                      <p className="mt-1 flex items-center text-sm font-medium text-primary-foreground/90">
+                        <Check className="mr-1 h-4 w-4" /> Correct! Hold it steady…
+                      </p>
                     )}
                   </div>
                 </div>
@@ -498,7 +502,7 @@ export function PracticePage() {
                   <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-white/10">
                     <Camera className="h-10 w-10 text-primary-foreground/60" aria-hidden="true" />
                   </div>
-                  <h2 className="text-2xl font-semibold">Camera inactive</h2>
+                  <h2 className="text-2xl font-bold">Camera inactive</h2>
                   <p className="mt-3 max-w-sm text-sm leading-7 text-primary-foreground/60">
                     {mode === "challenge" && !isSupportedTarget
                       ? `The sign "${targetSign}" requires two hands and is currently unsupported by the AI. We are tracking requests to prioritize it!`
@@ -524,7 +528,7 @@ export function PracticePage() {
                   <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-amber-500/20">
                     <AlertCircle className="h-10 w-10 text-amber-400" aria-hidden="true" />
                   </div>
-                  <h2 className="text-2xl font-semibold text-amber-400">Two-Handed Sign</h2>
+                  <h2 className="text-2xl font-bold text-amber-400">Two-Handed Sign</h2>
                   <p className="mt-3 max-w-sm text-sm leading-7 text-primary-foreground/80">
                     The sign <strong>"{targetSign}"</strong> is a two-handed sign. Our current AI model only supports one-handed tracking. We've logged your interest!
                   </p>
@@ -694,7 +698,9 @@ export function PracticePage() {
                   {filteredDetectedSign ?? "--"}
                 </p>
                 {isCorrectInChallenge && (
-                  <p className="mt-2 text-sm font-semibold text-emerald-600">✓ Matches target!</p>
+                  <p className="mt-2 flex items-center justify-center text-sm font-semibold text-emerald-600">
+                    <Check className="mr-1 h-4 w-4" /> Matches target!
+                  </p>
                 )}
                 {!isCorrectInChallenge && filteredDetectedSign && mode === "challenge" && (
                   <p className="mt-2 text-sm text-slate-500">Looking for: <span className="font-bold text-primary">{targetSign}</span></p>
@@ -737,7 +743,7 @@ export function PracticePage() {
                   { label: "Camera", value: cameraActive ? "Active" : "Inactive", ok: cameraActive },
                   { label: "MediaPipe", value: gestureResult.status === "loading" ? "Loading…" : "Ready", ok: gestureResult.status !== "loading" && gestureResult.status !== "error" },
                   { label: "Flask API", value: apiOnline == null ? "Checking…" : apiOnline ? "Online" : "Offline", ok: !!apiOnline },
-                  { label: "Hand Detected", value: gestureResult.handDetected ? "✓ Yes" : "No", ok: gestureResult.handDetected },
+                  { label: "Hand Detected", value: gestureResult.handDetected ? "Yes" : "No", ok: gestureResult.handDetected },
                 ].map(({ label, value, ok }) => (
                   <div key={label} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
                     <span className="text-slate-500">{label}</span>
