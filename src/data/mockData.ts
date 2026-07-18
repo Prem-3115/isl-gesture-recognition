@@ -1,5 +1,5 @@
-import course1 from "@/assets/course1.jpg";
-import course2 from "@/assets/course2.jpg";
+import course1 from "@/assets/course1.png";
+import course2 from "@/assets/course2.png";
 import course3 from "@/assets/course3.png";
 import {
   Award,

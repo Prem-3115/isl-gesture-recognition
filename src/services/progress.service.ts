@@ -44,7 +44,7 @@ export async function markLessonComplete(uid: string, lessonId: string): Promise
  * Log when a user attempts to practice a disabled two-handed sign.
  * This helps prioritize which signs to rebuild the pipeline for first.
  */
-export async function logDisabledLessonAccess(uid: string, signId: string): Promise<void> {
+export async function logDisabledLessonAccess(_uid: string, signId: string): Promise<void> {
   const ref = doc(db, "telemetry", "disabled_signs", "access_counts", signId);
   // Using setDoc with merge to ensure the document exists and we don't overwrite if we use transactions later.
   // For a basic counter, we could use increment(), but we'll keep it simple for now, or just log the event.

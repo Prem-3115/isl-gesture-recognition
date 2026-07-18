@@ -277,7 +277,7 @@ export function LessonPage() {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
         <p className="text-6xl mb-6">🔍</p>
-        <h1 className="text-3xl font-semibold text-slate-950">Lesson not found</h1>
+        <h1 className="text-3xl font-bold text-slate-950">Lesson not found</h1>
         <p className="mt-3 text-slate-600 max-w-md">
           The lesson{" "}
           <code className="rounded bg-slate-100 px-2 py-0.5 text-sm">{lessonId}</code>{" "}
@@ -323,7 +323,7 @@ export function LessonPage() {
             <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               ISL Alphabet · Lesson {lessonNumber} of {totalLessons}
             </p>
-            <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
+            <h1 className="text-4xl font-bold text-slate-950">{lesson.title}</h1>
             <p className="mt-2 text-slate-500">{lesson.description}</p>
           </div>
           {completionLoading ? (
@@ -400,7 +400,7 @@ export function LessonPage() {
 
             {/* How-to tips */}
             <div className="mt-8 rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Practice This Sign</h2>
+              <h2 className="mb-4 text-2xl font-bold text-slate-950">How to Practice This Sign</h2>
               <div className="space-y-3">
                 {[
                   ["Watch carefully", "Watch the video at least twice — once to observe, once to follow along."],

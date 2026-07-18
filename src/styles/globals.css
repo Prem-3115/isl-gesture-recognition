@@ -3,6 +3,8 @@
 :root {
   --font-size: 16px;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Lexend", sans-serif;
   --background: #f8fafc;
   --foreground: #0f172a;
   --card: #ffffff;
@@ -15,7 +17,8 @@
   --secondary-foreground: #ffffff;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #059669;
+  --accent: #8b5cf6;
+  --accent-secondary: #f59e0b;
   --accent-foreground: #ffffff;
   --destructive: #d97706;
   --destructive-foreground: #ffffff;
@@ -42,7 +45,8 @@
   --secondary-foreground: #f8fafc;
   --muted: #0f172a;
   --muted-foreground: #94a3b8;
-  --accent: #059669;
+  --accent: #8b5cf6;
+  --accent-secondary: #f59e0b;
   --accent-foreground: #ffffff;
   --destructive: #d97706;
   --destructive-foreground: #ffffff;
@@ -65,6 +69,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -84,8 +89,16 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+    outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
   }
+
+  *:focus-visible {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-offset: 2px;
+  }
+
 
   html {
     font-size: var(--font-size);
@@ -99,28 +112,38 @@
 }
 
 @layer base {
+  body {
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
       font-size: var(--text-2xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
     h2 {
       font-size: var(--text-xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
     h3 {
       font-size: var(--text-lg);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
     h4 {
       font-size: var(--text-base);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
-    p, label, button, input {
+    p {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.625;
+    }
+    label, button, input {
+      font-family: var(--font-body);
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
@@ -128,5 +151,48 @@
     label, button {
       font-weight: var(--font-weight-medium);
     }
+  }
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .page-enter {
+    animation: fade-in 0.25s ease-out backwards;
+  }
+  .modal-overlay-enter {
+    animation: fade-in 0.2s ease-out backwards;
+  }
+  
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-enter {
+    animation: fade-in-up 0.3s ease-out backwards;
+  }
+  
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-enter {
+    animation: modal-in 0.2s ease-out backwards;
+  }
+  
+  .progress-bar-fill {
+    transition: transform 0.6s ease-out;
+  }
+  
+  .circle-progress {
+    transition: stroke-dashoffset 0.6s ease-out;
   }
 }

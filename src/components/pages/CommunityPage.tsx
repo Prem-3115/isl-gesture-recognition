@@ -157,7 +157,7 @@ export function CommunityPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Community</p>
-          <h1 className="mt-3 text-4xl font-semibold text-slate-950">Learn together, grow together</h1>
+          <h1 className="mt-3 text-4xl font-bold text-slate-950">Learn together, grow together</h1>
           <p className="mt-3 text-slate-600">
             Ask questions, share practice notes, join study groups, and stay connected with other ISL learners.
           </p>
@@ -172,7 +172,7 @@ export function CommunityPage() {
                 <Users className="h-4 w-4" />
                 ISL Connect Community
               </p>
-              <h2 className="text-3xl font-semibold">A space built for ISL learners</h2>
+              <h2 className="text-3xl font-bold">A space built for ISL learners</h2>
               <p className="mt-2 max-w-2xl text-primary-foreground/80">
                 Ask questions, share milestones, join study groups, and exchange practical learning tips in one place.
               </p>
@@ -195,7 +195,7 @@ export function CommunityPage() {
               </div>
             </div>
             <div className="rounded-[1.5rem] border border-white/70 bg-white/90 p-6">
-              <p className="text-5xl font-semibold text-slate-950">{signOfTheDay.sign}</p>
+              <p className="text-5xl font-bold text-slate-950">{signOfTheDay.sign}</p>
               <p className="mt-3 text-sm leading-7 text-slate-600">{signOfTheDay.description}</p>
               <Button
                 className="bg-primary mt-5 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
@@ -252,7 +252,7 @@ export function CommunityPage() {
           <div>
             <div className="mb-5">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Groups</p>
-              <h2 className="mt-1 text-2xl font-semibold text-slate-950">Study Groups</h2>
+              <h2 className="mt-1 text-2xl font-bold text-slate-950">Study Groups</h2>
             </div>
             <div className="space-y-4">
               {studyGroups.map((group) => (
@@ -291,7 +291,7 @@ export function CommunityPage() {
             <div className="mb-5 flex items-end justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Discuss</p>
-                <h2 className="mt-1 text-2xl font-semibold text-slate-950">Discussion Board</h2>
+                <h2 className="mt-1 text-2xl font-bold text-slate-950">Discussion Board</h2>
               </div>
               <Button
                 size="sm"
@@ -415,7 +415,7 @@ export function CommunityPage() {
                   <Award className="h-4 w-4" />
                   Keep Learning
                 </p>
-                <h2 className="text-3xl font-semibold">Ready for another practice session?</h2>
+                <h2 className="text-3xl font-bold">Ready for another practice session?</h2>
                 <p className="mt-2 text-primary-foreground/80">
                   Open the practice workspace, revisit the sign of the day, and bring what you learn back into the community.
                 </p>
