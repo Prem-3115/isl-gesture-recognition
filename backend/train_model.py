@@ -84,7 +84,7 @@ model = VotingClassifier(
         (
             "rf",
             RandomForestClassifier(
-                n_estimators=100,
+                n_estimators=25,
                 max_depth=20,
                 max_features="sqrt",
                 min_samples_leaf=5,
@@ -96,7 +96,7 @@ model = VotingClassifier(
         (
             "et",
             ExtraTreesClassifier(
-                n_estimators=100,
+                n_estimators=25,
                 max_depth=20,
                 max_features="sqrt",
                 min_samples_leaf=5,
