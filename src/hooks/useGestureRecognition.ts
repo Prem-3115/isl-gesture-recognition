@@ -51,6 +51,7 @@ export function useGestureRecognition({
   const requestInFlightRef = useRef(false);
   const stablePredictionRef = useRef<string | null>(null);
   const stableCountRef = useRef<number>(0);
+  const errorCountRef = useRef<number>(0);
   const lastFeedbackRef = useRef<string>('Initializing...');
   const predictionHistory = useRef<Array<{ label: string; confidence: number }>>([]);
 
@@ -212,6 +213,7 @@ export function useGestureRecognition({
       requestInFlightRef.current = false;
 
       if (apiResult) {
+        errorCountRef.current = 0;
         if (apiResult.prediction === null || apiResult.prediction === undefined) {
           const conf = Math.round((apiResult.confidence ?? 0) * 100);
           const newFeedback = `Hand detected - hold steadier (${conf}%)`;
@@ -298,16 +300,20 @@ export function useGestureRecognition({
         return;
       }
 
-      const newFeedback = 'AI API not responding — it may be waking up, please wait a moment…';
-      if (lastFeedbackRef.current !== newFeedback) {
-        lastFeedbackRef.current = newFeedback;
-        setResult({
-          feedback: newFeedback,
-          handDetected: true,
-          status: 'error',
-          detectedSign: null,
-          confidence: 0,
-        });
+      // If apiResult is null (error or timeout)
+      errorCountRef.current += 1;
+      if (errorCountRef.current >= 3) {
+        const newFeedback = 'AI API not responding — it may be waking up, please wait a moment…';
+        if (lastFeedbackRef.current !== newFeedback) {
+          lastFeedbackRef.current = newFeedback;
+          setResult({
+            feedback: newFeedback,
+            handDetected: true,
+            status: 'error',
+            detectedSign: null,
+            confidence: 0,
+          });
+        }
       }
 
       animFrameRef.current = requestAnimationFrame(processFrame);
