@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import islChart from "@/assets/isl_chart.jpg";
 import { LayoutOutletContext } from "@/types/layout";
 import { useAuth } from "@/context/AuthContext";
-import { isLessonComplete, markLessonComplete, logDisabledLessonAccess } from "@/services/progress.service";
+import { isLessonComplete, markLessonComplete } from "@/services/progress.service";
 import { Button } from "../ui/button";
 import {
   Breadcrumb,
@@ -28,7 +28,6 @@ interface LessonMeta {
   channel: string;
 }
 
-const SUPPORTED_LESSONS = ["letter-c", "number-1", "number-2", "number-3", "number-4", "number-5", "number-6", "number-7", "number-8", "number-9"];
 
 const lessonMeta: Record<string, LessonMeta> = {
   "intro-isl": {
@@ -252,13 +251,7 @@ export function LessonPage() {
       : "Lesson Not Found — ISL Connect";
   }, [lesson]);
 
-  // Track disabled lesson access when they land on the page
-  useEffect(() => {
-    if (user?.uid && lessonId && lessonId.startsWith("letter-") && !SUPPORTED_LESSONS.includes(lessonId)) {
-      const sign = lessonId.split("-")[1].toUpperCase();
-      logDisabledLessonAccess(user.uid, sign).catch(console.error);
-    }
-  }, [lessonId, user?.uid]);
+
 
   const handleMarkComplete = () => {
     setLessonCompleted(true);
@@ -439,7 +432,7 @@ export function LessonPage() {
             </div>
 
             {/* Practice CTA */}
-            {SUPPORTED_LESSONS.includes(lessonId) ? (
+            {lessonId !== "intro-isl" && !lessonId.includes("review") && !lessonId.includes("checkpoint") ? (
               <Button
                 className="bg-primary h-12 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
                 size="lg"
@@ -447,11 +440,6 @@ export function LessonPage() {
               >
                 Practice This Sign with AI
               </Button>
-            ) : lessonId !== "intro-isl" && !lessonId.includes("review") && !lessonId.includes("checkpoint") ? (
-              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-center text-sm text-amber-800">
-                <p className="font-semibold">AI Practice Coming Soon</p>
-                <p className="mt-1 opacity-80">This is a two-handed sign. Practice with the video and use "Mark Complete" when ready.</p>
-              </div>
             ) : null}
 
             {/* Key points */}

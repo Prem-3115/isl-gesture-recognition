@@ -3,20 +3,16 @@ import { useOutletContext } from "react-router";
 import {
   BookOpen,
   BrainCircuit,
+  GraduationCap,
   Hand,
   Heart,
+  MessageSquare,
   Sparkles,
   Target,
   Users,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { LayoutOutletContext } from "@/types/layout";
-
-const teamMembers = [
-  { initials: "SS", name: "Shrey Shah", role: "Project Lead & ML Engineer" },
-  { initials: "PM", name: "Project Member", role: "Frontend Developer" },
-  { initials: "PM", name: "Project Member", role: "UI/UX & Backend" },
-];
 
 const values = [
   {
@@ -162,28 +158,44 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="px-4 py-12 sm:px-6 lg:px-8">
+      {/* Who is this for? */}
+      <section className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 max-w-2xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-              The Team
+              Who is this for?
             </p>
             <h2 className="text-3xl font-bold text-slate-950">
-              Built by students, for everyone
+              Built for everyone, everywhere
             </h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {teamMembers.map((member, i) => (
+            {[
+              {
+                icon: MessageSquare,
+                title: "Hearing Individuals",
+                description: "Learn to communicate effectively with deaf friends, family, and colleagues in everyday situations.",
+              },
+              {
+                icon: Users,
+                title: "Deaf Community",
+                description: "Practice and reinforce signs, or help bridge the communication gap by sharing ISL with others.",
+              },
+              {
+                icon: GraduationCap,
+                title: "Educators & Schools",
+                description: "Integrate interactive sign language learning into classrooms with real-time AI feedback.",
+              },
+            ].map((audience, i) => (
               <div
                 key={i}
-                className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm text-center"
+                className="group rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[1.25rem] text-lg font-semibold text-primary-foreground shadow-lg">
-                  {member.initials}
+                <div className="bg-primary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[1.25rem] text-primary shadow-sm transition-colors group-hover:bg-primary group-hover:text-white">
+                  <audience.icon className="h-8 w-8" />
                 </div>
-                <p className="font-semibold text-slate-950">{member.name}</p>
-                <p className="mt-1 text-sm text-slate-500">{member.role}</p>
+                <h3 className="mb-2 text-center text-lg font-bold text-slate-950">{audience.title}</h3>
+                <p className="text-center text-sm leading-relaxed text-slate-600">{audience.description}</p>
               </div>
             ))}
           </div>

@@ -74,6 +74,7 @@ export function Layout() {
   const [isFaqOpen, setIsFaqOpen] = useState(false);
 
   const userName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || "User";
+  const userPhoto = user?.photoURL || null;
 
   useEffect(() => {
     if (!isAuthLoading && !isLoggedIn && isProtectedPath(location.pathname)) {
@@ -137,6 +138,7 @@ export function Layout() {
         isLoggedIn={isLoggedIn}
         isAuthLoading={isAuthLoading}
         userName={userName}
+        userPhoto={userPhoto}
         onNavigate={handleNavigate}
         onOpenAuth={handleOpenAuth}
         onLogout={handleLogout}
