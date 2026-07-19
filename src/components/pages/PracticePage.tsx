@@ -528,7 +528,7 @@ export function PracticePage() {
                       ? `The sign "${targetSign}" requires two hands and is currently unsupported by the AI. We are tracking requests to prioritize it!`
                       : mode === "challenge"
                         ? `Start your camera and practice signing "${targetSign}". The AI will track your accuracy in real time.`
-                        : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model. Supports all A–Z letters and 0–9 numbers."}
+                        : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model. Supports all A–Z letters and 1–9 numbers."}
                   </p>
                   <div className="mt-6">
                     <Button
