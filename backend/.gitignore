@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Training data (too large for git — upload separately or use Git LFS)
+landmarks.csv
+webcam_landmarks.csv
+
+# MediaPipe model (downloaded automatically by collect_webcam_data.py)
+hand_landmarker.task
+
+# Trained model files — IMPORTANT: commit these to deploy on Render
+# If they are too large (>100MB), use Git LFS:
+#   git lfs track "*.pkl"
+# isl_model.pkl   ← keep this commented out so it IS committed
+# label_encoder.pkl ← keep this commented out so it IS committed
+
+# Temp/scratch files
+temp_*.txt
+home_head*.txt

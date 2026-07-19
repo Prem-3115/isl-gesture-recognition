@@ -1,8 +1,6 @@
-flask
-flask-cors
-joblib
-numpy
-opencv-python
-pandas
-mediapipe
-scikit-learn
+flask==3.1.3
+flask-cors==6.0.0
+joblib==1.5.0
+numpy==2.2.0
+scikit-learn==1.6.1
+gunicorn==23.0.0
