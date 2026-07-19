@@ -14,11 +14,11 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-brand flex h-10 w-10 items-center justify-center rounded-2xl text-white">
+              <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-2xl text-primary-foreground">
                 <Hand className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-gradient-brand text-lg font-semibold">ISL Connect</p>
+                <p className="text-primary text-lg font-semibold">ISL Connect</p>
                 <p className="text-xs text-slate-500">Learn, practice, belong</p>
               </div>
             </div>
@@ -49,16 +49,16 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
               <button onClick={() => onNavigate("dashboard")} className="text-left transition hover:text-primary">All Courses</button>
               <button onClick={() => onNavigate("practice")} className="text-left transition hover:text-primary">Practice Mode</button>
               <button onClick={() => onNavigate("achievements")} className="text-left transition hover:text-primary">Achievements</button>
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Free Lesson</button>
+              <button onClick={() => onNavigate("lesson:alphabet")} className="text-left transition hover:text-primary">Free Lesson</button>
             </div>
           </div>
 
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Support</h3>
             <div className="grid gap-3 text-sm text-slate-600">
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Help Center</button>
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Accessibility</button>
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Contact Us</button>
+              <button onClick={() => onNavigate("help")} className="text-left transition hover:text-primary">Help Center</button>
+              <button onClick={() => onNavigate("accessibility")} className="text-left transition hover:text-primary">Accessibility</button>
+              <button onClick={() => onNavigate("contact")} className="text-left transition hover:text-primary">Contact Us</button>
               <button onClick={onOpenFaq} className="text-left transition hover:text-primary">FAQs</button>
             </div>
           </div>
@@ -68,8 +68,8 @@ export function Footer({ onNavigate, onOpenFaq }: FooterProps) {
             <div className="grid gap-3 text-sm text-slate-600">
               <button onClick={() => onNavigate("about")} className="text-left transition hover:text-primary">About ISL Connect</button>
               <button onClick={() => onNavigate("community")} className="text-left transition hover:text-primary">Community</button>
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Privacy</button>
-              <button onClick={() => onNavigate("home")} className="text-left transition hover:text-primary">Terms</button>
+              <button onClick={() => onNavigate("privacy")} className="text-left transition hover:text-primary">Privacy</button>
+              <button onClick={() => onNavigate("terms")} className="text-left transition hover:text-primary">Terms</button>
             </div>
           </div>
         </div>

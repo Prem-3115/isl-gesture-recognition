@@ -28,6 +28,7 @@ interface LessonMeta {
   channel: string;
 }
 
+
 const lessonMeta: Record<string, LessonMeta> = {
   "intro-isl": {
     title: "Introduction to ISL",
@@ -191,6 +192,15 @@ const lessonMeta: Record<string, LessonMeta> = {
     youtubeId: "VdwKSyza5oI",
     channel: "ISLRTC",
   },
+  "number-1": { title: "Number 1", description: "Learn how to sign Number 1.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-2": { title: "Number 2", description: "Learn how to sign Number 2.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-3": { title: "Number 3", description: "Learn how to sign Number 3.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-4": { title: "Number 4", description: "Learn how to sign Number 4.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-5": { title: "Number 5", description: "Learn how to sign Number 5.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-6": { title: "Number 6", description: "Learn how to sign Number 6.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-7": { title: "Number 7", description: "Learn how to sign Number 7.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-8": { title: "Number 8", description: "Learn how to sign Number 8.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-9": { title: "Number 9", description: "Learn how to sign Number 9.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
 };
 
 const lessonKeys = Object.keys(lessonMeta);
@@ -241,9 +251,11 @@ export function LessonPage() {
       : "Lesson Not Found — ISL Connect";
   }, [lesson]);
 
+
+
   const handleMarkComplete = () => {
     setLessonCompleted(true);
-    toast.success("Lesson marked complete! Ready to practice?");
+    toast.success("Lesson marked complete!");
 
     // Persist to Firestore if logged in; fail silently so the UI stays responsive
     if (user?.uid) {
@@ -258,14 +270,14 @@ export function LessonPage() {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
         <p className="text-6xl mb-6">🔍</p>
-        <h1 className="text-3xl font-semibold text-slate-950">Lesson not found</h1>
+        <h1 className="text-3xl font-bold text-slate-950">Lesson not found</h1>
         <p className="mt-3 text-slate-600 max-w-md">
           The lesson{" "}
           <code className="rounded bg-slate-100 px-2 py-0.5 text-sm">{lessonId}</code>{" "}
           doesn't exist yet. Choose a lesson from the course page.
         </p>
         <Button
-          className="mt-6 bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+          className="mt-6 bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90"
           onClick={() => onNavigate("dashboard")}
         >
           Back to Courses
@@ -304,7 +316,7 @@ export function LessonPage() {
             <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               ISL Alphabet · Lesson {lessonNumber} of {totalLessons}
             </p>
-            <h1 className="text-4xl font-semibold text-slate-950">{lesson.title}</h1>
+            <h1 className="text-4xl font-bold text-slate-950">{lesson.title}</h1>
             <p className="mt-2 text-slate-500">{lesson.description}</p>
           </div>
           {completionLoading ? (
@@ -370,7 +382,7 @@ export function LessonPage() {
                 Previous
               </Button>
               <Button
-                className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+                className="bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90"
                 disabled={!nextLessonId}
                 onClick={() => nextLessonId && onNavigate(`lesson:${nextLessonId}`)}
               >
@@ -381,7 +393,7 @@ export function LessonPage() {
 
             {/* How-to tips */}
             <div className="mt-8 rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-2xl font-semibold text-slate-950">How to Practice This Sign</h2>
+              <h2 className="mb-4 text-2xl font-bold text-slate-950">How to Practice This Sign</h2>
               <div className="space-y-3">
                 {[
                   ["Watch carefully", "Watch the video at least twice — once to observe, once to follow along."],
@@ -420,13 +432,15 @@ export function LessonPage() {
             </div>
 
             {/* Practice CTA */}
-            <Button
-              className="bg-gradient-brand h-12 w-full rounded-xl border-0 text-white hover:opacity-90"
-              size="lg"
-              onClick={() => onNavigate("practice")}
-            >
-              Practice This Sign with AI
-            </Button>
+            {lessonId !== "intro-isl" && !lessonId.includes("review") && !lessonId.includes("checkpoint") ? (
+              <Button
+                className="bg-primary h-12 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
+                size="lg"
+                onClick={() => onNavigate("practice")}
+              >
+                Practice This Sign with AI
+              </Button>
+            ) : null}
 
             {/* Key points */}
             <div className="rounded-[1.5rem] border border-primary/10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">

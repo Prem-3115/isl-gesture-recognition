@@ -3,5 +3,6 @@ export interface LayoutOutletContext {
   isLoggedIn: boolean;
   userName: string;
   onOpenAuth: (mode?: "login" | "signup") => void;
+  onLogout: () => void;
 }
 

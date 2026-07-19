@@ -6,7 +6,6 @@ import {
   Calendar,
   Flame,
   Hand,
-  Star,
   Target,
   Trophy,
   Zap,
@@ -20,11 +19,11 @@ import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
-// Sign of the Day — cycles through the alphabet daily
-const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// Sign of the Day — cycles through the supported classes
+const SUPPORTED_SIGNS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C"];
 function getSignOfDay(): string {
   const dayIndex = Math.floor(Date.now() / 86_400_000); // changes each UTC day
-  return ALL_LETTERS[dayIndex % ALL_LETTERS.length];
+  return SUPPORTED_SIGNS[dayIndex % SUPPORTED_SIGNS.length];
 }
 
 // XP per lesson
@@ -58,22 +57,22 @@ const DASHBOARD_FOCUS = [
     title: "Continue Learning",
     description: "Pick up where you left off and move into the next guided sign.",
     icon: BookOpen,
-    accent: "from-primary/10 via-secondary/10 to-accent/10",
+    accent: "bg-slate-100",
     iconColor: "text-primary",
   },
   {
     title: "Daily Practice",
     description: "Use short webcam sessions to reinforce hand shape and orientation.",
     icon: Target,
-    accent: "from-secondary/10 via-accent/10 to-primary/10",
-    iconColor: "text-secondary",
+    accent: "bg-slate-100",
+    iconColor: "text-primary",
   },
   {
     title: "Build Your Streak",
     description: "One session a day is enough to keep the material fresh.",
     icon: Flame,
-    accent: "from-accent/10 via-primary/10 to-secondary/10",
-    iconColor: "text-accent",
+    accent: "bg-slate-100",
+    iconColor: "text-primary",
   },
 ] as const;
 
@@ -120,7 +119,7 @@ export function CourseDashboard() {
         {/* ── Header ──────────────────────────────────────────── */}
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
-          <h1 className="mt-2 text-4xl font-semibold text-slate-950">
+          <h1 className="mt-2 text-4xl font-bold text-slate-950">
             {greetingTime}, {userName} 👋
           </h1>
           <p className="mt-2 text-slate-500">
@@ -133,14 +132,14 @@ export function CourseDashboard() {
         {/* ── XP + Streak Banner ──────────────────────────────── */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* XP Level */}
-          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
+          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">Your Level</p>
-                <p className="mt-1 text-3xl font-bold text-slate-950">Level {level}</p>
-                <p className="mt-0.5 text-sm text-slate-500">{xp} XP total · {xpToNextLevel} XP to next level</p>
+                <p className="text-sm font-medium uppercase tracking-wider text-slate-500">Your Level</p>
+                <p className="mt-1 text-3xl font-bold tracking-tight text-slate-950">Level {level}</p>
+                <p className="mt-0.5 text-sm font-medium text-slate-500">{xp} XP total · <span className="text-primary">{xpToNextLevel} XP</span> to next level</p>
               </div>
-              <div className="flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-2xl font-bold text-white shadow-lg">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200/50 text-2xl font-bold text-slate-900 shadow-sm ring-1 ring-slate-900/5">
                 {level}
               </div>
             </div>
@@ -154,48 +153,67 @@ export function CourseDashboard() {
           </div>
 
           {/* Streak */}
-          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100">
-              <Flame className="h-6 w-6 text-orange-500" />
+          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-accent-secondary/10 ring-1 ring-accent-secondary/20">
+              <Flame className="h-6 w-6 text-accent-secondary" />
             </div>
-            <p className="text-3xl font-bold text-slate-950">{streak}</p>
-            <p className="mt-1 text-sm text-slate-500">Day streak</p>
+            <p className="text-3xl font-bold tracking-tight text-slate-950">{streak}</p>
+            <p className="mt-1 text-sm font-medium text-slate-500">Day streak</p>
             {streak >= 3 && (
-              <p className="mt-2 text-xs font-medium text-orange-500">🔥 You're on a roll!</p>
+              <p className="mt-2 flex items-center text-xs font-bold text-accent-secondary">
+                <Flame className="mr-1 h-4 w-4" /> You're on a roll!
+              </p>
             )}
           </div>
 
           {/* Overall Progress */}
-          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
-              <Trophy className="h-6 w-6 text-emerald-600" />
+          <div className="flex flex-col rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-accent-secondary/10 ring-1 ring-accent-secondary/20">
+              <Trophy className="h-6 w-6 text-accent-secondary" />
             </div>
-            <p className="text-3xl font-bold text-slate-950">{completedCount}/{totalLessons}</p>
-            <p className="mt-1 text-sm text-slate-500">Lessons done</p>
-            <div className="mt-3">
-              <Progress value={overallProgress} className="h-2 bg-slate-100" />
-            </div>
+            {completedCount === 0 ? (
+              <div className="flex flex-1 flex-col justify-between">
+                <p className="text-sm font-medium leading-relaxed text-slate-600">
+                  Start your first lesson to track your progress here.
+                </p>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="mt-3 w-full rounded-xl"
+                  onClick={() => onNavigate("lesson:letter-a")}
+                >
+                  Start Lesson
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-3xl font-bold tracking-tight text-slate-950">{completedCount}/{totalLessons}</p>
+                <p className="mt-1 text-sm font-medium text-slate-500">Lessons done</p>
+                <div className="mt-auto pt-3">
+                  <Progress value={overallProgress} className="h-2.5 bg-slate-100" />
+                </div>
+              </>
+            )}
           </div>
         </section>
 
         {/* ── Sign of the Day + Continue ──────────────────────── */}
         <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_0.55fr]">
           {/* Continue Learning Hero */}
-          <div className="bg-gradient-brand relative overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
-            <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
+          <div className="group/hero relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-950 p-8 text-primary-foreground shadow-elevation transition-all hover:shadow-elevation-hover">
+            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/4 translate-x-1/4 rounded-full bg-white/5 blur-3xl transition-transform duration-700 group-hover/hero:scale-110" />
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-xl">
-                <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
+                <p className="mb-2 flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-slate-400">
                   <BookOpen className="h-4 w-4" />
                   Continue Learning
                 </p>
-                <h2 className="text-3xl font-semibold">
+                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   {resumeLessonId === lessonList[0].id && completedCount === 0
                     ? "Start Your First Lesson"
                     : `Resume: ${lessonList.find((l) => l.id === resumeLessonId)?.title ?? "Next Lesson"}`}
                 </h2>
-                <p className="mt-2 text-white/75">
+                <p className="mt-3 leading-relaxed text-slate-300">
                   {completedCount === 0
                     ? "Jump into the ISL Alphabet course and sign your first letter today."
                     : `${completedCount} lesson${completedCount > 1 ? "s" : ""} completed · ${totalLessons - completedCount} remaining`}
@@ -204,15 +222,16 @@ export function CourseDashboard() {
               <div className="flex flex-col gap-3">
                 <Button
                   size="lg"
-                  className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+                  className="group/btn h-12 rounded-xl bg-white text-slate-950 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
                   onClick={() => onNavigate(`lesson:${resumeLessonId}`)}
                 >
-                  {completedCount === 0 ? "Start Now" : "Continue"}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <span className="font-semibold">{completedCount === 0 ? "Start Now" : "Continue"}</span>
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                 </Button>
                 <Button
                   size="sm"
-                  className="rounded-xl bg-white/15 text-white hover:bg-white/25"
+                  variant="outline"
+                  className="h-10 rounded-xl border-white/20 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/10"
                   onClick={() => onNavigate("practice")}
                 >
                   Open Practice
@@ -222,36 +241,32 @@ export function CourseDashboard() {
           </div>
 
           {/* Sign of the Day */}
-          <div className="relative overflow-hidden rounded-[2rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
-            <div className="absolute right-2 top-2 opacity-10">
-              <Star className="h-24 w-24 text-primary" />
-            </div>
+          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-elevation">
             <div className="relative">
-              <div className="mb-3 flex items-center gap-2">
+              <div className="mb-4 flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-primary" />
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Sign of the Day</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Sign of the Day</p>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-4xl font-bold text-white shadow-lg">
+              <div className="flex items-center gap-5">
+                <div className="flex h-16 w-16 items-center justify-center rounded-[1rem] bg-gradient-to-br from-slate-100 to-slate-200/50 text-3xl font-bold text-slate-900 shadow-sm ring-1 ring-slate-900/5">
                   {signOfDay}
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-950">Letter {signOfDay}</p>
-                  <p className="mt-1 text-sm text-slate-500">Today's practice focus</p>
+                  <p className="text-2xl font-bold tracking-tight text-slate-950">Letter {signOfDay}</p>
+                  <p className="mt-0.5 text-sm font-medium text-slate-500">Today's practice focus</p>
                 </div>
               </div>
-              <p className="mt-4 text-sm leading-7 text-slate-600">
-                Practice signing <strong>{signOfDay}</strong> in the recognition workspace to complete today's challenge.
+              <p className="mt-5 text-sm leading-relaxed text-slate-600">
+                Practice signing <strong className="font-semibold text-slate-900">{signOfDay}</strong> in the recognition workspace to complete today's challenge.
               </p>
               <Button
-                className="mt-4 w-full rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90"
+                className="group/btn mt-5 w-full rounded-xl bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/95 active:scale-[0.98]"
                 onClick={() => {
-                  // Navigate to practice and let the user switch to challenge mode for this letter
                   onNavigate("practice");
                 }}
               >
-                <Hand className="mr-2 h-4 w-4" />
-                Practice {signOfDay} Now
+                <Hand className="mr-2 h-4 w-4 transition-transform group-hover/btn:-rotate-12 group-hover/btn:scale-110" />
+                <span className="font-medium">Practice {signOfDay} Now</span>
               </Button>
             </div>
           </div>
@@ -260,12 +275,12 @@ export function CourseDashboard() {
         {/* ── Focus Cards ─────────────────────────────────────── */}
         <section className="mb-8 grid gap-6 lg:grid-cols-3">
           {DASHBOARD_FOCUS.map((item) => (
-            <div key={item.title} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
-              <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.accent}`}>
-                <item.icon className={`h-5 w-5 ${item.iconColor}`} />
+            <div key={item.title} className="group rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-900/5 transition-colors group-hover:bg-primary group-hover:text-white">
+                <item.icon className="h-5 w-5 transition-colors group-hover:text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-950">{item.title}</h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">{item.description}</p>
+              <h3 className="text-lg font-bold tracking-tight text-slate-900">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.description}</p>
             </div>
           ))}
         </section>
@@ -273,13 +288,13 @@ export function CourseDashboard() {
         {/* ── Active Courses ──────────────────────────────────── */}
         <section className="mb-8">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-slate-950">Active Courses</h2>
+            <h2 className="text-2xl font-bold text-slate-950">Active Courses</h2>
             <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("home")}>
               Browse More
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {courses.map((course) => (
+            {courses.map((course, index) => (
               <CourseCard
                 key={course.id}
                 id={course.id}
@@ -287,6 +302,7 @@ export function CourseDashboard() {
                 description={course.description}
                 image={course.image}
                 difficulty={course.difficulty}
+                index={index}
                 onViewCourse={(id) => onNavigate(`course:${id}`)}
               />
             ))}
@@ -297,15 +313,15 @@ export function CourseDashboard() {
         <section>
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
+              <h2 className="text-2xl font-bold text-slate-950">Recently Practiced Signs</h2>
               <p className="mt-1 text-sm text-slate-500">Jump back into any sign for a quick refresher</p>
             </div>
-            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("practice")}>
+            <Button variant="outline" className="rounded" onClick={() => onNavigate("practice")}>
               <Zap className="mr-2 h-4 w-4" />
               Open Practice
             </Button>
           </div>
-          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -322,7 +338,7 @@ export function CourseDashboard() {
                     </TableCell>
                     <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
                     <TableCell className="text-right">
-                      <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
+                      <Button size="sm" className="rounded bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => onNavigate("practice")}>
                         Practice
                       </Button>
                     </TableCell>

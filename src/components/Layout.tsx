@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { LayoutOutletContext } from "@/types/layout";
 import { AuthModal } from "./AuthModal";
@@ -8,7 +8,7 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { useAuth } from "../context/AuthContext";
 
-const protectedPrefixes = ["/dashboard", "/course/", "/lesson/", "/practice", "/achievements", "/community"];
+const protectedPrefixes = ["/dashboard", "/courses", "/course/", "/lesson/", "/practice", "/achievements", "/community", "/profile"];
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
@@ -35,13 +35,19 @@ function resolveRoute(page: string) {
     courses: "/dashboard",
     community: "/community",
     about: "/about",
+    help: "/help",
+    accessibility: "/accessibility",
+    contact: "/contact",
+    privacy: "/privacy",
+    terms: "/terms",
+    profile: "/profile",
   };
 
   return routeMap[page] ?? "/";
 }
 
 function getCurrentSection(pathname: string) {
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/course/") || pathname.startsWith("/lesson/")) {
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/courses") || pathname.startsWith("/course/") || pathname.startsWith("/lesson/")) {
     return "courses";
   }
   if (pathname.startsWith("/practice")) {
@@ -68,6 +74,7 @@ export function Layout() {
   const [isFaqOpen, setIsFaqOpen] = useState(false);
 
   const userName = profile?.displayName || user?.displayName || user?.email?.split('@')[0] || "User";
+  const userPhoto = user?.photoURL || null;
 
   useEffect(() => {
     if (!isAuthLoading && !isLoggedIn && isProtectedPath(location.pathname)) {
@@ -110,9 +117,10 @@ export function Layout() {
       isLoggedIn,
       userName,
       onOpenAuth: handleOpenAuth,
+      onLogout: handleLogout,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoggedIn, userName, handleNavigate, handleOpenAuth],
+    [isLoggedIn, userName, handleNavigate, handleOpenAuth, handleLogout],
   );
 
 
@@ -121,7 +129,7 @@ export function Layout() {
       {/* Skip-to-content link for keyboard / screen reader users */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-lg"
       >
         Skip to main content
       </a>
@@ -130,13 +138,17 @@ export function Layout() {
         isLoggedIn={isLoggedIn}
         isAuthLoading={isAuthLoading}
         userName={userName}
+        userPhoto={userPhoto}
         onNavigate={handleNavigate}
         onOpenAuth={handleOpenAuth}
         onLogout={handleLogout}
       />
       <main id="main-content" className="flex-1">
-        <Outlet context={outletContext} />
+        <div key={location.pathname} className="page-enter">
+          <Outlet context={outletContext} />
+        </div>
       </main>
+      <ScrollRestoration />
       <Footer onNavigate={handleNavigate} onOpenFaq={() => setIsFaqOpen(true)} />
       <AuthModal
         isOpen={isAuthOpen}

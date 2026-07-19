@@ -9,6 +9,7 @@ import {
   Target,
   Trophy,
   Zap,
+  Check,
 } from "lucide-react";
 import { achievements, challengingSigns, lessonList } from "@/data/mockData";
 import { LayoutOutletContext } from "@/types/layout";
@@ -32,7 +33,7 @@ function getStreak(): number {
 
 export function AchievementsPage() {
   const { onNavigate, userName } = useOutletContext<LayoutOutletContext>();
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const streak = getStreak();
@@ -112,12 +113,28 @@ export function AchievementsPage() {
 
   const earnedCount = dynamicAchievements.filter((a) => a.earned).length;
 
+  if (isAuthLoading) {
+    return (
+      <div className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl animate-pulse space-y-8">
+          <div className="h-48 w-full rounded-[2rem] bg-slate-200/60" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="h-32 rounded-2xl bg-slate-100" />
+            <div className="h-32 rounded-2xl bg-slate-100" />
+            <div className="h-32 rounded-2xl bg-slate-100" />
+            <div className="h-32 rounded-2xl bg-slate-100" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
 
         {/* ── Profile Banner ───────────────────────────────────── */}
-        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+        <section className="bg-primary relative mb-8 overflow-hidden rounded-[2rem] p-8 text-primary-foreground shadow-2xl">
           <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
@@ -125,10 +142,10 @@ export function AchievementsPage() {
               {(userName?.[0] ?? "P").toUpperCase()}
             </div>
             <div className="flex-1">
-              <h1 className="text-4xl font-semibold">{userName}</h1>
-              <p className="mt-1 text-white/70">Level {level} ISL Learner · {xp} XP</p>
+              <h1 className="text-4xl font-bold">{userName}</h1>
+              <p className="mt-1 text-primary-foreground/70">Level {level} ISL Learner · {xp} XP</p>
               <div className="mt-3 w-full max-w-xs">
-                <div className="mb-1 flex justify-between text-xs text-white/70">
+                <div className="mb-1 flex justify-between text-xs text-primary-foreground/70">
                   <span>XP Progress</span>
                   <span>{200 - (xp % 200)} XP to Level {level + 1}</span>
                 </div>
@@ -136,13 +153,13 @@ export function AchievementsPage() {
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
                 <span className="rounded-full bg-white/20 px-4 py-2 text-sm">
-                  🔥 {streak}-day streak
+                  <Flame className="mr-1 h-4 w-4" /> {streak}-day streak
                 </span>
                 <span className="rounded-full bg-white/20 px-4 py-2 text-sm">
-                  ✓ {completedCount}/{totalLessons} lessons
+                  <CheckCircle2 className="mr-1 h-4 w-4" /> {completedCount}/{totalLessons} lessons
                 </span>
                 <span className="rounded-full bg-white/20 px-4 py-2 text-sm">
-                  🏆 {earnedCount}/{dynamicAchievements.length} badges
+                  <Trophy className="mr-1 h-4 w-4" /> {earnedCount}/{dynamicAchievements.length} badges
                 </span>
               </div>
             </div>
@@ -152,10 +169,10 @@ export function AchievementsPage() {
         {/* ── Real Stats ──────────────────────────────────────── */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: "Lessons Completed", value: `${completedCount}`, sub: `of ${totalLessons} total`, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-100" },
+            { label: "Lessons Completed", value: `${completedCount}`, sub: `of ${totalLessons} total`, icon: CheckCircle2, color: "text-accent-secondary", bg: "bg-accent-secondary/15" },
             { label: "Total XP Earned", value: `${xp}`, sub: `Level ${level}`, icon: Zap, color: "text-violet-600", bg: "bg-violet-100" },
-            { label: "Day Streak", value: `${streak}`, sub: streak >= 3 ? "🔥 On a roll!" : "Keep going!", icon: Flame, color: "text-orange-500", bg: "bg-orange-100" },
-            { label: "Badges Earned", value: `${earnedCount}`, sub: `of ${dynamicAchievements.length} available`, icon: Award, color: "text-amber-600", bg: "bg-amber-100" },
+            { label: "Day Streak", value: `${streak}`, sub: streak >= 3 ? "On a roll!" : "Keep going!", icon: Flame, color: "text-accent-secondary", bg: "bg-accent-secondary/15" },
+            { label: "Badges Earned", value: `${earnedCount}`, sub: `of ${dynamicAchievements.length} available`, icon: Award, color: "text-accent-secondary", bg: "bg-accent-secondary/15" },
           ].map((stat) => (
             <div key={stat.label} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
               <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl ${stat.bg}`}>
@@ -171,28 +188,29 @@ export function AchievementsPage() {
         {/* ── Achievements Grid ────────────────────────────────── */}
         <section className="mb-8">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-slate-950">Learning Highlights</h2>
+            <h2 className="text-2xl font-bold text-slate-950">Learning Highlights</h2>
             <span className="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
               {earnedCount}/{dynamicAchievements.length} earned
             </span>
           </div>
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {dynamicAchievements.map((item) => (
+            {dynamicAchievements.map((item, index) => (
               <div
                 key={item.name}
-                className={`rounded-[1.5rem] border p-5 transition-all ${
+                className={`card-enter rounded-[1.5rem] border p-5 transition-all ${
                   item.earned
-                    ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm shadow-emerald-100"
+                    ? "border-accent-secondary/30 bg-gradient-to-br from-accent-secondary/10 to-white shadow-sm shadow-accent-secondary/10"
                     : "border-white/70 bg-white opacity-70"
                 }`}
+                style={{ animationDelay: `${index * 40}ms` }}
               >
-                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-[1.25rem] ${item.earned ? "bg-emerald-100" : "bg-slate-100"}`}>
-                  <item.icon className={`h-6 w-6 ${item.earned ? "text-emerald-600" : "text-slate-400"}`} />
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-[1.25rem] ${item.earned ? "bg-accent-secondary/15" : "bg-slate-100"}`}>
+                  <item.icon className={`h-6 w-6 ${item.earned ? "text-accent-secondary" : "text-slate-400"}`} />
                 </div>
                 <h3 className="text-base font-semibold text-slate-950">{item.name}</h3>
                 <p className="mt-1 text-xs leading-6 text-slate-500">{item.description}</p>
                 {item.earned ? (
-                  <p className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600">
+                  <p className="mt-3 flex items-center gap-1 text-xs font-medium text-accent-secondary">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Earned
                   </p>
@@ -212,17 +230,24 @@ export function AchievementsPage() {
 
         {/* ── Static Achievements ──────────────────────────────── */}
         <section className="mb-8">
-          <h2 className="mb-5 text-2xl font-semibold text-slate-950">ISL Learning Milestones</h2>
+          <h2 className="mb-5 text-2xl font-bold text-slate-950">ISL Learning Milestones</h2>
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {achievements.map((item) => (
-              <div key={item.name} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+            {achievements.map((item, index) => (
+              <div
+                key={item.name}
+                className="card-enter rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-elevation-hover"
+                style={{ animationDelay: `${index * 40}ms` }}
+              >
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
                   <item.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-950">{item.name}</h3>
                 <p className="mt-2 text-sm leading-7 text-slate-500">{item.description}</p>
                 {"earned" in item && item.earned && (
-                  <p className="mt-3 text-xs text-emerald-600 font-medium">✓ {"date" in item ? item.date : ""}</p>
+                  <p className="mt-3 flex items-center text-xs font-bold text-accent-secondary">
+                    <Check className="mr-1 h-3 w-3" />
+                    {"date" in item ? item.date : ""}
+                  </p>
                 )}
                 {"progress" in item && !item.earned && (
                   <div className="mt-3">
@@ -237,7 +262,7 @@ export function AchievementsPage() {
         {/* ── Suggested Review ──────────────────────────────────── */}
         <section>
           <div className="mb-5">
-            <h2 className="text-2xl font-semibold text-slate-950">Suggested Review Signs</h2>
+            <h2 className="text-2xl font-bold text-slate-950">Suggested Review Signs</h2>
             <p className="mt-1 text-slate-500">Signs worth revisiting in your next practice session</p>
           </div>
           <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">

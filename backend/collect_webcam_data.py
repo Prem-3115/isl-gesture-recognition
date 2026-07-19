@@ -38,7 +38,6 @@ from mediapipe.tasks.python.vision import (
 
 # -- Config --------------------------------------------------------------------
 # Targeted re-collection: only signs that are still inaccurate in real-time
-# Targeted re-collection: only signs that are still inaccurate in real-time
 SIGNS: list[str] = ['E','H','J','R','V','Y']
 FRAMES_PER_SIGN: int = 100   # more frames for harder signs
 WEBCAM_CSV = Path(__file__).with_name("webcam_landmarks.csv")
@@ -157,7 +156,7 @@ while sign_idx < len(SIGNS):
 
     if state == "IDLE":
         put_text(frame, "Hold sign steady then press SPACE", (10, h-50))
-        put_text(frame, "N=next/skip  Q=quit", (10, h-20))
+        put_text(frame, "ENTER/N=skip  Q=quit", (10, h-20))
 
     elif state == "CAPTURING":
         bar_fill = int((captured / FRAMES_PER_SIGN) * (w - 20))
@@ -179,7 +178,7 @@ while sign_idx < len(SIGNS):
 
     elif state == "DONE":
         put_text(frame, f"Done! {captured} frames.", (10, h-50), color=COL_GREEN)
-        put_text(frame, "Press N for next sign  |  Q to quit", (10, h-20))
+        put_text(frame, "ENTER/N=next sign  Q=quit", (10, h-20))
 
     cv2.imshow("ISL Data Collector", frame)
     key = cv2.waitKey(1) & 0xFF

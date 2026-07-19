@@ -55,3 +55,21 @@ export function SkeletonDashboard() {
   );
 }
 
+export function SkeletonPage() {
+  return (
+    <div className="animate-pulse px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8">
+          <div className="h-4 w-32 rounded-full bg-slate-200" />
+          <div className="mt-3 h-10 w-96 rounded-full bg-slate-200" />
+        </div>
+        <div className="mb-12 h-64 w-full rounded-[2rem] bg-slate-200/60" />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      </div>
+    </div>
+  );
+}

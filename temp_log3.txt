@@ -1,0 +1,1533 @@
+commit 6355e2e98b9bbff1dbecacff90a19cab946086ad
+Author: Shreyank <you@example.com>
+Date:   Sat Jul 18 13:15:20 2026 +0530
+
+     Elevated UI to premium minimalist and integrated new ML model codebase
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index e65fc8aa..88b41a08 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -20,11 +20,11 @@ import { Button } from "../ui/button";
+ import { Progress } from "../ui/progress";
+ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+ 
+-// Sign of the Day — cycles through the alphabet daily
+-const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
++// Sign of the Day — cycles through the supported classes
++const SUPPORTED_SIGNS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C"];
+ function getSignOfDay(): string {
+   const dayIndex = Math.floor(Date.now() / 86_400_000); // changes each UTC day
+-  return ALL_LETTERS[dayIndex % ALL_LETTERS.length];
++  return SUPPORTED_SIGNS[dayIndex % SUPPORTED_SIGNS.length];
+ }
+ 
+ // XP per lesson
+@@ -58,22 +58,22 @@ const DASHBOARD_FOCUS = [
+     title: "Continue Learning",
+     description: "Pick up where you left off and move into the next guided sign.",
+     icon: BookOpen,
+-    accent: "from-primary/10 via-secondary/10 to-accent/10",
++    accent: "bg-slate-100",
+     iconColor: "text-primary",
+   },
+   {
+     title: "Daily Practice",
+     description: "Use short webcam sessions to reinforce hand shape and orientation.",
+     icon: Target,
+-    accent: "from-secondary/10 via-accent/10 to-primary/10",
+-    iconColor: "text-secondary",
++    accent: "bg-slate-100",
++    iconColor: "text-primary",
+   },
+   {
+     title: "Build Your Streak",
+     description: "One session a day is enough to keep the material fresh.",
+     icon: Flame,
+-    accent: "from-accent/10 via-primary/10 to-secondary/10",
+-    iconColor: "text-accent",
++    accent: "bg-slate-100",
++    iconColor: "text-primary",
+   },
+ ] as const;
+ 
+@@ -133,14 +133,14 @@ export function CourseDashboard() {
+         {/* ── XP + Streak Banner ──────────────────────────────── */}
+         <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+           {/* XP Level */}
+-          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
++          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
+             <div className="flex items-center justify-between">
+               <div>
+-                <p className="text-sm text-slate-500">Your Level</p>
+-                <p className="mt-1 text-3xl font-bold text-slate-950">Level {level}</p>
+-                <p className="mt-0.5 text-sm text-slate-500">{xp} XP total · {xpToNextLevel} XP to next level</p>
++                <p className="text-sm font-medium uppercase tracking-wider text-slate-500">Your Level</p>
++                <p className="mt-1 text-3xl font-bold tracking-tight text-slate-950">Level {level}</p>
++                <p className="mt-0.5 text-sm font-medium text-slate-500">{xp} XP total · <span className="text-primary">{xpToNextLevel} XP</span> to next level</p>
+               </div>
+-              <div className="flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-2xl font-bold text-white shadow-lg">
++              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200/50 text-2xl font-bold text-slate-900 shadow-sm ring-1 ring-slate-900/5">
+                 {level}
+               </div>
+             </div>
+@@ -154,26 +154,26 @@ export function CourseDashboard() {
+           </div>
+ 
+           {/* Streak */}
+-          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
+-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100">
++          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
++            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-orange-50 ring-1 ring-orange-500/20">
+               <Flame className="h-6 w-6 text-orange-500" />
+             </div>
+-            <p className="text-3xl font-bold text-slate-950">{streak}</p>
+-            <p className="mt-1 text-sm text-slate-500">Day streak</p>
++            <p className="text-3xl font-bold tracking-tight text-slate-950">{streak}</p>
++            <p className="mt-1 text-sm font-medium text-slate-500">Day streak</p>
+             {streak >= 3 && (
+-              <p className="mt-2 text-xs font-medium text-orange-500">🔥 You're on a roll!</p>
++              <p className="mt-2 text-xs font-bold text-orange-600">🔥 You're on a roll!</p>
+             )}
+           </div>
+ 
+           {/* Overall Progress */}
+-          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
+-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
++          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
++            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1rem] bg-emerald-50 ring-1 ring-emerald-600/20">
+               <Trophy className="h-6 w-6 text-emerald-600" />
+             </div>
+-            <p className="text-3xl font-bold text-slate-950">{completedCount}/{totalLessons}</p>
+-            <p className="mt-1 text-sm text-slate-500">Lessons done</p>
++            <p className="text-3xl font-bold tracking-tight text-slate-950">{completedCount}/{totalLessons}</p>
++            <p className="mt-1 text-sm font-medium text-slate-500">Lessons done</p>
+             <div className="mt-3">
+-              <Progress value={overallProgress} className="h-2 bg-slate-100" />
++              <Progress value={overallProgress} className="h-2.5 bg-slate-100" />
+             </div>
+           </div>
+         </section>
+@@ -181,21 +181,20 @@ export function CourseDashboard() {
+         {/* ── Sign of the Day + Continue ──────────────────────── */}
+         <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_0.55fr]">
+           {/* Continue Learning Hero */}
+-          <div className="bg-gradient-brand relative overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+-            <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
+-            <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
++          <div className="group/hero relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-950 p-8 text-primary-foreground shadow-elevation transition-all hover:shadow-elevation-hover">
++            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/4 translate-x-1/4 rounded-full bg-white/5 blur-3xl transition-transform duration-700 group-hover/hero:scale-110" />
+             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+               <div className="max-w-xl">
+-                <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
++                <p className="mb-2 flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-slate-400">
+                   <BookOpen className="h-4 w-4" />
+                   Continue Learning
+                 </p>
+-                <h2 className="text-3xl font-semibold">
++                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                   {resumeLessonId === lessonList[0].id && completedCount === 0
+                     ? "Start Your First Lesson"
+                     : `Resume: ${lessonList.find((l) => l.id === resumeLessonId)?.title ?? "Next Lesson"}`}
+                 </h2>
+-                <p className="mt-2 text-white/75">
++                <p className="mt-3 leading-relaxed text-slate-300">
+                   {completedCount === 0
+                     ? "Jump into the ISL Alphabet course and sign your first letter today."
+                     : `${completedCount} lesson${completedCount > 1 ? "s" : ""} completed · ${totalLessons - completedCount} remaining`}
+@@ -204,15 +203,16 @@ export function CourseDashboard() {
+               <div className="flex flex-col gap-3">
+                 <Button
+                   size="lg"
+-                  className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
++                  className="group/btn h-12 rounded-xl bg-white text-slate-950 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98]"
+                   onClick={() => onNavigate(`lesson:${resumeLessonId}`)}
+                 >
+-                  {completedCount === 0 ? "Start Now" : "Continue"}
+-                  <ArrowRight className="ml-2 h-4 w-4" />
++                  <span className="font-semibold">{completedCount === 0 ? "Start Now" : "Continue"}</span>
++                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                 </Button>
+                 <Button
+                   size="sm"
+-                  className="rounded-xl bg-white/15 text-white hover:bg-white/25"
++                  variant="outline"
++                  className="h-10 rounded-xl border-white/20 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/10"
+                   onClick={() => onNavigate("practice")}
+                 >
+                   Open Practice
+@@ -222,36 +222,32 @@ export function CourseDashboard() {
+           </div>
+ 
+           {/* Sign of the Day */}
+-          <div className="relative overflow-hidden rounded-[2rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
+-            <div className="absolute right-2 top-2 opacity-10">
+-              <Star className="h-24 w-24 text-primary" />
+-            </div>
++          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-elevation">
+             <div className="relative">
+-              <div className="mb-3 flex items-center gap-2">
++              <div className="mb-4 flex items-center gap-2">
+                 <Calendar className="h-4 w-4 text-primary" />
+-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Sign of the Day</p>
++                <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Sign of the Day</p>
+               </div>
+-              <div className="flex items-center gap-4">
+-                <div className="flex h-20 w-20 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-4xl font-bold text-white shadow-lg">
++              <div className="flex items-center gap-5">
++                <div className="flex h-16 w-16 items-center justify-center rounded-[1rem] bg-gradient-to-br from-slate-100 to-slate-200/50 text-3xl font-bold text-slate-900 shadow-sm ring-1 ring-slate-900/5">
+                   {signOfDay}
+                 </div>
+                 <div>
+-                  <p className="text-2xl font-bold text-slate-950">Letter {signOfDay}</p>
+-                  <p className="mt-1 text-sm text-slate-500">Today's practice focus</p>
++                  <p className="text-2xl font-bold tracking-tight text-slate-950">Letter {signOfDay}</p>
++                  <p className="mt-0.5 text-sm font-medium text-slate-500">Today's practice focus</p>
+                 </div>
+               </div>
+-              <p className="mt-4 text-sm leading-7 text-slate-600">
+-                Practice signing <strong>{signOfDay}</strong> in the recognition workspace to complete today's challenge.
++              <p className="mt-5 text-sm leading-relaxed text-slate-600">
++                Practice signing <strong className="font-semibold text-slate-900">{signOfDay}</strong> in the recognition workspace to complete today's challenge.
+               </p>
+               <Button
+-                className="mt-4 w-full rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90"
++                className="group/btn mt-5 w-full rounded-xl bg-primary text-primary-foreground shadow-sm transition-all hover:bg-primary/95 active:scale-[0.98]"
+                 onClick={() => {
+-                  // Navigate to practice and let the user switch to challenge mode for this letter
+                   onNavigate("practice");
+                 }}
+               >
+-                <Hand className="mr-2 h-4 w-4" />
+-                Practice {signOfDay} Now
++                <Hand className="mr-2 h-4 w-4 transition-transform group-hover/btn:-rotate-12 group-hover/btn:scale-110" />
++                <span className="font-medium">Practice {signOfDay} Now</span>
+               </Button>
+             </div>
+           </div>
+@@ -260,12 +256,12 @@ export function CourseDashboard() {
+         {/* ── Focus Cards ─────────────────────────────────────── */}
+         <section className="mb-8 grid gap-6 lg:grid-cols-3">
+           {DASHBOARD_FOCUS.map((item) => (
+-            <div key={item.title} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+-              <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.accent}`}>
+-                <item.icon className={`h-5 w-5 ${item.iconColor}`} />
++            <div key={item.title} className="group rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation">
++              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-900/5 transition-colors group-hover:bg-primary group-hover:text-white">
++                <item.icon className="h-5 w-5 transition-colors group-hover:text-white" />
+               </div>
+-              <h3 className="text-lg font-semibold text-slate-950">{item.title}</h3>
+-              <p className="mt-2 text-sm leading-7 text-slate-600">{item.description}</p>
++              <h3 className="text-lg font-bold tracking-tight text-slate-900">{item.title}</h3>
++              <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.description}</p>
+             </div>
+           ))}
+         </section>
+@@ -300,12 +296,12 @@ export function CourseDashboard() {
+               <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
+               <p className="mt-1 text-sm text-slate-500">Jump back into any sign for a quick refresher</p>
+             </div>
+-            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("practice")}>
++            <Button variant="outline" className="rounded" onClick={() => onNavigate("practice")}>
+               <Zap className="mr-2 h-4 w-4" />
+               Open Practice
+             </Button>
+           </div>
+-          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
++          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+             <Table>
+               <TableHeader>
+                 <TableRow>
+@@ -322,7 +318,7 @@ export function CourseDashboard() {
+                     </TableCell>
+                     <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
+                     <TableCell className="text-right">
+-                      <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
++                      <Button size="sm" className="rounded bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => onNavigate("practice")}>
+                         Practice
+                       </Button>
+                     </TableCell>
+
+commit f8b0def82633ce224c0a3aaaef6ba7cb39f7161c
+Author: Shreyank <you@example.com>
+Date:   Sat Jul 11 12:53:50 2026 +0530
+
+    feat: major UX overhaul — Challenge Mode, XP, Achievements, streaks
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index ff3e8cf3..e65fc8aa 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -1,78 +1,276 @@
++import { useEffect, useState } from "react";
+ import { useOutletContext } from "react-router";
+-import { BookOpen, Flame, Target } from "lucide-react";
+-import { courses, recentSigns } from "@/data/mockData";
++import {
++  ArrowRight,
++  BookOpen,
++  Calendar,
++  Flame,
++  Hand,
++  Star,
++  Target,
++  Trophy,
++  Zap,
++} from "lucide-react";
++import { courses, lessonList, recentSigns } from "@/data/mockData";
+ import { LayoutOutletContext } from "@/types/layout";
++import { useAuth } from "@/context/AuthContext";
++import { fetchCompletedLessons } from "@/services/progress.service";
+ import { CourseCard } from "../CourseCard";
+ import { Button } from "../ui/button";
++import { Progress } from "../ui/progress";
+ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+ 
+-const dashboardFocus = [
++// Sign of the Day — cycles through the alphabet daily
++const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
++function getSignOfDay(): string {
++  const dayIndex = Math.floor(Date.now() / 86_400_000); // changes each UTC day
++  return ALL_LETTERS[dayIndex % ALL_LETTERS.length];
++}
++
++// XP per lesson
++const XP_PER_LESSON = 50;
++
++// Streak from localStorage
++function getStreak(): number {
++  try {
++    const data = JSON.parse(localStorage.getItem("isl_streak") ?? "{}") as { count?: number; lastDate?: string };
++    const today = new Date().toDateString();
++    if (data.lastDate === today) return data.count ?? 0;
++    const yesterday = new Date(Date.now() - 86_400_000).toDateString();
++    if (data.lastDate === yesterday) return data.count ?? 0; // streak still valid today
++    return 0; // broken
++  } catch { return 0; }
++}
++
++function updateStreak() {
++  try {
++    const data = JSON.parse(localStorage.getItem("isl_streak") ?? "{}") as { count?: number; lastDate?: string };
++    const today = new Date().toDateString();
++    if (data.lastDate === today) return; // already updated today
++    const yesterday = new Date(Date.now() - 86_400_000).toDateString();
++    const newCount = data.lastDate === yesterday ? (data.count ?? 0) + 1 : 1;
++    localStorage.setItem("isl_streak", JSON.stringify({ count: newCount, lastDate: today }));
++  } catch { /* ignore */ }
++}
++
++const DASHBOARD_FOCUS = [
+   {
+     title: "Continue Learning",
+-    description: "Pick up where you left off in the alphabet lessons and move into the next guided sign.",
++    description: "Pick up where you left off and move into the next guided sign.",
+     icon: BookOpen,
++    accent: "from-primary/10 via-secondary/10 to-accent/10",
++    iconColor: "text-primary",
+   },
+   {
+-    title: "Practice Routine",
+-    description: "Use short webcam practice sessions to reinforce hand shape, motion, and orientation.",
++    title: "Daily Practice",
++    description: "Use short webcam sessions to reinforce hand shape and orientation.",
+     icon: Target,
++    accent: "from-secondary/10 via-accent/10 to-primary/10",
++    iconColor: "text-secondary",
+   },
+   {
+-    title: "Stay Consistent",
+-    description: "A small daily routine is enough to keep the material fresh and easier to recall.",
++    title: "Build Your Streak",
++    description: "One session a day is enough to keep the material fresh.",
+     icon: Flame,
++    accent: "from-accent/10 via-primary/10 to-secondary/10",
++    iconColor: "text-accent",
+   },
+ ] as const;
+ 
+ export function CourseDashboard() {
+   const { onNavigate, userName } = useOutletContext<LayoutOutletContext>();
++  const { user } = useAuth();
++
++  const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
++  const [streak] = useState(getStreak);
++  const signOfDay = getSignOfDay();
++
++  // Update daily streak on mount
++  useEffect(() => { updateStreak(); }, []);
++
++  // Load Firestore progress
++  useEffect(() => {
++    if (!user?.uid) return;
++    fetchCompletedLessons(user.uid)
++      .then(setCompletedLessons)
++      .catch(() => { /* fallback: empty set */ });
++  }, [user?.uid]);
++
++  const completedCount = completedLessons.size;
++  const totalLessons = lessonList.length;
++  const xp = completedCount * XP_PER_LESSON;
++  const level = Math.floor(xp / 200) + 1;
++  const xpToNextLevel = 200 - (xp % 200);
++  const xpProgress = Math.round(((xp % 200) / 200) * 100);
++
++  const resumeLessonId = lessonList.find((l) => !completedLessons.has(l.id))?.id ?? lessonList[0].id;
++  const overallProgress = Math.round((completedCount / totalLessons) * 100);
++
++  const greetingTime = (() => {
++    const h = new Date().getHours();
++    if (h < 12) return "Good morning";
++    if (h < 17) return "Good afternoon";
++    return "Good evening";
++  })();
+ 
+   return (
+     <div className="px-4 py-10 sm:px-6 lg:px-8">
+       <div className="mx-auto max-w-7xl">
++
++        {/* ── Header ──────────────────────────────────────────── */}
+         <div className="mb-8">
+           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
+-          <h1 className="mt-3 text-4xl font-semibold text-slate-950">Welcome back, {userName}</h1>
+-          <p className="mt-3 text-slate-600">Your next lesson is ready, and the practice tools are set up when you want to review signs.</p>
++          <h1 className="mt-2 text-4xl font-semibold text-slate-950">
++            {greetingTime}, {userName} 👋
++          </h1>
++          <p className="mt-2 text-slate-500">
++            {completedCount === 0
++              ? "Your learning journey starts here. Let's sign!"
++              : `You've completed ${completedCount} of ${totalLessons} lessons — keep going!`}
++          </p>
+         </div>
+ 
+-        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+-          <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
+-          <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
+-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+-            <div className="max-w-2xl">
+-              <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
+-                <BookOpen className="h-4 w-4" />
+-                Continue Learning
+-              </p>
+-              <h2 className="text-3xl font-semibold">Learn ISL Alphabet</h2>
+-              <p className="mt-2 text-white/85">
+-                Re-enter the course, review recent material, and move into the next lesson when you are ready.
++        {/* ── XP + Streak Banner ──────────────────────────────── */}
++        <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
++          {/* XP Level */}
++          <div className="col-span-2 overflow-hidden rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="flex items-center justify-between">
++              <div>
++                <p className="text-sm text-slate-500">Your Level</p>
++                <p className="mt-1 text-3xl font-bold text-slate-950">Level {level}</p>
++                <p className="mt-0.5 text-sm text-slate-500">{xp} XP total · {xpToNextLevel} XP to next level</p>
++              </div>
++              <div className="flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-2xl font-bold text-white shadow-lg">
++                {level}
++              </div>
++            </div>
++            <div className="mt-4">
++              <div className="mb-1.5 flex justify-between text-xs text-slate-500">
++                <span>XP Progress</span>
++                <span>{xpProgress}%</span>
++              </div>
++              <Progress value={xpProgress} className="h-3 bg-slate-100" aria-label={`XP progress: ${xpProgress}%`} />
++            </div>
++          </div>
++
++          {/* Streak */}
++          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100">
++              <Flame className="h-6 w-6 text-orange-500" />
++            </div>
++            <p className="text-3xl font-bold text-slate-950">{streak}</p>
++            <p className="mt-1 text-sm text-slate-500">Day streak</p>
++            {streak >= 3 && (
++              <p className="mt-2 text-xs font-medium text-orange-500">🔥 You're on a roll!</p>
++            )}
++          </div>
++
++          {/* Overall Progress */}
++          <div className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
++              <Trophy className="h-6 w-6 text-emerald-600" />
++            </div>
++            <p className="text-3xl font-bold text-slate-950">{completedCount}/{totalLessons}</p>
++            <p className="mt-1 text-sm text-slate-500">Lessons done</p>
++            <div className="mt-3">
++              <Progress value={overallProgress} className="h-2 bg-slate-100" />
++            </div>
++          </div>
++        </section>
++
++        {/* ── Sign of the Day + Continue ──────────────────────── */}
++        <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_0.55fr]">
++          {/* Continue Learning Hero */}
++          <div className="bg-gradient-brand relative overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
++            <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
++            <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
++            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
++              <div className="max-w-xl">
++                <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
++                  <BookOpen className="h-4 w-4" />
++                  Continue Learning
++                </p>
++                <h2 className="text-3xl font-semibold">
++                  {resumeLessonId === lessonList[0].id && completedCount === 0
++                    ? "Start Your First Lesson"
++                    : `Resume: ${lessonList.find((l) => l.id === resumeLessonId)?.title ?? "Next Lesson"}`}
++                </h2>
++                <p className="mt-2 text-white/75">
++                  {completedCount === 0
++                    ? "Jump into the ISL Alphabet course and sign your first letter today."
++                    : `${completedCount} lesson${completedCount > 1 ? "s" : ""} completed · ${totalLessons - completedCount} remaining`}
++                </p>
++              </div>
++              <div className="flex flex-col gap-3">
++                <Button
++                  size="lg"
++                  className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
++                  onClick={() => onNavigate(`lesson:${resumeLessonId}`)}
++                >
++                  {completedCount === 0 ? "Start Now" : "Continue"}
++                  <ArrowRight className="ml-2 h-4 w-4" />
++                </Button>
++                <Button
++                  size="sm"
++                  className="rounded-xl bg-white/15 text-white hover:bg-white/25"
++                  onClick={() => onNavigate("practice")}
++                >
++                  Open Practice
++                </Button>
++              </div>
++            </div>
++          </div>
++
++          {/* Sign of the Day */}
++          <div className="relative overflow-hidden rounded-[2rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
++            <div className="absolute right-2 top-2 opacity-10">
++              <Star className="h-24 w-24 text-primary" />
++            </div>
++            <div className="relative">
++              <div className="mb-3 flex items-center gap-2">
++                <Calendar className="h-4 w-4 text-primary" />
++                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Sign of the Day</p>
++              </div>
++              <div className="flex items-center gap-4">
++                <div className="flex h-20 w-20 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-primary to-secondary text-4xl font-bold text-white shadow-lg">
++                  {signOfDay}
++                </div>
++                <div>
++                  <p className="text-2xl font-bold text-slate-950">Letter {signOfDay}</p>
++                  <p className="mt-1 text-sm text-slate-500">Today's practice focus</p>
++                </div>
++              </div>
++              <p className="mt-4 text-sm leading-7 text-slate-600">
++                Practice signing <strong>{signOfDay}</strong> in the recognition workspace to complete today's challenge.
+               </p>
++              <Button
++                className="mt-4 w-full rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90"
++                onClick={() => {
++                  // Navigate to practice and let the user switch to challenge mode for this letter
++                  onNavigate("practice");
++                }}
++              >
++                <Hand className="mr-2 h-4 w-4" />
++                Practice {signOfDay} Now
++              </Button>
+             </div>
+-            <Button
+-              size="lg"
+-              variant="secondary"
+-              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
+-              onClick={() => onNavigate("lesson:letter-e")}
+-            >
+-              Continue Lesson
+-            </Button>
+           </div>
+         </section>
+ 
++        {/* ── Focus Cards ─────────────────────────────────────── */}
+         <section className="mb-8 grid gap-6 lg:grid-cols-3">
+-          {dashboardFocus.map((item) => (
++          {DASHBOARD_FOCUS.map((item) => (
+             <div key={item.title} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
+-                <item.icon className="h-5 w-5 text-primary" />
++              <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.accent}`}>
++                <item.icon className={`h-5 w-5 ${item.iconColor}`} />
+               </div>
+-              <h3 className="text-xl">{item.title}</h3>
+-              <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
++              <h3 className="text-lg font-semibold text-slate-950">{item.title}</h3>
++              <p className="mt-2 text-sm leading-7 text-slate-600">{item.description}</p>
+             </div>
+           ))}
+         </section>
+ 
++        {/* ── Active Courses ──────────────────────────────────── */}
+         <section className="mb-8">
+           <div className="mb-5 flex items-center justify-between">
+             <h2 className="text-2xl font-semibold text-slate-950">Active Courses</h2>
+@@ -95,10 +293,15 @@ export function CourseDashboard() {
+           </div>
+         </section>
+ 
++        {/* ── Recent Signs ────────────────────────────────────── */}
+         <section>
+           <div className="mb-5 flex items-center justify-between">
+-            <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
++            <div>
++              <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
++              <p className="mt-1 text-sm text-slate-500">Jump back into any sign for a quick refresher</p>
++            </div>
+             <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("practice")}>
++              <Zap className="mr-2 h-4 w-4" />
+               Open Practice
+             </Button>
+           </div>
+@@ -114,7 +317,9 @@ export function CourseDashboard() {
+               <TableBody>
+                 {recentSigns.map((item) => (
+                   <TableRow key={item.sign}>
+-                    <TableCell className="font-medium text-slate-900">{item.sign}</TableCell>
++                    <TableCell>
++                      <span className="font-medium text-slate-900">{item.sign}</span>
++                    </TableCell>
+                     <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
+                     <TableCell className="text-right">
+                       <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
+@@ -131,4 +336,3 @@ export function CourseDashboard() {
+     </div>
+   );
+ }
+-
+
+commit ad970965f288000a43a94378e57807549fda4a22
+Author: Shreyank <you@example.com>
+Date:   Thu May 7 14:13:42 2026 +0530
+
+    chore: stage all remaining project source files and normalise line endings
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index 5f7a1eb7..ff3e8cf3 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -1,5 +1,5 @@
+ import { useOutletContext } from "react-router";
+-import { BookOpen, Flame, Target } from "lucide-react@0.487.0";
++import { BookOpen, Flame, Target } from "lucide-react";
+ import { courses, recentSigns } from "@/data/mockData";
+ import { LayoutOutletContext } from "@/types/layout";
+ import { CourseCard } from "../CourseCard";
+@@ -131,3 +131,4 @@ export function CourseDashboard() {
+     </div>
+   );
+ }
++
+
+commit ed73fb6cac27d0ee5b0d99a21e6391448b999f5f
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Apr 1 15:32:43 2026 +0530
+
+    Remove fabricated stats and validate Firebase config
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index 5e1cd666..5f7a1eb7 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -1,12 +1,29 @@
+ import { useOutletContext } from "react-router";
+-import { Award, BookOpen, Flame, Target, TrendingUp } from "lucide-react@0.487.0";
+-import { courses, recentSigns, weeklyGoals } from "@/data/mockData";
++import { BookOpen, Flame, Target } from "lucide-react@0.487.0";
++import { courses, recentSigns } from "@/data/mockData";
+ import { LayoutOutletContext } from "@/types/layout";
+ import { CourseCard } from "../CourseCard";
+ import { Button } from "../ui/button";
+-import { Progress } from "../ui/progress";
+ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+ 
++const dashboardFocus = [
++  {
++    title: "Continue Learning",
++    description: "Pick up where you left off in the alphabet lessons and move into the next guided sign.",
++    icon: BookOpen,
++  },
++  {
++    title: "Practice Routine",
++    description: "Use short webcam practice sessions to reinforce hand shape, motion, and orientation.",
++    icon: Target,
++  },
++  {
++    title: "Stay Consistent",
++    description: "A small daily routine is enough to keep the material fresh and easier to recall.",
++    icon: Flame,
++  },
++] as const;
++
+ export function CourseDashboard() {
+   const { onNavigate, userName } = useOutletContext<LayoutOutletContext>();
+ 
+@@ -16,7 +33,7 @@ export function CourseDashboard() {
+         <div className="mb-8">
+           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
+           <h1 className="mt-3 text-4xl font-semibold text-slate-950">Welcome back, {userName}</h1>
+-          <p className="mt-3 text-slate-600">Your next lesson is ready. Keep the streak going and let the AI practice coach do the spotting.</p>
++          <p className="mt-3 text-slate-600">Your next lesson is ready, and the practice tools are set up when you want to review signs.</p>
+         </div>
+ 
+         <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+@@ -29,14 +46,9 @@ export function CourseDashboard() {
+                 Continue Learning
+               </p>
+               <h2 className="text-3xl font-semibold">Learn ISL Alphabet</h2>
+-              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through your ISL course and your accuracy trend is climbing.</p>
+-              <div className="mt-5 max-w-xl">
+-                <div className="mb-2 flex justify-between text-sm text-white/80">
+-                  <span>Course Progress</span>
+-                  <span>46%</span>
+-                </div>
+-                <Progress value={46} className="h-2.5 bg-white/20" />
+-              </div>
++              <p className="mt-2 text-white/85">
++                Re-enter the course, review recent material, and move into the next lesson when you are ready.
++              </p>
+             </div>
+             <Button
+               size="lg"
+@@ -50,86 +62,15 @@ export function CourseDashboard() {
+         </section>
+ 
+         <section className="mb-8 grid gap-6 lg:grid-cols-3">
+-          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+-            <div className="mb-4 flex items-center gap-3">
+-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary/10">
+-                <TrendingUp className="h-5 w-5 text-secondary" />
++          {dashboardFocus.map((item) => (
++            <div key={item.title} className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
++              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
++                <item.icon className="h-5 w-5 text-primary" />
+               </div>
+-              <h3 className="text-xl">Progress Overview</h3>
+-            </div>
+-            <div className="mb-4">
+-              <div className="mb-2 flex justify-between text-sm">
+-                <span className="text-slate-500">Overall Completion</span>
+-                <span>45%</span>
+-              </div>
+-              <Progress value={45} className="h-2.5 bg-slate-100" />
+-            </div>
+-            <div className="space-y-3 border-t border-slate-200 pt-4">
+-              {weeklyGoals.map((goal) => (
+-                <div key={goal.label}>
+-                  <div className="mb-1 flex justify-between text-sm">
+-                    <span className="text-slate-500">{goal.label}</span>
+-                    <span>{goal.current}/{goal.target}</span>
+-                  </div>
+-                  <Progress value={(goal.current / goal.target) * 100} className="h-2 bg-slate-100" />
+-                </div>
+-              ))}
+-            </div>
+-          </div>
+-
+-          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+-            <div className="mb-4 flex items-center gap-3">
+-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/10">
+-                <Target className="h-5 w-5 text-accent" />
+-              </div>
+-              <h3 className="text-xl">Your Stats</h3>
+-            </div>
+-            <div className="grid grid-cols-2 gap-4">
+-              {[
+-                ["124", "Signs"],
+-                ["89%", "Accuracy"],
+-                ["18.5h", "Time"],
+-                ["3", "Courses"],
+-              ].map(([value, label]) => (
+-                <div key={label} className="rounded-2xl bg-slate-50 p-4">
+-                  <p className="text-2xl font-semibold text-slate-900">{value}</p>
+-                  <p className="mt-1 text-sm text-slate-500">{label}</p>
+-                </div>
+-              ))}
++              <h3 className="text-xl">{item.title}</h3>
++              <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+             </div>
+-          </div>
+-
+-          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
+-            <div className="mb-4 flex items-center gap-3">
+-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
+-                <Flame className="h-5 w-5 text-primary" />
+-              </div>
+-              <h3 className="text-xl">Learning Streak</h3>
+-            </div>
+-            <div className="rounded-[1.25rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-5 text-center">
+-              <p className="text-5xl font-semibold text-slate-900">12</p>
+-              <p className="mt-1 text-sm text-slate-500">Current day streak</p>
+-              <div className="mt-5 flex justify-center gap-2">
+-                {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+-                  <div
+-                    key={day + index}
+-                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs ${
+-                      index < 5 ? "bg-gradient-brand text-white" : "bg-white text-slate-400"
+-                    }`}
+-                  >
+-                    {day}
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
+-            <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 text-sm">
+-              <span className="text-slate-500">Best streak</span>
+-              <span className="flex items-center gap-2 text-slate-800">
+-                <Award className="h-4 w-4 text-amber-500" />
+-                15 days
+-              </span>
+-            </div>
+-          </div>
++          ))}
+         </section>
+ 
+         <section className="mb-8">
+@@ -147,9 +88,7 @@ export function CourseDashboard() {
+                 title={course.title}
+                 description={course.description}
+                 image={course.image}
+-                progress={course.progress}
+-                lessonsCompleted={course.lessonsCompleted}
+-                totalLessons={course.totalLessons}
++                difficulty={course.difficulty}
+                 onViewCourse={(id) => onNavigate(`course:${id}`)}
+               />
+             ))}
+@@ -159,8 +98,8 @@ export function CourseDashboard() {
+         <section>
+           <div className="mb-5 flex items-center justify-between">
+             <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
+-            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("achievements")}>
+-              View All Progress
++            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("practice")}>
++              Open Practice
+             </Button>
+           </div>
+           <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
+@@ -169,7 +108,6 @@ export function CourseDashboard() {
+                 <TableRow>
+                   <TableHead>Sign</TableHead>
+                   <TableHead>Last Practiced</TableHead>
+-                  <TableHead>Accuracy</TableHead>
+                   <TableHead className="text-right">Action</TableHead>
+                 </TableRow>
+               </TableHeader>
+@@ -178,17 +116,6 @@ export function CourseDashboard() {
+                   <TableRow key={item.sign}>
+                     <TableCell className="font-medium text-slate-900">{item.sign}</TableCell>
+                     <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
+-                    <TableCell>
+-                      <span
+-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+-                          item.accuracy >= 90
+-                            ? "bg-emerald-100 text-emerald-700"
+-                            : "bg-amber-100 text-amber-700"
+-                        }`}
+-                      >
+-                        {item.accuracy}%
+-                      </span>
+-                    </TableCell>
+                     <TableCell className="text-right">
+                       <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
+                         Practice
+
+commit ebbd84350ca57e696325239c558c44543e336be8
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Mar 25 18:02:24 2026 +0530
+
+    fixed somethings in ui
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index 35e1baac..5e1cd666 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -28,8 +28,8 @@ export function CourseDashboard() {
+                 <BookOpen className="h-4 w-4" />
+                 Continue Learning
+               </p>
+-              <h2 className="text-3xl font-semibold">ISL Alphabet Fundamentals</h2>
+-              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through the course and your accuracy trend is climbing.</p>
++              <h2 className="text-3xl font-semibold">Learn ISL Alphabet</h2>
++              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through your ISL course and your accuracy trend is climbing.</p>
+               <div className="mt-5 max-w-xl">
+                 <div className="mb-2 flex justify-between text-sm text-white/80">
+                   <span>Course Progress</span>
+
+commit e986ba9db16d21e13f430d49c490498880bf3594
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Wed Mar 25 16:42:56 2026 +0530
+
+    ui added
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+index 66c996a1..35e1baac 100644
+--- a/src/components/pages/CourseDashboard.tsx
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -1,178 +1,120 @@
+-import { useOutletContext } from 'react-router';
+-import { Button } from '../ui/button';
+-import { Progress } from '../ui/progress';
+-import { CourseCard } from '../CourseCard';
+-import { ChartNoAxesColumn, Flame, Target, BookOpen, Clock, Award } from 'lucide-react';
+-
+-interface ContextType {
+-  onNavigate: (page: string) => void;
+-  userName: string;
+-}
++import { useOutletContext } from "react-router";
++import { Award, BookOpen, Flame, Target, TrendingUp } from "lucide-react@0.487.0";
++import { courses, recentSigns, weeklyGoals } from "@/data/mockData";
++import { LayoutOutletContext } from "@/types/layout";
++import { CourseCard } from "../CourseCard";
++import { Button } from "../ui/button";
++import { Progress } from "../ui/progress";
++import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+ 
+ export function CourseDashboard() {
+-  const { onNavigate, userName } = useOutletContext<ContextType>();
+-
+-  const activeCourses = [
+-    {
+-      id: 'alphabet',
+-      title: 'ISL Alphabet Fundamentals',
+-      description: 'Master the 26 letters of the ISL alphabet.',
+-      image: 'https://images.unsplash.com/photo-1725043394860-71304ce2b1b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBoYWJldCUyMGxldHRlcnN8ZW58MXx8fHwxNzYwNTM1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+-      progress: 40,
+-      lessonsCompleted: 4,
+-      totalLessons: 10,
+-    },
+-    {
+-      id: 'greetings',
+-      title: 'Everyday Greetings',
+-      description: 'Learn essential greetings and introductions.',
+-      image: 'https://images.unsplash.com/photo-1730875648975-e718e5658d76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWxsbyUyMGhhbmRzJTIwd2F2aW5nfGVufDF8fHx8MTc2MDUzNTkyN3ww&ixlib=rb-4.1.0&q=80&w=1080',
+-      progress: 75,
+-      lessonsCompleted: 6,
+-      totalLessons: 8,
+-    },
+-    {
+-      id: 'numbers',
+-      title: 'Numbers 1-100',
+-      description: 'Build confidence with numerical signs.',
+-      image: 'https://images.unsplash.com/photo-1653361860636-36f2fb89eab9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudW1iZXJzJTIwbWF0aGVtYXRpY3N8ZW58MXx8fHwxNzYwNTM1NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+-      progress: 20,
+-      lessonsCompleted: 2,
+-      totalLessons: 10,
+-    },
+-  ];
+-
+-  const recentSigns = [
+-    { sign: 'Letter A', accuracy: 92, time: '2 min ago' },
+-    { sign: 'Hello', accuracy: 88, time: '15 min ago' },
+-    { sign: 'Thank You', accuracy: 95, time: '1 hour ago' },
+-    { sign: 'Number 5', accuracy: 85, time: '2 hours ago' },
+-  ];
+-
+-  const weeklyGoals = [
+-    { label: 'Practice Sessions', current: 4, target: 5 },
+-    { label: 'New Signs', current: 8, target: 10 },
+-    { label: 'Accuracy Goal', current: 89, target: 90 },
+-  ];
++  const { onNavigate, userName } = useOutletContext<LayoutOutletContext>();
+ 
+   return (
+-    <div className="min-h-screen bg-muted/30">
+-      <div className="max-w-7xl mx-auto px-4 py-8">
+-        {/* Welcome Message */}
++    <div className="px-4 py-10 sm:px-6 lg:px-8">
++      <div className="mx-auto max-w-7xl">
+         <div className="mb-8">
+-          <h1 className="mb-2">Welcome back, {userName || 'Priya'}!</h1>
+-          <p className="text-muted-foreground">Your next lesson awaits — keep up the great progress!</p>
++          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</p>
++          <h1 className="mt-3 text-4xl font-semibold text-slate-950">Welcome back, {userName}</h1>
++          <p className="mt-3 text-slate-600">Your next lesson is ready. Keep the streak going and let the AI practice coach do the spotting.</p>
+         </div>
+ 
+-        {/* Continue Learning Card */}
+-        <div className="bg-gradient-to-br from-primary via-secondary to-accent text-white rounded-2xl p-8 mb-8 shadow-xl relative overflow-hidden">
+-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative">
+-            <div className="flex-1">
+-              <p className="text-sm text-white/80 mb-1 flex items-center gap-2">
+-                <BookOpen className="w-4 h-4" />
+-                Continue Your Journey
++        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
++          <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
++          <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
++          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
++            <div className="max-w-2xl">
++              <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
++                <BookOpen className="h-4 w-4" />
++                Continue Learning
+               </p>
+-              <h2 className="text-white text-2xl mb-2">ISL Alphabet: Vowels</h2>
+-              <p className="text-white/90 mb-4">Lesson 5: The Letter 'E' — You're making great progress!</p>
+-              <div className="max-w-md">
+-                <div className="flex justify-between text-sm mb-2 text-white/80">
++              <h2 className="text-3xl font-semibold">ISL Alphabet Fundamentals</h2>
++              <p className="mt-2 text-white/85">Lesson 5: Letter E. You are 46% through the course and your accuracy trend is climbing.</p>
++              <div className="mt-5 max-w-xl">
++                <div className="mb-2 flex justify-between text-sm text-white/80">
+                   <span>Course Progress</span>
+-                  <span>40%</span>
++                  <span>46%</span>
+                 </div>
+-                <Progress value={40} className="h-2 bg-white/20" />
++                <Progress value={46} className="h-2.5 bg-white/20" />
+               </div>
+             </div>
+             <Button
+               size="lg"
+               variant="secondary"
+-              onClick={() => onNavigate('lesson')}
+-              className="whitespace-nowrap"
++              className="h-12 rounded-xl bg-white text-slate-900 hover:bg-white/90"
++              onClick={() => onNavigate("lesson:letter-e")}
+             >
+               Continue Lesson
+             </Button>
+           </div>
+-        </div>
++        </section>
+ 
+-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
+-          {/* Progress Overview */}
+-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
+-            <div className="flex items-center gap-3 mb-4">
+-              <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/60 rounded-xl flex items-center justify-center shadow-md">
+-                <ChartNoAxesColumn className="w-5 h-5 text-secondary-foreground" />
++        <section className="mb-8 grid gap-6 lg:grid-cols-3">
++          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="mb-4 flex items-center gap-3">
++              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary/10">
++                <TrendingUp className="h-5 w-5 text-secondary" />
+               </div>
+-              <h3>Progress Overview</h3>
++              <h3 className="text-xl">Progress Overview</h3>
+             </div>
+-            <div className="space-y-4">
+-              <div>
+-                <div className="flex justify-between text-sm mb-2">
+-                  <span className="text-muted-foreground">Overall Completion</span>
+-                  <span>45%</span>
+-                </div>
+-                <Progress value={45} className="h-2" />
++            <div className="mb-4">
++              <div className="mb-2 flex justify-between text-sm">
++                <span className="text-slate-500">Overall Completion</span>
++                <span>45%</span>
+               </div>
+-              <div className="pt-3 border-t">
+-                <p className="text-sm text-muted-foreground mb-2">Weekly Goals</p>
+-                {weeklyGoals.map((goal) => (
+-                  <div key={goal.label} className="flex items-center justify-between text-sm py-1">
+-                    <span className="text-muted-foreground">{goal.label}</span>
+-                    <span className={goal.current >= goal.target ? 'text-secondary' : 'text-foreground'}>
+-                      {goal.current}/{goal.target}
+-                    </span>
++              <Progress value={45} className="h-2.5 bg-slate-100" />
++            </div>
++            <div className="space-y-3 border-t border-slate-200 pt-4">
++              {weeklyGoals.map((goal) => (
++                <div key={goal.label}>
++                  <div className="mb-1 flex justify-between text-sm">
++                    <span className="text-slate-500">{goal.label}</span>
++                    <span>{goal.current}/{goal.target}</span>
+                   </div>
+-                ))}
+-              </div>
++                  <Progress value={(goal.current / goal.target) * 100} className="h-2 bg-slate-100" />
++                </div>
++              ))}
+             </div>
+           </div>
+ 
+-          {/* Stats */}
+-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
+-            <div className="flex items-center gap-3 mb-4">
+-              <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/60 rounded-xl flex items-center justify-center shadow-md">
+-                <Target className="w-5 h-5 text-accent-foreground" />
++          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="mb-4 flex items-center gap-3">
++              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/10">
++                <Target className="h-5 w-5 text-accent" />
+               </div>
+-              <h3>Your Stats</h3>
++              <h3 className="text-xl">Your Stats</h3>
+             </div>
+             <div className="grid grid-cols-2 gap-4">
+-              <div className="p-3 rounded-lg bg-muted/50">
+-                <p className="text-2xl mb-1">124</p>
+-                <p className="text-sm text-muted-foreground">Signs Mastered</p>
+-              </div>
+-              <div className="p-3 rounded-lg bg-muted/50">
+-                <p className="text-2xl mb-1">89%</p>
+-                <p className="text-sm text-muted-foreground">Avg Accuracy</p>
+-              </div>
+-              <div className="p-3 rounded-lg bg-muted/50">
+-                <p className="text-2xl mb-1">18.5h</p>
+-                <p className="text-sm text-muted-foreground">Practice Time</p>
+-              </div>
+-              <div className="p-3 rounded-lg bg-muted/50">
+-                <p className="text-2xl mb-1">3</p>
+-                <p className="text-sm text-muted-foreground">Active Courses</p>
+-              </div>
++              {[
++                ["124", "Signs"],
++                ["89%", "Accuracy"],
++                ["18.5h", "Time"],
++                ["3", "Courses"],
++              ].map(([value, label]) => (
++                <div key={label} className="rounded-2xl bg-slate-50 p-4">
++                  <p className="text-2xl font-semibold text-slate-900">{value}</p>
++                  <p className="mt-1 text-sm text-slate-500">{label}</p>
++                </div>
++              ))}
+             </div>
+           </div>
+ 
+-          {/* Learning Streak */}
+-          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
+-            <div className="flex items-center gap-3 mb-4">
+-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center shadow-md">
+-                <Flame className="w-5 h-5 text-primary-foreground" />
++          <div className="rounded-[1.5rem] border border-white/70 bg-white p-6 shadow-sm">
++            <div className="mb-4 flex items-center gap-3">
++              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
++                <Flame className="h-5 w-5 text-primary" />
+               </div>
+-              <h3>Learning Streak</h3>
++              <h3 className="text-xl">Learning Streak</h3>
+             </div>
+-            <div className="text-center py-4">
+-              <p className="text-4xl mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">12</p>
+-              <p className="text-muted-foreground mb-4">Day Streak</p>
+-              <div className="flex justify-center gap-1">
+-                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
++            <div className="rounded-[1.25rem] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 p-5 text-center">
++              <p className="text-5xl font-semibold text-slate-900">12</p>
++              <p className="mt-1 text-sm text-slate-500">Current day streak</p>
++              <div className="mt-5 flex justify-center gap-2">
++                {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+                   <div
+-                    key={i}
+-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
+-                      i < 5
+-                        ? 'bg-gradient-to-br from-primary to-secondary text-white'
+-                        : 'bg-muted text-muted-foreground'
++                    key={day + index}
++                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs ${
++                      index < 5 ? "bg-gradient-brand text-white" : "bg-white text-slate-400"
+                     }`}
+                   >
+                     {day}
+@@ -180,73 +122,84 @@ export function CourseDashboard() {
+                 ))}
+               </div>
+             </div>
+-            <div className="pt-3 border-t mt-4 flex items-center justify-between">
+-              <span className="text-sm text-muted-foreground">Best streak</span>
+-              <span className="text-sm flex items-center gap-1">
+-                <Award className="w-4 h-4 text-amber-500" />
++            <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 text-sm">
++              <span className="text-slate-500">Best streak</span>
++              <span className="flex items-center gap-2 text-slate-800">
++                <Award className="h-4 w-4 text-amber-500" />
+                 15 days
+               </span>
+             </div>
+           </div>
+-        </div>
++        </section>
+ 
+-        {/* Active Courses */}
+-        <div className="mb-8">
+-          <div className="flex items-center justify-between mb-4">
+-            <h2>My Active Courses</h2>
+-            <Button variant="outline" size="sm" onClick={() => onNavigate('home')}>
++        <section className="mb-8">
++          <div className="mb-5 flex items-center justify-between">
++            <h2 className="text-2xl font-semibold text-slate-950">Active Courses</h2>
++            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("home")}>
+               Browse More
+             </Button>
+           </div>
+-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+-            {activeCourses.map((course) => (
++          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
++            {courses.map((course) => (
+               <CourseCard
+                 key={course.id}
+-                {...course}
+-                onViewCourse={() => onNavigate('course')}
++                id={course.id}
++                title={course.title}
++                description={course.description}
++                image={course.image}
++                progress={course.progress}
++                lessonsCompleted={course.lessonsCompleted}
++                totalLessons={course.totalLessons}
++                onViewCourse={(id) => onNavigate(`course:${id}`)}
+               />
+             ))}
+           </div>
+-        </div>
++        </section>
+ 
+-        {/* Recently Practiced Signs */}
+-        <div>
+-          <div className="flex items-center justify-between mb-4">
+-            <h2>Recently Practiced Signs</h2>
+-            <Button variant="outline" size="sm" onClick={() => onNavigate('achievements')}>
++        <section>
++          <div className="mb-5 flex items-center justify-between">
++            <h2 className="text-2xl font-semibold text-slate-950">Recently Practiced Signs</h2>
++            <Button variant="outline" className="rounded-xl" onClick={() => onNavigate("achievements")}>
+               View All Progress
+             </Button>
+           </div>
+-          <div className="bg-card rounded-xl border shadow-sm">
+-            <div className="divide-y">
+-              {recentSigns.map((item, index) => (
+-                <button
+-                  key={index}
+-                  onClick={() => onNavigate('practice')}
+-                  className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+-                >
+-                  <div className="flex items-center gap-3">
+-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-lg">
+-                      {item.sign.includes('Letter') ? item.sign.split(' ')[1] : '#'}
+-                    </div>
+-                    <div className="text-left">
+-                      <span className="block">{item.sign}</span>
+-                      <span className="text-xs text-muted-foreground">{item.time}</span>
+-                    </div>
+-                  </div>
+-                  <div className="flex items-center gap-3">
+-                    <div className="text-right">
+-                      <span className={`text-sm ${item.accuracy >= 90 ? 'text-secondary' : 'text-accent'}`}>
+-                        {item.accuracy}% Accuracy
++          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
++            <Table>
++              <TableHeader>
++                <TableRow>
++                  <TableHead>Sign</TableHead>
++                  <TableHead>Last Practiced</TableHead>
++                  <TableHead>Accuracy</TableHead>
++                  <TableHead className="text-right">Action</TableHead>
++                </TableRow>
++              </TableHeader>
++              <TableBody>
++                {recentSigns.map((item) => (
++                  <TableRow key={item.sign}>
++                    <TableCell className="font-medium text-slate-900">{item.sign}</TableCell>
++                    <TableCell className="text-slate-500">{item.lastPracticed}</TableCell>
++                    <TableCell>
++                      <span
++                        className={`rounded-full px-3 py-1 text-xs font-medium ${
++                          item.accuracy >= 90
++                            ? "bg-emerald-100 text-emerald-700"
++                            : "bg-amber-100 text-amber-700"
++                        }`}
++                      >
++                        {item.accuracy}%
+                       </span>
+-                    </div>
+-                    <span className="text-sm text-primary">Practice →</span>
+-                  </div>
+-                </button>
+-              ))}
+-            </div>
++                    </TableCell>
++                    <TableCell className="text-right">
++                      <Button size="sm" className="rounded-lg" onClick={() => onNavigate("practice")}>
++                        Practice
++                      </Button>
++                    </TableCell>
++                  </TableRow>
++                ))}
++              </TableBody>
++            </Table>
+           </div>
+-        </div>
++        </section>
+       </div>
+     </div>
+   );
+
+commit 73e725d4324677130c3572accd09b3453821883d
+Author: Prem Panchal <23csd43@svitvasad.ac.in>
+Date:   Tue Mar 24 16:42:43 2026 +0530
+
+    Initial commit - ISL Gesture Recognition project
+
+diff --git a/src/components/pages/CourseDashboard.tsx b/src/components/pages/CourseDashboard.tsx
+new file mode 100644
+index 00000000..66c996a1
+--- /dev/null
++++ b/src/components/pages/CourseDashboard.tsx
+@@ -0,0 +1,253 @@
++import { useOutletContext } from 'react-router';
++import { Button } from '../ui/button';
++import { Progress } from '../ui/progress';
++import { CourseCard } from '../CourseCard';
++import { ChartNoAxesColumn, Flame, Target, BookOpen, Clock, Award } from 'lucide-react';
++
++interface ContextType {
++  onNavigate: (page: string) => void;
++  userName: string;
++}
++
++export function CourseDashboard() {
++  const { onNavigate, userName } = useOutletContext<ContextType>();
++
++  const activeCourses = [
++    {
++      id: 'alphabet',
++      title: 'ISL Alphabet Fundamentals',
++      description: 'Master the 26 letters of the ISL alphabet.',
++      image: 'https://images.unsplash.com/photo-1725043394860-71304ce2b1b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBoYWJldCUyMGxldHRlcnN8ZW58MXx8fHwxNzYwNTM1NDAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
++      progress: 40,
++      lessonsCompleted: 4,
++      totalLessons: 10,
++    },
++    {
++      id: 'greetings',
++      title: 'Everyday Greetings',
++      description: 'Learn essential greetings and introductions.',
++      image: 'https://images.unsplash.com/photo-1730875648975-e718e5658d76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWxsbyUyMGhhbmRzJTIwd2F2aW5nfGVufDF8fHx8MTc2MDUzNTkyN3ww&ixlib=rb-4.1.0&q=80&w=1080',
++      progress: 75,
++      lessonsCompleted: 6,
++      totalLessons: 8,
++    },
++    {
++      id: 'numbers',
++      title: 'Numbers 1-100',
++      description: 'Build confidence with numerical signs.',
++      image: 'https://images.unsplash.com/photo-1653361860636-36f2fb89eab9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudW1iZXJzJTIwbWF0aGVtYXRpY3N8ZW58MXx8fHwxNzYwNTM1NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080',
++      progress: 20,
++      lessonsCompleted: 2,
++      totalLessons: 10,
++    },
++  ];
++
++  const recentSigns = [
++    { sign: 'Letter A', accuracy: 92, time: '2 min ago' },
++    { sign: 'Hello', accuracy: 88, time: '15 min ago' },
++    { sign: 'Thank You', accuracy: 95, time: '1 hour ago' },
++    { sign: 'Number 5', accuracy: 85, time: '2 hours ago' },
++  ];
++
++  const weeklyGoals = [
++    { label: 'Practice Sessions', current: 4, target: 5 },
++    { label: 'New Signs', current: 8, target: 10 },
++    { label: 'Accuracy Goal', current: 89, target: 90 },
++  ];
++
++  return (
++    <div className="min-h-screen bg-muted/30">
++      <div className="max-w-7xl mx-auto px-4 py-8">
++        {/* Welcome Message */}
++        <div className="mb-8">
++          <h1 className="mb-2">Welcome back, {userName || 'Priya'}!</h1>
++          <p className="text-muted-foreground">Your next lesson awaits — keep up the great progress!</p>
++        </div>
++
++        {/* Continue Learning Card */}
++        <div className="bg-gradient-to-br from-primary via-secondary to-accent text-white rounded-2xl p-8 mb-8 shadow-xl relative overflow-hidden">
++          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
++          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
++          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative">
++            <div className="flex-1">
++              <p className="text-sm text-white/80 mb-1 flex items-center gap-2">
++                <BookOpen className="w-4 h-4" />
++                Continue Your Journey
++              </p>
++              <h2 className="text-white text-2xl mb-2">ISL Alphabet: Vowels</h2>
++              <p className="text-white/90 mb-4">Lesson 5: The Letter 'E' — You're making great progress!</p>
++              <div className="max-w-md">
++                <div className="flex justify-between text-sm mb-2 text-white/80">
++                  <span>Course Progress</span>
++                  <span>40%</span>
++                </div>
++                <Progress value={40} className="h-2 bg-white/20" />
++              </div>
++            </div>
++            <Button
++              size="lg"
++              variant="secondary"
++              onClick={() => onNavigate('lesson')}
++              className="whitespace-nowrap"
++            >
++              Continue Lesson
++            </Button>
++          </div>
++        </div>
++
++        <div className="grid lg:grid-cols-3 gap-6 mb-8">
++          {/* Progress Overview */}
++          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
++            <div className="flex items-center gap-3 mb-4">
++              <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/60 rounded-xl flex items-center justify-center shadow-md">
++                <ChartNoAxesColumn className="w-5 h-5 text-secondary-foreground" />
++              </div>
++              <h3>Progress Overview</h3>
++            </div>
++            <div className="space-y-4">
++              <div>
++                <div className="flex justify-between text-sm mb-2">
++                  <span className="text-muted-foreground">Overall Completion</span>
++                  <span>45%</span>
++                </div>
++                <Progress value={45} className="h-2" />
++              </div>
++              <div className="pt-3 border-t">
++                <p className="text-sm text-muted-foreground mb-2">Weekly Goals</p>
++                {weeklyGoals.map((goal) => (
++                  <div key={goal.label} className="flex items-center justify-between text-sm py-1">
++                    <span className="text-muted-foreground">{goal.label}</span>
++                    <span className={goal.current >= goal.target ? 'text-secondary' : 'text-foreground'}>
++                      {goal.current}/{goal.target}
++                    </span>
++                  </div>
++                ))}
++              </div>
++            </div>
++          </div>
++
++          {/* Stats */}
++          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
++            <div className="flex items-center gap-3 mb-4">
++              <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/60 rounded-xl flex items-center justify-center shadow-md">
++                <Target className="w-5 h-5 text-accent-foreground" />
++              </div>
++              <h3>Your Stats</h3>
++            </div>
++            <div className="grid grid-cols-2 gap-4">
++              <div className="p-3 rounded-lg bg-muted/50">
++                <p className="text-2xl mb-1">124</p>
++                <p className="text-sm text-muted-foreground">Signs Mastered</p>
++              </div>
++              <div className="p-3 rounded-lg bg-muted/50">
++                <p className="text-2xl mb-1">89%</p>
++                <p className="text-sm text-muted-foreground">Avg Accuracy</p>
++              </div>
++              <div className="p-3 rounded-lg bg-muted/50">
++                <p className="text-2xl mb-1">18.5h</p>
++                <p className="text-sm text-muted-foreground">Practice Time</p>
++              </div>
++              <div className="p-3 rounded-lg bg-muted/50">
++                <p className="text-2xl mb-1">3</p>
++                <p className="text-sm text-muted-foreground">Active Courses</p>
++              </div>
++            </div>
++          </div>
++
++          {/* Learning Streak */}
++          <div className="bg-card rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow">
++            <div className="flex items-center gap-3 mb-4">
++              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center shadow-md">
++                <Flame className="w-5 h-5 text-primary-foreground" />
++              </div>
++              <h3>Learning Streak</h3>
++            </div>
++            <div className="text-center py-4">
++              <p className="text-4xl mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">12</p>
++              <p className="text-muted-foreground mb-4">Day Streak</p>
++              <div className="flex justify-center gap-1">
++                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
++                  <div
++                    key={i}
++                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
++                      i < 5
++                        ? 'bg-gradient-to-br from-primary to-secondary text-white'
++                        : 'bg-muted text-muted-foreground'
++                    }`}
++                  >
++                    {day}
++                  </div>
++                ))}
++              </div>
++            </div>
++            <div className="pt-3 border-t mt-4 flex items-center justify-between">
++              <span className="text-sm text-muted-foreground">Best streak</span>
++              <span className="text-sm flex items-center gap-1">
++                <Award className="w-4 h-4 text-amber-500" />
++                15 days
++              </span>
++            </div>
++          </div>
++        </div>
++
++        {/* Active Courses */}
++        <div className="mb-8">
++          <div className="flex items-center justify-between mb-4">
++            <h2>My Active Courses</h2>
++            <Button variant="outline" size="sm" onClick={() => onNavigate('home')}>
++              Browse More
++            </Button>
++          </div>
++          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
++            {activeCourses.map((course) => (
++              <CourseCard
++                key={course.id}
++                {...course}
++                onViewCourse={() => onNavigate('course')}
++              />
++            ))}
++          </div>
++        </div>
++
++        {/* Recently Practiced Signs */}
++        <div>
++          <div className="flex items-center justify-between mb-4">
++            <h2>Recently Practiced Signs</h2>
++            <Button variant="outline" size="sm" onClick={() => onNavigate('achievements')}>
++              View All Progress
++            </Button>
++          </div>
++          <div className="bg-card rounded-xl border shadow-sm">
++            <div className="divide-y">
++              {recentSigns.map((item, index) => (
++                <button
++                  key={index}
++                  onClick={() => onNavigate('practice')}
++                  className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
++                >
++                  <div className="flex items-center gap-3">
++                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-lg">
++                      {item.sign.includes('Letter') ? item.sign.split(' ')[1] : '#'}
++                    </div>
++                    <div className="text-left">
++                      <span className="block">{item.sign}</span>
++                      <span className="text-xs text-muted-foreground">{item.time}</span>
++                    </div>
++                  </div>
++                  <div className="flex items-center gap-3">
++                    <div className="text-right">
++                      <span className={`text-sm ${item.accuracy >= 90 ? 'text-secondary' : 'text-accent'}`}>
++                        {item.accuracy}% Accuracy
++                      </span>
++                    </div>
++                    <span className="text-sm text-primary">Practice →</span>
++                  </div>
++                </button>
++              ))}
++            </div>
++          </div>
++        </div>
++      </div>
++    </div>
++  );
++}

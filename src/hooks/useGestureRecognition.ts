@@ -20,7 +20,6 @@ export interface GestureResult {
   feedback: string;
   handDetected: boolean;
   status: RecognitionStatus;
-  landmarks: Landmark[] | null;
   detectedSign: string | null;
   /** Confidence in range [0, 1]. 0 when no prediction or API offline. */
   confidence: number;
@@ -41,11 +40,13 @@ const HISTORY_SIZE = 7;
 const PREDICTION_DECAY = 0.7;
 
 
+let globalHandLandmarker: HandLandmarker | null = null;
+let isModelLoading = false;
+
 export function useGestureRecognition({
   videoRef,
   enabled,
 }: UseGestureRecognitionOptions) {
-  const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const requestInFlightRef = useRef(false);
   const stablePredictionRef = useRef<string | null>(null);
@@ -57,7 +58,6 @@ export function useGestureRecognition({
     feedback: 'Initializing...',
     handDetected: false,
     status: 'idle',
-    landmarks: null,
     detectedSign: null,
     confidence: 0,
   });
@@ -82,14 +82,25 @@ export function useGestureRecognition({
   };
 
   const loadMediaPipe = useCallback(async () => {
-    // Guard: do not load if already loaded or currently loading
-    if (handLandmarkerRef.current) return;
+    if (globalHandLandmarker) {
+      setResult(prev => ({
+        ...prev,
+        status: 'ready',
+        feedback: 'Model ready! Show your hand.',
+      }));
+      return;
+    }
+    if (isModelLoading) {
+      setResult(prev => ({ ...prev, status: 'loading', feedback: 'Loading AI model...' }));
+      return;
+    }
 
+    isModelLoading = true;
     setResult(prev => ({ ...prev, status: 'loading', feedback: 'Loading AI model...' }));
 
     try {
       const vision = await FilesetResolver.forVisionTasks(MEDIAPIPE_WASM_URL);
-      handLandmarkerRef.current = await HandLandmarker.createFromOptions(vision, {
+      globalHandLandmarker = await HandLandmarker.createFromOptions(vision, {
         baseOptions: {
           modelAssetPath:
             'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
@@ -101,12 +112,14 @@ export function useGestureRecognition({
         // is partially visible, and enables dominant-hand selection below.
         numHands: 2,
       });
+      isModelLoading = false;
       setResult(prev => ({
         ...prev,
         status: 'ready',
         feedback: 'Model ready! Show your hand.',
       }));
     } catch {
+      isModelLoading = false;
       setResult(prev => ({
         ...prev,
         status: 'error',
@@ -117,7 +130,7 @@ export function useGestureRecognition({
 
   const processFrame = useCallback(() => {
     const video = videoRef.current;
-    const landmarker = handLandmarkerRef.current;
+    const landmarker = globalHandLandmarker;
 
     if (!video || !landmarker || video.readyState < 2) {
       animFrameRef.current = requestAnimationFrame(processFrame);
@@ -153,7 +166,6 @@ export function useGestureRecognition({
           handDetected: false,
           status: 'detecting',
           feedback: newFeedback,
-          landmarks: null,
           detectedSign: null,
           confidence: 0,
         }));
@@ -216,7 +228,6 @@ export function useGestureRecognition({
               feedback: newFeedback,
               handDetected: true,
               status: 'detecting',
-              landmarks,
               detectedSign: null,
               confidence: apiResult.confidence ?? 0,
             });
@@ -277,7 +288,6 @@ export function useGestureRecognition({
               feedback: newFeedback,
               handDetected: true,
               status: 'feedback',
-              landmarks,
               detectedSign: bestPrediction,
               confidence: smoothedConfidence,
             });
@@ -295,7 +305,6 @@ export function useGestureRecognition({
           feedback: newFeedback,
           handDetected: true,
           status: 'error',
-          landmarks,
           detectedSign: null,
           confidence: 0,
         });
@@ -319,7 +328,6 @@ export function useGestureRecognition({
         feedback: 'Camera inactive',
         handDetected: false,
         status: 'idle',
-        landmarks: null,
         detectedSign: null,
         confidence: 0,
       });
