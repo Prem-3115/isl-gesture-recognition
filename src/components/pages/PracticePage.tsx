@@ -381,7 +381,7 @@ export function PracticePage() {
         {import.meta.env.DEV && apiOnline === false && (
           <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
-            <span>Dev: Flask API offline — run <code className="font-mono text-xs">python isl_api.py</code> on port 5000</span>
+            <span>Dev: Flask API offline — run <code className="font-mono text-xs">python isl_api.py</code> locally or check Render dashboard</span>
           </div>
         )}
 

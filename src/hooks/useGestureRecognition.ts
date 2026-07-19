@@ -298,7 +298,7 @@ export function useGestureRecognition({
         return;
       }
 
-      const newFeedback = 'Flask API not responding — is it running on port 5000?';
+      const newFeedback = 'AI API not responding — it may be waking up, please wait a moment…';
       if (lastFeedbackRef.current !== newFeedback) {
         lastFeedbackRef.current = newFeedback;
         setResult({
