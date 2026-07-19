@@ -49,10 +49,10 @@ export function HomePage() {
                 <span className="font-medium text-slate-700">Explore Courses</span>
               </Button>
             </div>
-            <div className="mt-12 grid grid-cols-2 gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-4">
+            <div className="mt-12 flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:gap-12">
               {featuredStats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-3xl font-extrabold tracking-tight text-primary">{stat.value}</p>
+                  <p className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">{stat.value}</p>
                   <p className="mt-1 text-sm font-medium capitalize text-slate-500">{stat.label}</p>
                 </div>
               ))}

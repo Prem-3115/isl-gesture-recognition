@@ -3,7 +3,6 @@ import { useOutletContext, Navigate } from "react-router";
 import {
   LogOut,
   Mail,
-  User,
   Calendar,
   Flame,
   Zap,
@@ -29,7 +28,7 @@ function getStreak(): number {
 }
 
 export function ProfilePage() {
-  const { onNavigate, onLogout, onOpenAuth } = useOutletContext<LayoutOutletContext>();
+  const { onNavigate, onLogout } = useOutletContext<LayoutOutletContext>();
   const { user, profile, isLoading: isAuthLoading } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
 
@@ -95,32 +94,39 @@ export function ProfilePage() {
         
         {/* Profile Header */}
         <section className="bg-white overflow-hidden rounded-[2rem] border border-slate-200 shadow-sm">
-          <div className="bg-slate-50 h-32 w-full border-b border-slate-100" />
-          <div className="px-8 pb-8">
-            <div className="relative -mt-16 mb-4 flex justify-between items-end">
-              {profile.photoURL ? (
-                <img
-                  src={profile.photoURL}
-                  alt={displayName}
-                  className="h-32 w-32 rounded-[1.75rem] border-4 border-white bg-white object-cover shadow-sm"
-                />
-              ) : (
-                <div className="flex h-32 w-32 items-center justify-center rounded-[1.75rem] border-4 border-white bg-primary text-5xl font-bold text-primary-foreground shadow-sm">
-                  {displayName[0]?.toUpperCase()}
-                </div>
-              )}
-              <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => onLogout()}>
+          <div className="relative h-32 w-full bg-slate-950 overflow-hidden">
+            {/* Subtle ambient glows */}
+            <div className="absolute -left-10 -top-10 h-48 w-48 rounded-full bg-primary/20 blur-[50px]" />
+            <div className="absolute -bottom-10 right-20 h-40 w-40 rounded-full bg-indigo-500/20 blur-[50px]" />
+            {/* Subtle dot pattern overlay */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
+          </div>
+          <div className="relative px-8 pb-8">
+            <div className="relative flex justify-between">
+              <div className="-mt-12 flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-white text-4xl font-bold text-primary shadow-sm ring-4 ring-white overflow-hidden">
+                {profile.photoURL ? (
+                  <img
+                    src={profile.photoURL}
+                    alt={displayName}
+                    referrerPolicy="no-referrer"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  displayName[0]?.toUpperCase()
+                )}
+              </div>
+              <Button variant="outline" className="mt-4" onClick={() => onLogout()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </Button>
             </div>
-            
-            <div className="space-y-1">
-              <h1 className="text-3xl font-bold text-slate-950">{displayName}</h1>
-              <div className="flex items-center gap-4 text-sm text-slate-500">
-                <span className="flex items-center gap-1.5"><Mail className="h-4 w-4" /> {profile.email}</span>
-                <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" /> Joined {joinDate}</span>
-              </div>
+            <div className="mt-4">
+              <h1 className="text-3xl font-bold text-slate-900">{displayName}</h1>
+              <p className="mt-1 text-slate-500">
+                <Mail className="mr-1 inline h-4 w-4" /> {profile.email}
+                <span className="mx-2">·</span>
+                <Calendar className="mr-1 inline h-4 w-4" /> Joined {joinDate}
+              </p>
             </div>
           </div>
         </section>

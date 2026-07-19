@@ -37,7 +37,7 @@ const ALL_SIGNS = [
   "1","2","3","4","5","6","7","8","9",
 ];
 
-const SUPPORTED_SIGNS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "C"];
+const SUPPORTED_SIGNS = ALL_SIGNS;
 
 // ─── Confetti Component ──────────────────────────────────────────────────────
 
@@ -508,7 +508,7 @@ export function PracticePage() {
                       ? `The sign "${targetSign}" requires two hands and is currently unsupported by the AI. We are tracking requests to prioritize it!`
                       : mode === "challenge"
                         ? `Start your camera and practice signing "${targetSign}". The AI will track your accuracy in real time.`
-                        : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model. Note: Only 1-9 and C are currently supported."}
+                        : "Start the camera to begin real-time ISL gesture recognition with MediaPipe and the ML model. Supports all A–Z letters and 0–9 numbers."}
                   </p>
                   <div className="mt-6">
                     <Button

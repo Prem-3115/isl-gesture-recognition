@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Hand, LogOut, Menu, Sparkles, X } from "lucide-react";
+import { Hand, LogOut, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface HeaderProps {
@@ -7,6 +7,7 @@ interface HeaderProps {
   isLoggedIn: boolean;
   isAuthLoading?: boolean;
   userName: string;
+  userPhoto?: string | null;
   onNavigate: (page: string) => void;
   onOpenAuth: (mode?: "login" | "signup") => void;
   onLogout: () => void;
@@ -24,6 +25,7 @@ export function Header({
   isLoggedIn,
   isAuthLoading = false,
   userName,
+  userPhoto,
   onNavigate,
   onOpenAuth,
   onLogout,
@@ -87,16 +89,30 @@ export function Header({
             <>
               <button
                 onClick={() => handleNav("profile")}
-                className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary transition hover:bg-primary/20 active:scale-[0.98]"
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white pl-1.5 pr-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
                 aria-label="View your profile"
               >
-                <Sparkles className="h-4 w-4" />
+                {userPhoto ? (
+                  <img
+                    src={userPhoto}
+                    alt={userName}
+                    className="h-6 w-6 rounded-full object-cover ring-1 ring-primary/30"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                    {(userName?.[0] ?? "U").toUpperCase()}
+                  </span>
+                )}
                 {userName}
               </button>
-              <Button variant="outline" onClick={onLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
+              <button
+                onClick={onLogout}
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
+              >
+                <LogOut className="h-4 w-4" />
                 Logout
-              </Button>
+              </button>
             </>
           ) : (
             <>
