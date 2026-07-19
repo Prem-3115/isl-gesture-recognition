@@ -53,7 +53,7 @@ function Avatar({ initials, size = "md" }: { initials: string; size?: "sm" | "md
         : "h-11 w-11 rounded-2xl text-sm";
 
   return (
-    <div className={`bg-gradient-brand flex shrink-0 items-center justify-center font-semibold text-white shadow-sm ${cls}`}>
+    <div className={`bg-primary flex shrink-0 items-center justify-center font-semibold text-primary-foreground shadow-sm ${cls}`}>
       {initials}
     </div>
   );
@@ -157,27 +157,27 @@ export function CommunityPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Community</p>
-          <h1 className="mt-3 text-4xl font-semibold text-slate-950">Learn together, grow together</h1>
+          <h1 className="mt-3 text-4xl font-bold text-slate-950">Learn together, grow together</h1>
           <p className="mt-3 text-slate-600">
             Ask questions, share practice notes, join study groups, and stay connected with other ISL learners.
           </p>
         </div>
 
-        <section className="bg-gradient-brand relative mb-8 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl">
+        <section className="bg-primary relative mb-8 overflow-hidden rounded-[2rem] p-8 text-primary-foreground shadow-2xl">
           <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute bottom-0 left-0 h-44 w-44 rounded-full bg-black/10 blur-3xl" />
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="mb-2 flex items-center gap-2 text-sm text-white/80">
+              <p className="mb-2 flex items-center gap-2 text-sm text-primary-foreground/80">
                 <Users className="h-4 w-4" />
                 ISL Connect Community
               </p>
-              <h2 className="text-3xl font-semibold">A space built for ISL learners</h2>
-              <p className="mt-2 max-w-2xl text-white/80">
+              <h2 className="text-3xl font-bold">A space built for ISL learners</h2>
+              <p className="mt-2 max-w-2xl text-primary-foreground/80">
                 Ask questions, share milestones, join study groups, and exchange practical learning tips in one place.
               </p>
             </div>
-            <div className="rounded-2xl bg-white/15 px-5 py-4 text-sm text-white/85 backdrop-blur">
+            <div className="rounded-2xl bg-white/15 px-5 py-4 text-sm text-primary-foreground/85 backdrop-blur">
               Community features on this prototype are presented as discussion spaces rather than measured rankings.
             </div>
           </div>
@@ -186,7 +186,7 @@ export function CommunityPage() {
         <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_0.85fr]">
           <div className="rounded-[1.75rem] border-2 border-primary/20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 p-6 shadow-lg shadow-primary/10">
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white shadow-md">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-md">
                 <Zap className="h-5 w-5" />
               </div>
               <div>
@@ -195,10 +195,10 @@ export function CommunityPage() {
               </div>
             </div>
             <div className="rounded-[1.5rem] border border-white/70 bg-white/90 p-6">
-              <p className="text-5xl font-semibold text-slate-950">{signOfTheDay.sign}</p>
+              <p className="text-5xl font-bold text-slate-950">{signOfTheDay.sign}</p>
               <p className="mt-3 text-sm leading-7 text-slate-600">{signOfTheDay.description}</p>
               <Button
-                className="bg-gradient-brand mt-5 w-full rounded-xl border-0 text-white hover:opacity-90"
+                className="bg-primary mt-5 w-full rounded-xl border-0 text-primary-foreground hover:opacity-90"
                 onClick={() => onNavigate("practice")}
               >
                 Practise This Sign
@@ -252,13 +252,13 @@ export function CommunityPage() {
           <div>
             <div className="mb-5">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Groups</p>
-              <h2 className="mt-1 text-2xl font-semibold text-slate-950">Study Groups</h2>
+              <h2 className="mt-1 text-2xl font-bold text-slate-950">Study Groups</h2>
             </div>
             <div className="space-y-4">
               {studyGroups.map((group) => (
                 <div key={group.id} className="rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-sm">
                   <div className="flex items-start gap-4">
-                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${group.accent} text-white shadow-sm`}>
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${group.accent} text-primary-foreground shadow-sm`}>
                       <group.icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -291,11 +291,11 @@ export function CommunityPage() {
             <div className="mb-5 flex items-end justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Discuss</p>
-                <h2 className="mt-1 text-2xl font-semibold text-slate-950">Discussion Board</h2>
+                <h2 className="mt-1 text-2xl font-bold text-slate-950">Discussion Board</h2>
               </div>
               <Button
                 size="sm"
-                className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90"
+                className="bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90"
                 onClick={() => setShowCompose((value) => !value)}
               >
                 <PenLine className="mr-2 h-4 w-4" />
@@ -406,17 +406,17 @@ export function CommunityPage() {
         </section>
 
         <section>
-          <div className="bg-gradient-brand relative overflow-hidden rounded-[2rem] px-8 py-12 text-white shadow-2xl">
+          <div className="bg-primary relative overflow-hidden rounded-[2rem] px-8 py-12 text-primary-foreground shadow-2xl">
             <div className="absolute -right-12 top-0 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
             <div className="absolute -left-8 bottom-0 h-40 w-40 rounded-full bg-black/10 blur-2xl" />
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-xl">
-                <p className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+                <p className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/80">
                   <Award className="h-4 w-4" />
                   Keep Learning
                 </p>
-                <h2 className="text-3xl font-semibold">Ready for another practice session?</h2>
-                <p className="mt-2 text-white/80">
+                <h2 className="text-3xl font-bold">Ready for another practice session?</h2>
+                <p className="mt-2 text-primary-foreground/80">
                   Open the practice workspace, revisit the sign of the day, and bring what you learn back into the community.
                 </p>
               </div>

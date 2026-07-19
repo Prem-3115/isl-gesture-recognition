@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Hand, LogOut, Menu, Sparkles, X } from "lucide-react";
+import { Hand, LogOut, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface HeaderProps {
@@ -7,6 +7,7 @@ interface HeaderProps {
   isLoggedIn: boolean;
   isAuthLoading?: boolean;
   userName: string;
+  userPhoto?: string | null;
   onNavigate: (page: string) => void;
   onOpenAuth: (mode?: "login" | "signup") => void;
   onLogout: () => void;
@@ -24,6 +25,7 @@ export function Header({
   isLoggedIn,
   isAuthLoading = false,
   userName,
+  userPhoto,
   onNavigate,
   onOpenAuth,
   onLogout,
@@ -42,11 +44,11 @@ export function Header({
           onClick={() => handleNav("home")}
           className="flex items-center gap-3 transition-opacity hover:opacity-90"
         >
-          <div className="bg-gradient-brand flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-lg shadow-primary/20">
+          <div className="bg-primary flex h-11 w-11 items-center justify-center rounded-2xl text-primary-foreground shadow-lg shadow-primary/20">
             <Hand className="h-5 w-5" />
           </div>
           <div className="text-left">
-            <p className="text-gradient-brand text-lg font-semibold leading-none">ISL Connect</p>
+            <p className="text-primary text-lg font-semibold leading-none">ISL Connect</p>
             <p className="mt-1 text-xs text-slate-500">AI-powered ISL learning</p>
           </div>
         </button>
@@ -85,21 +87,39 @@ export function Header({
             </div>
           ) : isLoggedIn ? (
             <>
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm text-primary">
-                <Sparkles className="h-4 w-4" />
+              <button
+                onClick={() => handleNav("profile")}
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white pl-1.5 pr-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
+                aria-label="View your profile"
+              >
+                {userPhoto ? (
+                  <img
+                    src={userPhoto}
+                    alt={userName}
+                    className="h-6 w-6 rounded-full object-cover ring-1 ring-primary/30"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                    {(userName?.[0] ?? "U").toUpperCase()}
+                  </span>
+                )}
                 {userName}
-              </div>
-              <Button variant="outline" onClick={onLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
+              </button>
+              <button
+                onClick={onLogout}
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
+              >
+                <LogOut className="h-4 w-4" />
                 Logout
-              </Button>
+              </button>
             </>
           ) : (
             <>
               <Button variant="ghost" onClick={() => onOpenAuth("login")}>
                 Sign In
               </Button>
-              <Button className="bg-gradient-brand border-0 text-white hover:opacity-90" onClick={() => onOpenAuth("signup")}>
+              <Button className="bg-primary border-0 text-primary-foreground hover:opacity-90" onClick={() => onOpenAuth("signup")}>
                 Get Started
               </Button>
             </>
@@ -142,7 +162,12 @@ export function Header({
             <div className="mt-2 grid gap-3 border-t border-slate-200 pt-4">
               {isLoggedIn ? (
                 <>
-                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">{userName}</div>
+                  <button
+                    className="rounded-2xl bg-primary/10 px-4 py-3 text-left text-sm font-medium text-primary"
+                    onClick={() => { setMobileOpen(false); onNavigate("profile"); }}
+                  >
+                    {userName} · View Profile
+                  </button>
                   <Button variant="outline" onClick={() => { setMobileOpen(false); onLogout(); }}>
                     Logout
                   </Button>
@@ -152,7 +177,7 @@ export function Header({
                   <Button variant="outline" onClick={() => { setMobileOpen(false); onOpenAuth("login"); }}>
                     Sign In
                   </Button>
-                  <Button className="bg-gradient-brand border-0 text-white hover:opacity-90" onClick={() => { setMobileOpen(false); onOpenAuth("signup"); }}>
+                  <Button className="bg-primary border-0 text-primary-foreground hover:opacity-90" onClick={() => { setMobileOpen(false); onOpenAuth("signup"); }}>
                     Get Started
                   </Button>
                 </>

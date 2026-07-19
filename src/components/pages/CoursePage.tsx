@@ -47,7 +47,7 @@ export function CoursePage() {
                 <PlayCircle className="h-3.5 w-3.5" />
                 Guided learning path
               </div>
-              <h1 className="text-4xl font-semibold text-slate-950">{course.title}</h1>
+              <h1 className="text-4xl font-bold text-slate-950">{course.title}</h1>
               <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">{course.description}</p>
               <p className="mt-3 text-sm text-slate-500">Refer to the ISL chart for accurate gestures.</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -66,7 +66,7 @@ export function CoursePage() {
               </div>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button className="bg-gradient-brand rounded-xl border-0 text-white hover:opacity-90" size="lg" onClick={() => onNavigate(`lesson:${resumeLessonId}`)}>
+                <Button className="bg-primary rounded-xl border-0 text-primary-foreground hover:opacity-90" size="lg" onClick={() => onNavigate(`lesson:${resumeLessonId}`)}>
                   Open Course
                 </Button>
                 <Button className="rounded-xl" size="lg" variant="outline" onClick={() => onNavigate("practice")}>
@@ -78,7 +78,7 @@ export function CoursePage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Curriculum</h2>
+          <h2 className="mb-5 text-2xl font-bold text-slate-950">Course Curriculum</h2>
           <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-sm">
             {lessonList.map((lesson, index) => {
               const isDone = completedLessons.has(lesson.id);
@@ -122,7 +122,7 @@ export function CoursePage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="mb-5 text-2xl font-semibold text-slate-950">Course Resources</h2>
+          <h2 className="mb-5 text-2xl font-bold text-slate-950">Course Resources</h2>
           <div className="grid gap-4 md:grid-cols-3">
             {downloadableResources.map((resource) => (
               <a
@@ -132,13 +132,13 @@ export function CoursePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Download ${resource.title} (${resource.format}, ${resource.size})`}
-                className="flex items-center justify-between rounded-[1.25rem] border border-white/70 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30"
+                className="flex items-center justify-between rounded-[1.25rem] border border-white/70 bg-white p-5 text-left shadow-elevation transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevation-hover hover:border-primary/30"
               >
                 <div>
                   <p className="font-medium text-slate-900">{resource.title}</p>
                   <p className="mt-1 text-sm text-slate-500">{resource.format} · {resource.size}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
                   <Download className="h-4 w-4" />
                 </div>
               </a>

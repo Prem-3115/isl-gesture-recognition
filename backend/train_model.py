@@ -63,7 +63,7 @@ print(f"Test samples: {len(X_test)}\n")
 # std=0.005 corresponds to ~0.5% of the [0,1] coordinate range (~1-2 pixels
 # in a 320px frame) — realistic for real-time webcam imprecision.
 # Applied ONLY to X_train so the test set stays clean (no leakage).
-AUGMENT_FACTOR = 3   # 3 jittered copies per original sample
+AUGMENT_FACTOR = 3   # 3 jittered copies — reduced from 5 to prevent OOM
 NOISE_STD = 0.005
 
 print(f"Augmenting training set {AUGMENT_FACTOR}× with Gaussian noise (std={NOISE_STD})...")

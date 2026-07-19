@@ -2,22 +2,25 @@
 
 :root {
   --font-size: 16px;
-  --font-sans: "Space Grotesk", "Poppins", "Segoe UI", sans-serif;
-  --background: #fafafa;
-  --foreground: #1e293b;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Lexend", sans-serif;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #1e293b;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #1e293b;
-  --primary: #8b5cf6;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
   --primary-foreground: #ffffff;
-  --secondary: #ec4899;
+  --secondary: #64748b;
   --secondary-foreground: #ffffff;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #06b6d4;
+  --accent: #8b5cf6;
+  --accent-secondary: #f59e0b;
   --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --destructive: #d97706;
   --destructive-foreground: #ffffff;
   --border: rgba(148, 163, 184, 0.2);
   --input: transparent;
@@ -25,58 +28,31 @@
   --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #8b5cf6;
-  --chart-1: #8b5cf6;
-  --chart-2: #ec4899;
-  --chart-3: #06b6d4;
-  --chart-4: #f59e0b;
-  --chart-5: #10b981;
+  --ring: #0f172a;
   --radius: 0.75rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1e293b;
-  --sidebar-primary: #8b5cf6;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #1e293b;
-  --sidebar-border: rgba(148, 163, 184, 0.2);
-  --sidebar-ring: #8b5cf6;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #020617;
+  --card-foreground: #f8fafc;
+  --popover: #020617;
+  --popover-foreground: #f8fafc;
+  --primary: #f8fafc;
+  --primary-foreground: #020617;
+  --secondary: #64748b;
+  --secondary-foreground: #f8fafc;
+  --muted: #0f172a;
+  --muted-foreground: #94a3b8;
+  --accent: #8b5cf6;
+  --accent-secondary: #f59e0b;
+  --accent-foreground: #ffffff;
+  --destructive: #d97706;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: transparent;
+  --ring: #f8fafc;
 }
 
 @theme inline {
@@ -93,6 +69,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -101,29 +78,27 @@
   --color-input-background: var(--input-background);
   --color-switch-background: var(--switch-background);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  
+  --shadow-elevation: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --shadow-elevation-hover: 0 14px 40px rgba(0, 0, 0, 0.08);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+    outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
   }
+
+  *:focus-visible {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-offset: 2px;
+  }
+
 
   html {
     font-size: var(--font-size);
@@ -132,81 +107,92 @@
 
   body {
     font-family: var(--font-sans);
-    background:
-      radial-gradient(circle at top left, rgba(139, 92, 246, 0.16), transparent 28%),
-      radial-gradient(circle at top right, rgba(236, 72, 153, 0.14), transparent 26%),
-      linear-gradient(180deg, #ffffff 0%, var(--background) 45%, #f5f7fb 100%);
     @apply bg-background text-foreground antialiased;
   }
 }
 
 @layer base {
+  body {
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
       font-size: var(--text-2xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
-
     h2 {
       font-size: var(--text-xl);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
-
     h3 {
       font-size: var(--text-lg);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
-
     h4 {
       font-size: var(--text-base);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
+      line-height: 1.25;
     }
-
     p {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.625;
+    }
+    label, button, input {
+      font-family: var(--font-body);
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
     }
-
-    label {
-      font-size: var(--text-base);
+    label, button {
       font-weight: var(--font-weight-medium);
-      line-height: 1.5;
-    }
-
-    button {
-      font-size: var(--text-base);
-      font-weight: var(--font-weight-medium);
-      line-height: 1.5;
-    }
-
-    input {
-      font-size: var(--text-base);
-      font-weight: var(--font-weight-normal);
-      line-height: 1.5;
     }
   }
 }
 
 @layer utilities {
-  .text-gradient-brand {
-    background-image: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .font-heading {
+    font-family: var(--font-heading);
   }
-
-  .bg-gradient-brand {
-    background-image: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+  .font-body {
+    font-family: var(--font-body);
   }
-
-  .panel-glow {
-    box-shadow:
-      0 20px 60px rgba(139, 92, 246, 0.16),
-      0 8px 24px rgba(15, 23, 42, 0.08);
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .page-enter {
+    animation: fade-in 0.25s ease-out backwards;
+  }
+  .modal-overlay-enter {
+    animation: fade-in 0.2s ease-out backwards;
+  }
+  
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-enter {
+    animation: fade-in-up 0.3s ease-out backwards;
+  }
+  
+  @keyframes modal-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-enter {
+    animation: modal-in 0.2s ease-out backwards;
+  }
+  
+  .progress-bar-fill {
+    transition: transform 0.6s ease-out;
+  }
+  
+  .circle-progress {
+    transition: stroke-dashoffset 0.6s ease-out;
   }
 }

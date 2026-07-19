@@ -1,8 +1,7 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
-import { LoaderCircle } from "lucide-react";
-import { SkeletonDashboard } from "./components/SkeletonCard";
+import { SkeletonDashboard, SkeletonPage } from "./components/SkeletonCard";
 
 // Eagerly load the homepage — it's the entry point
 import { HomePage } from "./components/pages/HomePage";
@@ -32,14 +31,12 @@ const AboutPage = lazy(() =>
 const NotFoundPage = lazy(() =>
   import("./components/pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
 );
-
-function PageLoader() {
-  return (
-    <div className="flex h-64 items-center justify-center" role="status" aria-label="Loading page">
-      <LoaderCircle className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
-    </div>
-  );
-}
+const ProfilePage = lazy(() =>
+  import("./components/pages/ProfilePage").then((m) => ({ default: m.ProfilePage }))
+);
+const StaticPage = lazy(() =>
+  import("./components/pages/StaticPage").then((m) => ({ default: m.StaticPage }))
+);
 
 export const router = createBrowserRouter([
   {
@@ -52,33 +49,62 @@ export const router = createBrowserRouter([
         element: <Suspense fallback={<SkeletonDashboard />}><CourseDashboard /></Suspense>,
       },
       {
+        // Alias: /courses → CourseDashboard (handles direct URL visits & nav link clicks)
+        path: "courses",
+        element: <Suspense fallback={<SkeletonDashboard />}><CourseDashboard /></Suspense>,
+      },
+      {
         path: "course/:courseId",
-        element: <Suspense fallback={<PageLoader />}><CoursePage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><CoursePage /></Suspense>,
       },
       {
         path: "lesson/:lessonId",
-        element: <Suspense fallback={<PageLoader />}><LessonPage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><LessonPage /></Suspense>,
       },
       {
         path: "practice",
-        element: <Suspense fallback={<PageLoader />}><PracticePage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><PracticePage /></Suspense>,
       },
       {
         path: "achievements",
-        element: <Suspense fallback={<PageLoader />}><AchievementsPage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><AchievementsPage /></Suspense>,
       },
       {
         path: "community",
-        element: <Suspense fallback={<PageLoader />}><CommunityPage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><CommunityPage /></Suspense>,
       },
       {
         path: "about",
-        element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><AboutPage /></Suspense>,
+      },
+      {
+        path: "profile",
+        element: <Suspense fallback={<SkeletonPage />}><ProfilePage /></Suspense>,
+      },
+      {
+        path: "help",
+        element: <Suspense fallback={<SkeletonPage />}><StaticPage /></Suspense>,
+      },
+      {
+        path: "accessibility",
+        element: <Suspense fallback={<SkeletonPage />}><StaticPage /></Suspense>,
+      },
+      {
+        path: "contact",
+        element: <Suspense fallback={<SkeletonPage />}><StaticPage /></Suspense>,
+      },
+      {
+        path: "privacy",
+        element: <Suspense fallback={<SkeletonPage />}><StaticPage /></Suspense>,
+      },
+      {
+        path: "terms",
+        element: <Suspense fallback={<SkeletonPage />}><StaticPage /></Suspense>,
       },
       {
         // Catch-all: dedicated 404 page instead of silently rendering HomePage
         path: "*",
-        element: <Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>,
+        element: <Suspense fallback={<SkeletonPage />}><NotFoundPage /></Suspense>,
       },
     ],
   },
