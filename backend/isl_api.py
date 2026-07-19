@@ -16,6 +16,8 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://isl-connect.web.app",
     "https://sign-language-learner-de.web.app",
+    # HuggingFace Spaces URL (update with your actual Space URL after deploy)
+    "https://prem-3115-isl-connect-api.hf.space",
 ]
 CORS(
     app,
@@ -164,9 +166,9 @@ def health():
 
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
+    port = int(os.getenv("PORT", 7860))
     debug = os.getenv("FLASK_DEBUG", "False").lower() == "true"
     print(f"\nStarting ISL API on http://127.0.0.1:{port}")
     print(f"Test it: http://127.0.0.1:{port}/health\n")
     print(f"Allowed origins: {ALLOWED_ORIGINS}\n")
-    app.run(port=port, debug=debug)
+    app.run(host="0.0.0.0", port=port, debug=debug)
