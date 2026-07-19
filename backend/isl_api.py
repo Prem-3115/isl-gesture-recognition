@@ -16,10 +16,15 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://isl-connect.web.app",
     "https://sign-language-learner-de.web.app",
-    # Add your deployed backend's allowed frontend origin here if different:
-    # "https://your-custom-domain.com",
 ]
-CORS(app, origins=ALLOWED_ORIGINS, methods=["GET", "POST", "OPTIONS"])
+CORS(
+    app,
+    origins=ALLOWED_ORIGINS,
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept"],
+    supports_credentials=False,
+    max_age=3600,
+)
 
 MODEL_PATH = "isl_model.pkl"
 ENCODER_PATH = "label_encoder.pkl"
