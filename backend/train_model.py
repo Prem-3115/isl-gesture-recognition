@@ -17,19 +17,34 @@ from model_utils import build_feature_matrix
 DATASET_PATH = Path(__file__).with_name("landmarks.csv")
 MODEL_PATH = Path(__file__).with_name("isl_model.pkl")
 ENCODER_PATH = Path(__file__).with_name("label_encoder.pkl")
+import csv
 
+print("Loading dataset manually to avoid pandas memory limits...")
+labels_list = []
+raw_landmarks_list = []
 
-print("Loading dataset...")
-df = pd.read_csv(DATASET_PATH, low_memory=False)
-print(f"Total samples: {len(df)}")
-print(f"Classes found: {sorted(df['label'].unique())}")
-print(f"Samples per class:\n{df['label'].value_counts().sort_index()}\n")
+with open("landmarks.csv", "r", encoding="utf-8") as f:
+    reader = csv.reader(f)
+    header = next(reader)
+    label_idx = header.index("label")
+    
+    for row in reader:
+        labels_list.append(row[label_idx])
+        raw_landmarks_list.append([float(x) for i, x in enumerate(row) if i != label_idx])
 
-raw_landmarks = df.drop("label", axis=1).values.astype(float)
-labels = df["label"].astype(str)
+raw_landmarks = np.array(raw_landmarks_list, dtype=np.float32)
+labels = np.array(labels_list, dtype=str)
+
+print(f"Total samples: {len(labels)}")
+unique_labels = sorted(list(set(labels_list)))
+print(f"Classes found: {unique_labels}")
+print("Samples per class:")
+for c in unique_labels:
+    print(f"{c}: {labels_list.count(c)}")
+print("")
 
 print("Building rotation- and scale-stable features...")
-X = build_feature_matrix(raw_landmarks)
+X = build_feature_matrix(raw_landmarks).astype(np.float32)
 
 encoder = LabelEncoder()
 y = encoder.fit_transform(labels)
@@ -56,7 +71,7 @@ rng = np.random.default_rng(seed=42)
 aug_X_list = [X_train]
 aug_y_list = [y_train]
 for _ in range(AUGMENT_FACTOR):
-    noise = rng.normal(0, NOISE_STD, size=X_train.shape)
+    noise = rng.normal(0, NOISE_STD, size=X_train.shape).astype(np.float32)
     aug_X_list.append(X_train + noise)
     aug_y_list.append(y_train)
 
@@ -69,9 +84,10 @@ model = VotingClassifier(
         (
             "rf",
             RandomForestClassifier(
-                n_estimators=350,
+                n_estimators=100,
+                max_depth=20,
                 max_features="sqrt",
-                min_samples_leaf=2,
+                min_samples_leaf=5,
                 class_weight="balanced_subsample",
                 random_state=42,
                 n_jobs=1,
@@ -80,9 +96,10 @@ model = VotingClassifier(
         (
             "et",
             ExtraTreesClassifier(
-                n_estimators=500,
+                n_estimators=100,
+                max_depth=20,
                 max_features="sqrt",
-                min_samples_leaf=2,
+                min_samples_leaf=5,
                 class_weight="balanced",
                 random_state=42,
                 n_jobs=1,
@@ -92,7 +109,7 @@ model = VotingClassifier(
             "lr",
             make_pipeline(
                 StandardScaler(),
-                LogisticRegression(max_iter=2500),
+                LogisticRegression(max_iter=1000),
             ),
         ),
     ],
