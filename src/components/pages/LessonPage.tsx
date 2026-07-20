@@ -26,6 +26,7 @@ interface LessonMeta {
   description: string;
   youtubeId: string;
   channel: string;
+  start?: number;
 }
 
 
@@ -192,15 +193,15 @@ const lessonMeta: Record<string, LessonMeta> = {
     youtubeId: "VdwKSyza5oI",
     channel: "ISLRTC",
   },
-  "number-1": { title: "Number 1", description: "Learn how to sign Number 1.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-2": { title: "Number 2", description: "Learn how to sign Number 2.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-3": { title: "Number 3", description: "Learn how to sign Number 3.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-4": { title: "Number 4", description: "Learn how to sign Number 4.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-5": { title: "Number 5", description: "Learn how to sign Number 5.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-6": { title: "Number 6", description: "Learn how to sign Number 6.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-7": { title: "Number 7", description: "Learn how to sign Number 7.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-8": { title: "Number 8", description: "Learn how to sign Number 8.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
-  "number-9": { title: "Number 9", description: "Learn how to sign Number 9.", youtubeId: "c3vj8iQpabg", channel: "ISLRTC" },
+  "number-1": { title: "Number 1", description: "Learn how to sign Number 1.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 31 },
+  "number-2": { title: "Number 2", description: "Learn how to sign Number 2.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 35 },
+  "number-3": { title: "Number 3", description: "Learn how to sign Number 3.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 38 },
+  "number-4": { title: "Number 4", description: "Learn how to sign Number 4.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 42 },
+  "number-5": { title: "Number 5", description: "Learn how to sign Number 5.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 45 },
+  "number-6": { title: "Number 6", description: "Learn how to sign Number 6.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 54 },
+  "number-7": { title: "Number 7", description: "Learn how to sign Number 7.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 60 },
+  "number-8": { title: "Number 8", description: "Learn how to sign Number 8.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 65 },
+  "number-9": { title: "Number 9", description: "Learn how to sign Number 9.", youtubeId: "vnH2BmcSRMA", channel: "ISLRTC", start: 67 },
 };
 
 const lessonKeys = Object.keys(lessonMeta);
@@ -344,7 +345,7 @@ export function LessonPage() {
               aria-label={`Lesson video: ${lesson.title}`}
             >
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${lesson.youtubeId}?rel=0&modestbranding=1&color=white`}
+                src={`https://www.youtube-nocookie.com/embed/${lesson.youtubeId}?rel=0&modestbranding=1&color=white${lesson.start ? `&start=${lesson.start}` : ""}`}
                 title={`${lesson.title} — Indian Sign Language tutorial`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
@@ -359,7 +360,7 @@ export function LessonPage() {
                 Video by <span className="font-medium text-slate-700">{lesson.channel}</span> on YouTube
               </p>
               <a
-                href={`https://www.youtube.com/watch?v=${lesson.youtubeId}`}
+                href={`https://www.youtube.com/watch?v=${lesson.youtubeId}${lesson.start ? `&t=${lesson.start}s` : ""}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm font-medium text-primary transition hover:opacity-80"
