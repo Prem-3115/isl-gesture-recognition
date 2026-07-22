@@ -3,8 +3,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier, VotingClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.pipeline import make_pipeline
@@ -57,13 +56,35 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"Training samples (before augmentation): {len(X_train)}")
 print(f"Test samples: {len(X_test)}\n")
 
+# ── Manual Oversampling to Balance Classes ──────────────────────────────────
+print("Oversampling minority classes to balance training data...")
+max_samples = max(np.bincount(y_train))
+X_train_balanced = []
+y_train_balanced = []
+for c in np.unique(y_train):
+    class_indices = np.where(y_train == c)[0]
+    class_X = X_train[class_indices]
+    class_y = y_train[class_indices]
+    
+    if len(class_indices) < max_samples:
+        repeats = int(np.ceil(max_samples / len(class_indices)))
+        class_X = np.tile(class_X, (repeats, 1))[:max_samples]
+        class_y = np.tile(class_y, repeats)[:max_samples]
+        
+    X_train_balanced.append(class_X)
+    y_train_balanced.append(class_y)
+
+X_train = np.vstack(X_train_balanced)
+y_train = np.concatenate(y_train_balanced)
+print(f"Training samples (after balancing): {len(X_train)}\n")
+
 # ── Gaussian noise augmentation ───────────────────────────────────────────────
 # Add jittered copies of every training sample to simulate webcam noise.
 # Each feature in the vector is a normalised coordinate or derived angle;
 # std=0.005 corresponds to ~0.5% of the [0,1] coordinate range (~1-2 pixels
 # in a 320px frame) — realistic for real-time webcam imprecision.
 # Applied ONLY to X_train so the test set stays clean (no leakage).
-AUGMENT_FACTOR = 3   # 3 jittered copies — reduced from 5 to prevent OOM
+AUGMENT_FACTOR = 5   # Increased to 5 for better generalization
 NOISE_STD = 0.005
 
 print(f"Augmenting training set {AUGMENT_FACTOR}× with Gaussian noise (std={NOISE_STD})...")
@@ -79,46 +100,20 @@ X_train = np.vstack(aug_X_list)
 y_train = np.concatenate(aug_y_list)
 print(f"Training samples (after augmentation):  {len(X_train)}\n")
 
-model = VotingClassifier(
-    estimators=[
-        (
-            "rf",
-            RandomForestClassifier(
-                n_estimators=25,
-                max_depth=20,
-                max_features="sqrt",
-                min_samples_leaf=5,
-                class_weight="balanced_subsample",
-                random_state=42,
-                n_jobs=1,
-            ),
-        ),
-        (
-            "et",
-            ExtraTreesClassifier(
-                n_estimators=25,
-                max_depth=20,
-                max_features="sqrt",
-                min_samples_leaf=5,
-                class_weight="balanced",
-                random_state=42,
-                n_jobs=1,
-            ),
-        ),
-        (
-            "lr",
-            make_pipeline(
-                StandardScaler(),
-                LogisticRegression(max_iter=1000),
-            ),
-        ),
-    ],
-    voting="soft",
-    weights=[3, 4, 1],
-    n_jobs=1,
+model = make_pipeline(
+    StandardScaler(),
+    MLPClassifier(
+        hidden_layer_sizes=(512, 256, 128),
+        activation='relu',
+        solver='adam',
+        learning_rate='adaptive',
+        max_iter=300,
+        early_stopping=True,
+        random_state=42
+    )
 )
 
-print("Training ensemble model...")
+print("Training MLP Classifier...")
 model.fit(X_train, y_train)
 
 test_accuracy = model.score(X_test, y_test)

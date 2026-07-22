@@ -27,8 +27,8 @@ ANGLE_TRIPLETS = (
 
 # Single source of truth for feature vector length per hand (Fix #10)
 # 21 landmarks×3 coords  +  21 wrist distances  +  C(5,2)=10 fingertip distances
-# + len(ANGLE_TRIPLETS) joint/abduction angles  =  113
-FEATURES_PER_HAND: int = 21 * 3 + 21 + 10 + len(ANGLE_TRIPLETS)
+# + len(ANGLE_TRIPLETS) joint/abduction angles + 5 palm-to-fingertip distances = 118
+FEATURES_PER_HAND: int = 21 * 3 + 21 + 10 + len(ANGLE_TRIPLETS) + 5
 
 
 def reshape_landmarks(data: np.ndarray | list[float]) -> np.ndarray:
@@ -134,6 +134,12 @@ def _extract_single_hand_features(hand: np.ndarray) -> np.ndarray:
         _joint_angle(canonical, a, b, c)
         for a, b, c in ANGLE_TRIPLETS
     ]
+    
+    palm_center = np.mean(canonical[[0, 5, 9, 13, 17]], axis=0)
+    palm_to_fingertip_distances = [
+        float(np.linalg.norm(palm_center - canonical[i]))
+        for i in FINGERTIP_INDICES
+    ]
 
     return np.concatenate(
         [
@@ -141,6 +147,7 @@ def _extract_single_hand_features(hand: np.ndarray) -> np.ndarray:
             wrist_distances,
             np.asarray(fingertip_distances, dtype=float),
             np.asarray(joint_angles, dtype=float),
+            np.asarray(palm_to_fingertip_distances, dtype=float),
         ]
     )
 
